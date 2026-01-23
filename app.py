@@ -2,9 +2,9 @@
 # BITCOIN-DASHBOARD – Flask Backend / app.py
 # ==========================================
 
-# ==================
+# ================
 # 🔗 Standard Libs
-# ==================
+# ================
 import os
 import time
 import json
@@ -15,27 +15,45 @@ import subprocess
 import uuid
 import asyncio
 from datetime import datetime, timezone
+from pathlib import Path
 
-# ==================
+# ==============
 # 🌐 Third Party
-# ==================
+# ==============
 import redis
 import requests
 import psutil
 from bitcoinrpc.authproxy import AuthServiceProxy
 from dotenv import load_dotenv
 
+# =====================
+# 🧪 Flask & Extensions
+# =====================
 from flask import (
-    Flask, render_template, jsonify,
-    request, Response, make_response, g
+    Flask,
+    render_template,
+    jsonify,
+    request,
+    Response,
+    make_response,
+    g,
+    send_from_directory,
 )
 from flask_cors import CORS
+
+# ======================
+# ⚙️ Concurrency / Utils
+# ======================
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 
+# ====================
+# 🧠 Project Internals
+# ====================
 from nodes.electrumx import ElectrumXClient
 from electrumx.address import get_address_overview
 from core.electrumx_service import get_electrumx_client
+
 
 # ===================================================
 # 🔑 Environment Configuration – External API Secrets
@@ -470,17 +488,24 @@ def emit_dashboard_traffic_event() -> None:
     r.incr(redis_key)
     r.expire(redis_key, RAW_EVENT_TTL_SECONDS)
 
+
 # ==================================
 # MODEL B – ACTIVE SESSION HEARTBEAT
 # ==================================
-@app.route("/api/track/dashboard_alive", methods=["POST"])
+@app.route("/api/track/dashboard_alive", methods=["POST", "GET", "HEAD"])
 def api_dashboard_alive():
-    """
-    Active dashboard session heartbeat.
-    - anonymous
-    - TTL based
-    """
 
+    # ==========================
+    # Google / Crawler (GET, HEAD)
+    # ==========================
+    if request.method in ("GET", "HEAD"):
+        resp = Response(status=204)  # No Content
+        resp.headers["X-Robots-Tag"] = "noindex, nofollow"
+        return resp
+
+    # ==========================
+    # Dashboard Heartbeat (POST)
+    # ==========================
     session_id = request.headers.get("X-Dashboard-Session")
     if not session_id:
         session_id = uuid.uuid4().hex
@@ -488,9 +513,8 @@ def api_dashboard_alive():
     redis_key = f"{DASHBOARD_ACTIVE_PREFIX}{session_id}"
     r.set(redis_key, "1", ex=DASHBOARD_ACTIVE_TTL)
 
-    return jsonify({
-        "session_id": session_id
-    })
+    return jsonify({"session_id": session_id})
+
 
 # ============================
 # PAGE VIEW TRACKING (Model A)
@@ -2293,17 +2317,45 @@ def _refresh_market_cap_companies():
     companies.sort(key=lambda x: int(x.get("market_cap", 0)), reverse=True)
     companies = companies[:20]
 
-    cache_now = r.get(MARKET_CAP_COMPANIES_CACHE_NOW)
-    if cache_now:
-        r.set(MARKET_CAP_COMPANIES_CACHE_OLD, cache_now)
+    try:
+        pipe = r.pipeline()
 
-    r.set(
-        MARKET_CAP_COMPANIES_CACHE_NOW,
-        json.dumps(companies),
-        ex=MARKET_CAP_COMPANIES_REFRESH_INTERVAL
-    )
+        # 🔍 Aktuellen NOW lesen (für Stale-Handling)
+        cache_now = r.get(MARKET_CAP_COMPANIES_CACHE_NOW)
 
-    print(f"[Worker {pid}] 🟢 MARKET_CAP_COMPANIES Refresh abgeschlossen")
+        if cache_now:
+            # 🟡 Normalfall: altes NOW → OLD
+            pipe.set(
+                MARKET_CAP_COMPANIES_CACHE_OLD,
+                cache_now,
+                ex=MARKET_CAP_COMPANIES_REFRESH_INTERVAL * 2
+            )
+            old_source = "from_now"
+        else:
+            # 🟡 Initial-Build: OLD = NOW (neu)
+            pipe.set(
+                MARKET_CAP_COMPANIES_CACHE_OLD,
+                json.dumps(companies),
+                ex=MARKET_CAP_COMPANIES_REFRESH_INTERVAL * 2
+            )
+            old_source = "initial"
+
+        # 🟢 Neues NOW setzen
+        pipe.set(
+            MARKET_CAP_COMPANIES_CACHE_NOW,
+            json.dumps(companies),
+            ex=MARKET_CAP_COMPANIES_REFRESH_INTERVAL
+        )
+
+        pipe.execute()
+
+        print(
+            f"[Worker {pid}] 🟢 MARKET_CAP_COMPANIES Refresh abgeschlossen "
+            f"(NOW={len(companies)}, OLD={old_source})"
+        )
+
+    except Exception as e:
+        print(f"[Worker {pid}] ❌ Redis-Fehler im Refresh: {e}")
 
 
 # ======================================================
@@ -2696,8 +2748,19 @@ def api_market_cap_commodities():
 
 # ===========================
 # 🔸 API: BLOCKCHAIN (static)
-@app.route("/api/blockchain", methods=["GET"])
+@app.route("/api/blockchain", methods=["GET", "HEAD"])
 def api_blockchain_static():
+
+    # ==========================
+    # 🤖 Crawler / Direct Access
+    # Google & Co. rufen per GET/HEAD ohne Kontext ab
+    if request.method in ("GET", "HEAD") and not request.headers.get("X-Requested-With"):
+        resp = Response(status=204)  # No Content
+        resp.headers["X-Robots-Tag"] = "noindex, nofollow"
+        return resp
+
+    # =================
+    # 🔧 Real API Logic
     raw = r.get(BLOCKCHAIN_STATIC_KEY)
     if not raw:
         return Response(
@@ -2710,6 +2773,7 @@ def api_blockchain_static():
         raw.decode() if isinstance(raw, bytes) else raw,
         mimetype="application/json"
     )
+
 
 # ============================
 # 🔸 API: BLOCKCHAIN (dynamic)
@@ -3014,8 +3078,22 @@ def api_dashboard_core():
 
 
 
+# ====================
+# 🗺️ SEO – XML Sitemap
+# ====================
+@app.route("/sitemap.xml")
+def sitemap():
+    root = Path(__file__).resolve().parent
+    return send_from_directory(root, "sitemap.xml", mimetype="application/xml")
+
+
+## ================================================================================================================================================================ ##
+
+
 # ===============================
 # 🚀 App starten & Worker starten
 # ===============================
 if __name__ == "__main__":
     app.run(debug=False, host='127.0.0.1', port=5000)
+
+

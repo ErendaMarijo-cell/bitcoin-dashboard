@@ -29,7 +29,7 @@ const I18N = {
       // SEO (Invisible Intro)
       // ---------------------
       seo: {
-          title: "BITCOIN LIVE DASHBOARD – Real-Time Blockchain, Mempool & Price Analytics",
+          title: "BITCOIN LIVE DASHBOARD – Blockchain Insights",
 
           text1:
             "Bitcoin Dashboard is a real-time Bitcoin analytics platform providing live blockchain data, " +
@@ -50,7 +50,7 @@ const I18N = {
         blockchain: "Blockchain Status",
         mempool: "Mempool Overview",
         top10: "Top 10 Mempool Transactions (live)",
-        top50: "Top 50 Bitcoin Transactions (Since 2026)",
+        top50: "Top 50 Bitcoin Transactions in 2026",
         node: "Node Information",
         dashboard: "Dashboard Traffic",
         meta: "System Status",
@@ -173,23 +173,23 @@ const T = I18N.en;
 // =========================================================
 const META_BY_MAIN_TAB = {
   HOME: {
-    title: "BITCOIN LIVE DASHBOARD – Real-Time Blockchain, Mempool & Price Analytics",
+    title: "BITCOIN LIVE DASHBOARD – Blockchain Insights",
     description: "Real-time Bitcoin network statistics including mempool, hashrate, blocks, fees, and on-chain metrics."
   },
   REVOLUTION: {
-    title: "What Is Bitcoin? – History, Origins & Monetary Revolution",
+    title: "What Is Bitcoin? – History & Origins",
     description: "Learn how Bitcoin was created, why it exists, and how it started a global monetary revolution."
   },
   NETWORK: {
-    title: "Bitcoin Network – Structure, Nodes, Mining & Technology",
+    title: "Bitcoin Network – Nodes, Mining & Structure",
     description: "Understand how the Bitcoin network works, including nodes, miners, consensus, and underlying technology."
   },
   METRICS: {
-    title: "Bitcoin Metrics – Price, Difficulty, Hashrate & Transaction Data",
-    description: "Explore live Bitcoin metrics including price, hashrate, difficulty, transaction volume, and network activity."
+    title: "Bitcoin Metrics – Price, Hashrate & Transactions",
+    description: "Live Bitcoin metrics including price, hashrate, difficulty and on-chain activity."
   },
   EXPLORER: {
-    title: "Bitcoin Explorer – Transactions, Addresses & Wallet Analysis",
+    title: "Bitcoin Explorer – Transactions & Addresses",
     description: "Analyze Bitcoin transactions, addresses, and wallets using real-time blockchain data."
   },
   TREASURIES: {
@@ -197,15 +197,15 @@ const META_BY_MAIN_TAB = {
     description: "Discover which companies, institutions, and countries hold Bitcoin as part of their treasury strategy."
   },
   MARKET_CAP: {
-    title: "Market Capitalization – Bitcoin, Crypto, Companies & Assets",
+    title: "Market Capitalization – Bitcoin & Global Assets",
     description: "Compare market capitalizations of Bitcoin, cryptocurrencies, companies, fiat currencies, and commodities."
   },
   INDICATORS: {
-    title: "Bitcoin Indicators – On-Chain, Macro & Market Cycle Models",
+    title: "Bitcoin Indicators – On-Chain & Market Cycles",
     description: "Track Bitcoin indicators such as M2 money supply, market cycles, power law models, and sentiment indices."
   },
   INFO: {
-    title: "Dashboard Information – Status, Traffic & Project Details",
+    title: "Dashboard Information – Status & Project Details",
     description: "View system status, dashboard traffic statistics, and legal information about the Bitcoin Dashboard project."
   }
 };
