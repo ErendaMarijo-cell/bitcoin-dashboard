@@ -38,6 +38,7 @@ from flask import (
     make_response,
     g,
     send_from_directory,
+    abort,              
 )
 from flask_cors import CORS
 
@@ -53,6 +54,7 @@ from contextlib import contextmanager
 from nodes.electrumx import ElectrumXClient
 from electrumx.address import get_address_overview
 from core.electrumx_service import get_electrumx_client
+
 
 
 # ===================================================
@@ -3078,14 +3080,37 @@ def api_dashboard_core():
 
 
 
+BASE_DIR = Path(__file__).resolve().parent
+TEMPLATE_DIR = BASE_DIR / "templates"
+
 # ====================
 # 🗺️ SEO – XML Sitemap
 # ====================
 @app.route("/sitemap.xml")
 def sitemap():
-    root = Path(__file__).resolve().parent
-    return send_from_directory(root, "sitemap.xml", mimetype="application/xml")
+    return send_from_directory(BASE_DIR, "sitemap.xml", mimetype="application/xml")
 
+
+## ================================================================================================================================================================ ##
+
+
+# ====================
+# 🧭 SPA Fallback Routing
+# ====================
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def spa_fallback(path):
+
+    # echte statische Assets direkt ausliefern
+    if path.startswith("static/"):
+        return send_from_directory(BASE_DIR, path)
+
+    # alles mit Dateiendung bewusst 404en
+    if "." in path:
+        abort(404)
+
+    # alle App-Routen → SPA
+    return send_from_directory(TEMPLATE_DIR, "index.html")
 
 ## ================================================================================================================================================================ ##
 
