@@ -1,54 +1,142 @@
 # Bitcoin Dashboard
 
-Production-grade Bitcoin analytics dashboard with a Python backend,
+🚀 **Live system:** https://bitcoin-dashboard.net  
+📊 **Production-grade Bitcoin analytics platform** with a self-hosted Python backend,
 distributed background workers, Redis-based synchronization and a server-driven frontend.
+
+This repository mirrors the **real production structure** of a live system.
+This is **not a demo or toy project**.
 
 ---
 
-## Overview
+## 🧠 What this project is
 
-This project powers a live Bitcoin analytics platform built around real blockchain,
-network and market data.
+A backend-heavy Bitcoin analytics platform built around:
 
-It is designed as a backend-heavy system with long-running worker processes,
-explicit caching strategies and production-safe defaults.
+- real blockchain, network and market data
+- long-running, independent worker processes
+- explicit caching, locking and synchronization strategies
+- production-safe defaults and defensive system design
 
-Key characteristics:
+The system runs continuously and powers a public-facing analytics dashboard.
+
+---
+
+## 📸 Live System – Selected Views
+
+### Bitcoin Overview & Blockchain Status
+![Bitcoin Overview](docs/screenshots/overview.jpg)
+
+Real-time blockchain and network state:
+- time since genesis block
+- halving countdown & remaining blocks
+- block height and network hashrate
+- multi-currency BTC price aggregation (USD / EUR / JPY)
+
+---
+
+### BTC Price – USD & EUR
+![BTC Price Chart](docs/screenshots/price_chart.jpg)
+
+Backend-aggregated Bitcoin price data:
+- synchronized multi-currency time series
+- long-range historical context
+- server-side normalization and caching
+
+---
+
+### Bitcoin Difficulty – Protocol-Level Adjustments
+![Difficulty Chart](docs/screenshots/difficulty.jpg)
+
+Bitcoin difficulty visualized across multiple time frames:
+- discrete protocol-level difficulty changes
+- no artificial smoothing
+- accurate representation of consensus mechanics
+
+---
+
+### Transaction Amount
+![Transaction Amount](docs/screenshots/tx_amount.jpg)
+
+Analysis of on-chain transaction values:
+- aggregated transaction sizes
+- historical trends
+- backend-driven computation and caching
+
+---
+
+### Transaction Fees
+![Transaction Fees](docs/screenshots/tx_fees.jpg)
+
+Transaction fee dynamics:
+- network congestion visibility
+- fee market behavior
+- time-based aggregation
+
+---
+
+### Bitcoin Explorer
+![Explorer](docs/screenshots/explorer.jpg)
+
+Lightweight Bitcoin explorer features:
+- address lookup
+- transaction inspection
+- wallet-level aggregation
+- ElectrumX-backed queries
+
+---
+
+### Market Capitalization – Commodities
+![Market Cap Commodities](docs/screenshots/market_cap_commodities.jpg)
+
+Bitcoin market capitalization compared to:
+- global commodities
+- normalized economic benchmarks
+- structured and ranked datasets
+
+---
+
+## 🏗 Architecture (High-Level)
+
+![System Architecture](docs/architecture.jpg)
+
+The system follows a **backend-first architecture**:
+
+- workers ingest, process and aggregate data
+- Redis acts as synchronization and state backbone
+- frontend is a pure presentation layer
+- no business logic in the browser
+
+---
+
+## 🧩 Key Characteristics
 
 - multi-process background workers
 - Redis-based caching, locking and shared state coordination
 - direct Bitcoin Core RPC and ElectrumX integration
 - external market and metrics APIs with rate-limit protection
 - server-driven frontend (Flask + HTML/CSS/JavaScript)
-
-The repository mirrors the real production structure.
-This is not a demo or toy project.
+- no frontend framework dependency
 
 ---
 
-## Architecture (High-Level)
+## 📂 Repository Structure
 
-![System Architecture](docs/architecture.jpg)
-
----
-
-## Repository Structure
-
-app.py  
+**app.py**  
 API layer and orchestration entry point.
 
-- Serves the server-driven frontend
-- Aggregates worker output from Redis
-- Provides stable API endpoints for frontend data loading
-- Designed to start even if optional subsystems are unavailable
+- serves the server-driven frontend
+- aggregates worker output from Redis
+- exposes stable API endpoints
+- starts safely even if optional subsystems are unavailable
 
-workers/  
+**workers/**  
 Independent background processes responsible for:
 
 - blockchain state ingestion
 - mempool analysis
-- network and node monitoring
-- hashrate and difficulty metrics
+- transaction metrics (volume, amount, fees)
+- hashrate and difficulty computation
 - market capitalization (coins, companies, commodities)
 - dashboard traffic and system health
 
@@ -58,44 +146,41 @@ Workers:
 - use TTL-based caching and cooldowns
 - fail gracefully without crashing the system
 
-core/redis_keys.py  
+**core/redis_keys.py**  
 Central, side-effect-free definition of all Redis keys and shared constants.
 
-- Single source of truth for Redis schema
-- Strict namespacing of keys
-- No runtime logic, imports or side effects
-- Ensures consistency across all workers and services
+- single source of truth for Redis schema
+- strict namespacing
+- no runtime logic or side effects
 
-nodes/  
+**nodes/**  
 Bitcoin infrastructure integration:
 
 - Bitcoin Core RPC abstraction
 - ElectrumX client logic
-- Node-specific configuration handling
+- multi-node configuration handling
 
-static/ and templates/  
+**static/** & **templates/**  
 Server-driven frontend:
 
-- HTML templates rendered by Flask
-- Vanilla JavaScript for data fetching and updates
+- Flask-rendered HTML templates
+- vanilla JavaScript for data fetching
 - CSS-based responsive layout
-- No frontend framework dependency
+- no frontend framework dependency
 
 ---
 
-## Redis Strategy
+## 🔁 Redis Strategy
 
-Redis is a core system component, not just a cache.
+Redis is a **core system component**, not just a cache.
 
-It is used for:
-
+Used for:
 - cross-process synchronization (distributed locks)
 - shared state between workers
-- long-term and short-term caching via explicit TTLs
+- long- and short-term caching via explicit TTLs
 - worker statistics and health monitoring
 
 Design principles:
-
 - no implicit key creation
 - no magic strings
 - strict namespacing
@@ -103,10 +188,10 @@ Design principles:
 
 ---
 
-## Configuration & Secrets
+## 🔐 Configuration & Secrets
 
-All configuration and secrets are provided via environment variables.
-They are intentionally not part of this repository.
+All configuration and secrets are provided via environment variables
+and intentionally not part of this repository.
 
 Expected files (examples, not included):
 
@@ -115,12 +200,12 @@ Expected files (examples, not included):
 - env/.env.node2 – secondary node configuration
 - env/.env.node3 – additional node configuration
 
-The application is designed to start safely even if optional configuration
-is missing, and only fail when a dependent feature is accessed.
+The application starts safely even if optional configuration is missing
+and fails only when a dependent feature is accessed.
 
 ---
 
-## Production Philosophy
+## 🧭 Production Philosophy
 
 This project intentionally follows real production constraints:
 
@@ -131,21 +216,21 @@ This project intentionally follows real production constraints:
 - explicit locking for shared resources
 - clear separation of input, processing and presentation
 
-The focus is robustness, clarity and long-term operation.
+Focus: **robustness, clarity and long-term operation**.
 
 ---
 
-## Status
+## 📌 Status
 
-- Actively used in production
-- Continuously evolving
-- Architecture-first, feature-driven development
+- actively used in production
+- continuously evolving
+- architecture-first, feature-driven development
 
 ---
 
-## Author
+## 👤 Author
 
-Marijo Erenda  
+**Marijo Erenda**  
 Backend & Automation Engineer
 
 Focus:
