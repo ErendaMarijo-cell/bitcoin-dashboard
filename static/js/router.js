@@ -34,7 +34,7 @@ const ROUTES = {
   "metrics/hashrate": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE" },
 
   // Review
-  "review/price":      { tab: "review", subtab: "REVIEW_BTC_PRICE" },
+  "review/value":  { tab: "review", subtab: "REVIEW_BTC_VALUE" },
   "review/tx-volume":  { tab: "review", subtab: "REVIEW_BTC_TX_VOLUME" },
   "review/tx-amount":  { tab: "review", subtab: "REVIEW_BTC_TX_AMOUNT" },
   "review/tx-fees":    { tab: "review", subtab: "REVIEW_BTC_TX_FEES" },

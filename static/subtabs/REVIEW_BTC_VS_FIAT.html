@@ -1,0 +1,82 @@
+<!-- ====================================================================== -->
+<!-- REVIEW_BTC_VS_FIAT.html – Bitcoin Value vs Fiat (USD / EUR / JPY) -->
+<!-- ====================================================================== -->
+
+<!-- Headline -->
+<h1 class="headline-review-btc-fiat">
+    Bitcoin Value vs Fiat Currencies
+</h1>
+
+<!-- Chart Controls -->
+<div class="review-controls">
+
+    <!-- Fiat Selector -->
+    <div class="review-control">
+        <label for="review-fiat-select">Fiat Currency</label>
+        <select id="review-fiat-select" class="review-select">
+            <option value="usd" selected>USD</option>
+            <option value="eur">EUR</option>
+            <option value="jpy">JPY</option>
+        </select>
+    </div>
+
+    <!-- Time Mode Selector -->
+    <div class="review-control">
+        <label for="review-time-mode-select">Time Range</label>
+        <select id="review-time-mode-select" class="review-select">
+            <option value="all" selected>All-Time</option>
+            <option value="year">Single Year</option>
+            <option value="halving">Halving Cycle</option>
+        </select>
+    </div>
+
+    <!-- Year Selector -->
+    <div class="review-control review-control-hidden" id="review-year-control">
+        <label for="review-year-select">Year</label>
+        <select id="review-year-select" class="review-select">
+            <!-- JS will populate -->
+        </select>
+    </div>
+
+    <!-- Halving Selector -->
+    <div class="review-control review-control-hidden" id="review-halving-control">
+        <label for="review-halving-select">Halving Cycle</label>
+        <select id="review-halving-select" class="review-select">
+            <option value="2009_2012">2009 – 2012</option>
+            <option value="2012_2016">2012 – 2016</option>
+            <option value="2016_2020">2016 – 2020</option>
+            <option value="2020_2024">2020 – 2024</option>
+            <option value="2024_now">2024 – Now</option>
+        </select>
+    </div>
+
+    <!-- Log Scale Toggle -->
+    <div class="review-control review-control-toggle">
+        <label for="review-log-scale-toggle">Log Scale</label>
+        <input type="checkbox" id="review-log-scale-toggle" checked>
+    </div>
+
+</div>
+
+<!-- Chart Container -->
+<div id="REVIEW_BTC_VS_FIAT" class="subtab-container">
+    <div class="chart-wrapper chart-flex">
+        <canvas id="REVIEW_BTC_VS_FIAT_CANVAS" class="chart-canvas"></canvas>
+    </div>
+</div>
+
+<!-- Info Box -->
+<div class="info-box info-box-review-btc-fiat">
+    <strong>About Bitcoin Value vs Fiat</strong><br><br>
+
+    This chart analyzes Bitcoin’s long-term value relative to major fiat currencies.
+    Instead of focusing on short-term price movements, it highlights structural trends
+    in purchasing power over completed time periods.<br><br>
+
+    Switching between USD, EUR, and JPY allows comparison across different monetary
+    systems, while year-based and halving-cycle views help isolate Bitcoin’s behavior
+    across distinct historical phases.<br><br>
+
+    The default logarithmic scale reflects Bitcoin’s exponential growth characteristics
+    and enables meaningful comparison across more than a decade of data.
+</div>

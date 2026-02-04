@@ -515,13 +515,13 @@ document.addEventListener('DOMContentLoaded', () => {
     </section>
     <!-- Subtab-Navigation -->
     <div class="subnav">
-        <button class="subTabButton" data-subtab="REVIEW_BTC_PRICE" data-file="/static/subtabs/REVIEW_BTC_PRICE.html">Bitcoin Price</button>
+        <button class="subTabButton" data-subtab="REVIEW_BTC_VALUE" data-file="/static/subtabs/REVIEW_BTC_VALUE.html">Bitcoin Value</button>
         <button class="subTabButton" data-subtab="REVIEW_BTC_TX_VOLUME" data-file="/static/subtabs/REVIEW_BTC_TX_VOLUME.html">Transaction Volume</button>
         <button class="subTabButton" data-subtab="REVIEW_BTC_TX_AMOUNT" data-file="/static/subtabs/REVIEW_BTC_TX_AMOUNT.html">Transaction Amount</button>
         <button class="subTabButton" data-subtab="REVIEW_BTC_TX_FEES" data-file="/static/subtabs/REVIEW_BTC_TX_FEES.html">Transaction Fees</button>
     </div>
     <!-- Subtab-Content Container -->
-    <div id="REVIEW_BTC_PRICE" class="subTabContent subtab-section"></div>
+    <div id="REVIEW_BTC_VALUE" class="subTabContent subtab-section"></div>
     <div id="REVIEW_BTC_TX_VOLUME" class="subTabContent subtab-section" style="display:none;"></div>
     <div id="REVIEW_BTC_TX_AMOUNT" class="subTabContent subtab-section" style="display:none;"></div>
     <div id="REVIEW_BTC_TX_FEES" class="subTabContent subtab-section" style="display:none;"></div>
@@ -666,6 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="/static/js/METRICS_BTC_TX_FEES.js"></script>
 <script src="/static/js/METRICS_BTC_TX_AMOUNT.js"></script>
 <script src="/static/js/METRICS_BTC_HASHRATE.js"></script>
+<script src="/static/js/REVIEW_BTC_VS_FIAT.js"></script>
 <script src="/static/js/EXPLORER_ADDRESS.js" defer></script>
 <script src="/static/js/EXPLORER_TXID.js" defer></script>
 <script src="/static/js/EXPLORER_WALLET.js" defer></script>
@@ -906,6 +907,8 @@ const defaultTabs = {
     METRICS_BTC_TX_FEES:    "METRICS_BTC_TX_FEES_24H",
     METRICS_BTC_HASHRATE:   "METRICS_BTC_HASHRATE_1Y",
 
+    REVIEW_BTC_VALUE:       "REVIEW_BTC_VS_FIAT",
+
     INFO_DASHBOARD_TRAFFIC: "INFO_DASHBOARD_TRAFFIC_1H"
 };
 
@@ -916,6 +919,8 @@ const initFunctions = {
     METRICS_BTC_TX_FEES:    initMetricsTxFeesSubTabs,
     METRICS_BTC_HASHRATE:   initMetricsHashrateSubTabs,
 
+    REVIEW_BTC_VALUE:       initReviewBtcValueSubTabs,
+
     INFO_DASHBOARD_TRAFFIC: initInfoDashboardTrafficSubTabs
 };
 
@@ -925,6 +930,8 @@ const loadFunctions = {
     METRICS_BTC_TX_AMOUNT:  loadMetricsTxAmountNow,
     METRICS_BTC_TX_FEES:    loadMetricsTxFees24H,
     METRICS_BTC_HASHRATE:   loadMetricsHashrate1Y,
+
+    REVIEW_BTC_VALUE:       loadReviewBtcVsFiat,
 
     INFO_DASHBOARD_TRAFFIC: loadInfoDashboardTraffic1H
 };
@@ -1114,6 +1121,37 @@ function initMetricsHashrateSubTabs() {
     });
 }
 
+
+// ================================================================================================================================================================ //
+// ================================================================================================================================================================ //
+// ================================================================================================================================================================ //
+
+
+// ⚡ Review – Bitcoin Value SubSubTabs
+function initReviewBtcValueSubTabs() {
+    const btns = document.querySelectorAll('.REVIEW_BTC_VALUE-subTabButton');
+    const tabs = document.querySelectorAll('.REVIEW_BTC_VALUE-subsubtab');
+
+    // Alle SubSubTabs ausblenden & Buttons resetten
+    tabs.forEach(t => t.style.display = 'none');
+    btns.forEach(b => b.classList.remove('active'));
+
+    btns.forEach(btn => btn.onclick = () => {
+        const target = btn.dataset.subsubtab;
+
+        tabs.forEach(t => t.style.display = 'none');
+        document.getElementById(target).style.display = 'block';
+
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        switch (target) {
+            case 'REVIEW_BTC_VS_FIAT':   loadReviewBtcVsFiat();   break;
+            case 'REVIEW_BTC_VS_GOLD':   loadReviewBtcVsGold();   break;
+            case 'REVIEW_BTC_VS_SILVER': loadReviewBtcVsSilver(); break;
+        }
+    });
+}
 
 
 // ================================================================================================================================================================ //

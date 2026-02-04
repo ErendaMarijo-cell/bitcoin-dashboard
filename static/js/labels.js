@@ -401,7 +401,7 @@ const META_BY_MAIN_TAB = {
     description: "Live Bitcoin metrics including price, hashrate, difficulty and on-chain activity."
   },
   REVIEW: {
-    title: "Bitcoin Review – Historical Price, Volume & On-Chain Data",
+    title: "Bitcoin Review – Historical Value, Volume & On-Chain Data",
     description: "Explore the Bitcoin review with immutable historical data including price history, transaction volume, transaction amounts, fees, and on-chain metrics across completed years and halving eras."
   },
   EXPLORER: {
