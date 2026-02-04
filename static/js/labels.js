@@ -116,23 +116,23 @@ const I18N = {
 
 
       // ==========================
-      // ARCHIVE
+      // REVIEW
       // ==========================
-      archive: {
+      review: {
 
         // ---------------------
         // SEO (Invisible Intro)
         // ---------------------
         seo: {
-          title: "Bitcoin Archive – Historical Price, Volume & On-Chain Data",
+          title: "Bitcoin Review – Historical Price, Volume & On-Chain Data",
 
           text1:
-            "The Bitcoin Archive provides immutable historical Bitcoin data across completed years and halving eras, " +
-            "including archived Bitcoin price history, transaction volume, transaction amounts, fee metrics, " +
+            "The Bitcoin Review provides immutable historical Bitcoin data across completed years and halving eras, " +
+            "including reviewed Bitcoin price history, transaction volume, transaction amounts, fee metrics, " +
             "and long-term on-chain statistics derived directly from the Bitcoin blockchain.",
 
           text2:
-            "Unlike live metrics, the Bitcoin Archive focuses exclusively on finalized time periods, offering historical perspectives " +
+            "Unlike live metrics, the Bitcoin Review focuses exclusively on finalized time periods, offering analytical perspectives " +
             "such as Bitcoin price evolution since genesis, transaction behavior across halving cycles, " +
             "long-term fee market development, and structural changes in network activity over time."
         }
@@ -400,9 +400,9 @@ const META_BY_MAIN_TAB = {
     title: "Bitcoin Metrics – Price, Hashrate & Transactions",
     description: "Live Bitcoin metrics including price, hashrate, difficulty and on-chain activity."
   },
-  ARCHIVE: {
-    title: "Bitcoin Archive – Historical Price, Volume & On-Chain Data",
-    description: "Explore the Bitcoin archive with immutable historical data including price history, transaction volume, transaction amounts, fees, and on-chain metrics across completed years and halving eras."
+  REVIEW: {
+    title: "Bitcoin Review – Historical Price, Volume & On-Chain Data",
+    description: "Explore the Bitcoin review with immutable historical data including price history, transaction volume, transaction amounts, fees, and on-chain metrics across completed years and halving eras."
   },
   EXPLORER: {
     title: "Bitcoin Explorer – Transactions & Addresses",

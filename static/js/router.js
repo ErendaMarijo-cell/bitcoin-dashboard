@@ -33,11 +33,11 @@ const ROUTES = {
   "metrics/tx-fees": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES" },
   "metrics/hashrate": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE" },
 
-  // Archive
-  "archive/price":      { tab: "archive", subtab: "ARCHIVE_BTC_PRICE" },
-  "archive/tx-volume":  { tab: "archive", subtab: "ARCHIVE_BTC_TX_VOLUME" },
-  "archive/tx-amount":  { tab: "archive", subtab: "ARCHIVE_BTC_TX_AMOUNT" },
-  "archive/tx-fees":    { tab: "archive", subtab: "ARCHIVE_BTC_TX_FEES" },
+  // Review
+  "review/price":      { tab: "review", subtab: "REVIEW_BTC_PRICE" },
+  "review/tx-volume":  { tab: "review", subtab: "REVIEW_BTC_TX_VOLUME" },
+  "review/tx-amount":  { tab: "review", subtab: "REVIEW_BTC_TX_AMOUNT" },
+  "review/tx-fees":    { tab: "review", subtab: "REVIEW_BTC_TX_FEES" },
 
   // Explorer
   "explorer/transaction": { tab: "explorer", subtab: "EXPLORER_TXID" },
