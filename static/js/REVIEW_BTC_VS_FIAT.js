@@ -3,15 +3,16 @@
 /*
 ====================================================================
 REVIEW_BTC_VS_FIAT.js
-FINAL CLEAN VERSION (Line Only + Adaptive Time Axis)
-
+FINAL VERIFIED VERSION
 Features:
 ✔ Line Chart only (Macro focus)
 ✔ Correct auto-fit
-✔ Double-click zoom reset
-✔ Adaptive X-Axis labeling
+✔ Double-click zoom reset (re-filter safe)
+✔ Adaptive X-Axis labeling (ALL/YEAR/HALVING/CUSTOM by range)
 ✔ Log / Linear toggle
-✔ Minimal invasive
+✔ Custom Range (from/to date inputs)
+✔ Tooltip easier to trigger (magnetic hover)
+✔ Minimal invasive / keeps your architecture
 ====================================================================
 */
 
@@ -20,10 +21,14 @@ Features:
 // --------------------------------------------------
 const reviewChartState = {
     fiat: 'usd',
-    timeMode: 'all',
+    timeMode: 'all',       // all | year | halving | custom
     year: null,
     halvingCycle: null,
-    logScale: true
+    logScale: true,
+
+    // 🆕 Custom Range
+    customStart: null,     // "YYYY-MM-DD"
+    customEnd: null        // "YYYY-MM-DD"
 };
 
 // --------------------------------------------------
@@ -50,48 +55,128 @@ const HALVING_RANGES = {
 };
 
 // --------------------------------------------------
-// 🧭 Adaptive Time Scale Config
+// 🧮 Helpers
 // --------------------------------------------------
-function getTimeScaleConfig(){
+function clampDateOrder(start, end){
+    if(!start || !end) return { start, end };
+    if(start > end) return { start: end, end: start };
+    return { start, end };
+}
 
+function diffYears(start, end){
+    const ms = end - start;
+    return ms / (1000 * 60 * 60 * 24 * 365);
+}
+
+function pad2(n){
+    return String(n).padStart(2,'0');
+}
+
+function formatISODateUTC(d){
+    // YYYY-MM-DD (UTC)
+    return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth()+1)}-${pad2(d.getUTCDate())}`;
+}
+
+// --------------------------------------------------
+// 🧭 Adaptive Time Scale Config (unit + tick callback)
+// --------------------------------------------------
+function getTimeScaleConfig(data){
+
+    // Fallback
+    const fallback = {
+        unit: 'month',
+        callback: (value) => {
+            const d = new Date(value);
+            return d.toLocaleString('en-US',{month:'short'});
+        }
+    };
+
+    if(!data?.length) return fallback;
+
+    const start = data[0].x;
+    const end   = data.at(-1).x;
+    const years = diffYears(start, end);
+
+    // -----------------------------
+    // ALL: keep your existing macro style
+    // -----------------------------
     if(reviewChartState.timeMode === 'all'){
         return {
             unit: 'quarter',
-            callback:(value)=>{
+            callback: (value) => {
                 const d = new Date(value);
-                const q = Math.floor(d.getUTCMonth()/3)+1;
+                const q = Math.floor(d.getUTCMonth() / 3) + 1;
                 return `Q${q} ${d.getUTCFullYear()}`;
             }
         };
     }
 
+    // -----------------------------
+    // YEAR: keep your existing month labels
+    // -----------------------------
     if(reviewChartState.timeMode === 'year'){
         return {
-            unit:'month',
-            callback:(value)=>{
+            unit: 'month',
+            callback: (value) => {
                 const d = new Date(value);
-                return d.toLocaleString(
-                    'en-US',
-                    {month:'short'}
-                );
+                return d.toLocaleString('en-US',{month:'short'});
             }
         };
     }
 
+    // -----------------------------
+    // HALVING: keep your existing month + yy labels
+    // -----------------------------
     if(reviewChartState.timeMode === 'halving'){
         return {
-            unit:'month',
-            callback:(value)=>{
+            unit: 'month',
+            callback: (value) => {
                 const d = new Date(value);
-                return d.toLocaleString(
-                    'en-US',
-                    {month:'short',year:'2-digit'}
-                );
+                return d.toLocaleString('en-US',{month:'short', year:'2-digit'});
             }
         };
     }
 
-    return {};
+    // -----------------------------
+    // CUSTOM: adaptive by range length
+    // < 1y  -> month (Mon)
+    // 1-5y  -> quarter (Qn YY)
+    // > 5y  -> year (YYYY)
+    // -----------------------------
+    if(reviewChartState.timeMode === 'custom'){
+
+        if(years < 1){
+            return {
+                unit: 'month',
+                callback: (value) => {
+                    const d = new Date(value);
+                    return d.toLocaleString('en-US',{month:'short'});
+                }
+            };
+        }
+
+        if(years < 5){
+            return {
+                unit: 'quarter',
+                callback: (value) => {
+                    const d = new Date(value);
+                    const q = Math.floor(d.getUTCMonth() / 3) + 1;
+                    const yy = String(d.getUTCFullYear()).slice(-2);
+                    return `Q${q} '${yy}`;
+                }
+            };
+        }
+
+        return {
+            unit: 'year',
+            callback: (value) => {
+                const d = new Date(value);
+                return String(d.getUTCFullYear());
+            }
+        };
+    }
+
+    return fallback;
 }
 
 // --------------------------------------------------
@@ -102,8 +187,10 @@ async function loadJSONL(path){
     const res = await fetch(path);
     if(!res.ok) throw new Error(path);
 
-    return (await res.text())
-        .trim()
+    const txt = (await res.text()).trim();
+    if(!txt) return [];
+
+    return txt
         .split('\n')
         .map(l => JSON.parse(l))
         .map(p => ({
@@ -115,23 +202,23 @@ async function loadJSONL(path){
 // --------------------------------------------------
 async function ensureDataLoaded(){
 
-    if(!dataCache.usd)
-        dataCache.usd =
-            await loadJSONL(
-                '/data/review/bitcoin_value/btc_vs_fiat/usd/btc_vs_usd_all.jsonl'
-            );
+    if(!dataCache.usd){
+        dataCache.usd = await loadJSONL(
+            '/data/review/bitcoin_value/btc_vs_fiat/usd/btc_vs_usd_all.jsonl'
+        );
+    }
 
-    if(!dataCache.eur)
-        dataCache.eur =
-            await loadJSONL(
-                '/data/review/bitcoin_value/btc_vs_fiat/eur/btc_vs_eur_all.jsonl'
-            );
+    if(!dataCache.eur){
+        dataCache.eur = await loadJSONL(
+            '/data/review/bitcoin_value/btc_vs_fiat/eur/btc_vs_eur_all.jsonl'
+        );
+    }
 
-    if(!dataCache.jpy)
-        dataCache.jpy =
-            await loadJSONL(
-                '/data/review/bitcoin_value/btc_vs_fiat/jpy/btc_vs_jpy_all.jsonl'
-            );
+    if(!dataCache.jpy){
+        dataCache.jpy = await loadJSONL(
+            '/data/review/bitcoin_value/btc_vs_fiat/jpy/btc_vs_jpy_all.jsonl'
+        );
+    }
 }
 
 // --------------------------------------------------
@@ -141,30 +228,44 @@ function filterData(raw){
 
     let out = raw;
 
-    if(reviewChartState.timeMode==='year'
+    // YEAR
+    if(reviewChartState.timeMode === 'year'
        && reviewChartState.year){
 
         out = out.filter(p =>
-            p.x.getUTCFullYear() ===
-            reviewChartState.year
+            p.x.getUTCFullYear() === reviewChartState.year
         );
     }
 
-    if(reviewChartState.timeMode==='halving'
+    // HALVING
+    if(reviewChartState.timeMode === 'halving'
        && reviewChartState.halvingCycle){
 
-        const [s,e] =
-            HALVING_RANGES[
-                reviewChartState.halvingCycle
-            ];
+        const [s, e] = HALVING_RANGES[reviewChartState.halvingCycle];
 
         const start = new Date(s);
         const end   = e ? new Date(e) : null;
 
         out = out.filter(p =>
-            p.x >= start &&
-            (!end || p.x <= end)
+            p.x >= start && (!end || p.x <= end)
         );
+    }
+
+    // 🆕 CUSTOM RANGE
+    if(reviewChartState.timeMode === 'custom'
+       && reviewChartState.customStart
+       && reviewChartState.customEnd){
+
+        let start = new Date(reviewChartState.customStart);
+        let end   = new Date(reviewChartState.customEnd);
+
+        // Ensure correct order
+        ({ start, end } = clampDateOrder(start, end));
+
+        // Include full "end day" by bumping end to 23:59:59.999 (UTC-ish)
+        end = new Date(end.getTime() + (24*60*60*1000) - 1);
+
+        out = out.filter(p => p.x >= start && p.x <= end);
     }
 
     return out;
@@ -182,10 +283,7 @@ function calculatePerformance(data){
 
     if(!start || !end) return null;
 
-    const perf =
-        ((end - start) / start) * 100;
-
-    return perf;
+    return ((end - start) / start) * 100;
 }
 
 // --------------------------------------------------
@@ -197,39 +295,23 @@ const performanceOverlayPlugin = {
 
     afterDraw(chart){
 
-        const ctx = chart.ctx;
-
-        const raw =
-            dataCache[reviewChartState.fiat];
-
+        const raw = dataCache[reviewChartState.fiat];
         if(!raw) return;
 
-        const filtered =
-            filterData(raw);
-
+        const filtered = filterData(raw);
         if(!filtered.length) return;
 
-        const perf =
-            calculatePerformance(filtered);
-
+        const perf = calculatePerformance(filtered);
         if(perf === null) return;
 
-        const sign =
-            perf >= 0 ? '+' : '';
-
-        const text =
-            `Performance: ${sign}${perf.toFixed(1)} %`;
+        const ctx = chart.ctx;
+        const sign = perf >= 0 ? '+' : '';
+        const text = `Performance: ${sign}${perf.toFixed(1)} %`;
 
         ctx.save();
 
-        ctx.font =
-            '600 14px Inter, system-ui';
-
-        ctx.fillStyle =
-            perf >= 0
-                ? '#16c784'
-                : '#ea3943';
-
+        ctx.font = '600 14px Inter, system-ui';
+        ctx.fillStyle = perf >= 0 ? '#16c784' : '#ea3943';
         ctx.textAlign = 'left';
 
         ctx.fillText(
@@ -242,12 +324,10 @@ const performanceOverlayPlugin = {
     }
 };
 
-
-
 // --------------------------------------------------
 // 🧭 Auto-Fit
 // --------------------------------------------------
-function fitTimeDomain(chart,data){
+function fitTimeDomain(chart, data){
 
     if(!chart || !data?.length) return;
 
@@ -260,51 +340,42 @@ function fitTimeDomain(chart,data){
 // --------------------------------------------------
 function buildDataset(data){
 
-    // --------------------------------------------------
-    // 🏷️ Dynamic Fiat Label
-    // --------------------------------------------------
-    const fiatLabel =
-        reviewChartState.fiat.toUpperCase();
-
-    // --------------------------------------------------
-    // 🧾 Legend Label
-    // BTC • USD / EUR / JPY
-    // --------------------------------------------------
-    const legendLabel =
-        `BTC • ${fiatLabel}`;
+    const fiatLabel = reviewChartState.fiat.toUpperCase();
+    const legendLabel = `BTC • ${fiatLabel}`;
 
     return {
-        type:'line',
+        type: 'line',
         label: legendLabel,
         data,
-        borderWidth:1.6,
-        tension:0.15,
-        fill:false,
-        pointRadius:0
+        borderWidth: 1.6,
+        tension: 0.15,
+        fill: false,
+        pointRadius: 0,
+
+        // 🧲 Hover / Tooltip easier to trigger
+        pointHitRadius: 30,
+        pointHoverRadius: 0
     };
 }
-
 
 // --------------------------------------------------
 // 📊 Render
 // --------------------------------------------------
 function updateChart(){
 
-    const canvas =
-        document.getElementById(
-            'REVIEW_BTC_VS_FIAT_CANVAS'
-        );
+    const canvas = document.getElementById('REVIEW_BTC_VS_FIAT_CANVAS');
     if(!canvas) return;
 
-    const ctx  = canvas.getContext('2d');
-    const raw  = dataCache[reviewChartState.fiat];
+    const ctx = canvas.getContext('2d');
+
+    const raw = dataCache[reviewChartState.fiat];
     if(!raw) return;
 
-    const data    = filterData(raw);
+    const data = filterData(raw);
     if(!data.length) return;
 
     const dataset = buildDataset(data);
-    const timeCfg = getTimeScaleConfig();
+    const timeCfg = getTimeScaleConfig(data);
 
     // --------------------------------------------------
     // 🆕 Chart Creation
@@ -313,40 +384,55 @@ function updateChart(){
 
         chartInstance = new Chart(ctx,{
 
-            // --------------------------------------------------
-            // 🧩 Plugin Registrierung
-            // --------------------------------------------------
-            plugins:[
+            plugins: [
                 performanceOverlayPlugin
             ],
 
-            data:{
-                datasets:[dataset]
+            data: {
+                datasets: [dataset]
             },
 
-            options:{
-                responsive:true,
-                maintainAspectRatio:false,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
 
-                plugins:{
-                    legend:{position:'top'},
-                    zoom:{
-                        pan:{enabled:true,mode:'x'},
-                        zoom:{wheel:{enabled:true},mode:'x'}
+                // 🧲 Tooltip “magnetic” behaviour
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+
+                plugins: {
+                    legend: { position: 'top' },
+
+                    tooltip: {
+                        callbacks: {
+                            // Show exact date quickly
+                            title: (items) => {
+                                const x = items?.[0]?.parsed?.x;
+                                if(!x) return '';
+                                return formatISODateUTC(new Date(x));
+                            }
+                        }
+                    },
+
+                    zoom: {
+                        pan: { enabled: true, mode: 'x' },
+                        zoom: { wheel: { enabled: true }, mode: 'x' }
                     }
                 },
 
-                scales:{
-                    x:{
-                        type:'time',
-                        time:{ unit: timeCfg.unit },
-                        ticks:{
-                            autoSkip:true,
-                            maxTicksLimit:12,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: { unit: timeCfg.unit },
+                        ticks: {
+                            autoSkip: true,
+                            maxTicksLimit: 12,
                             callback: timeCfg.callback
                         }
                     },
-                    y:{
+                    y: {
                         type: reviewChartState.logScale
                             ? 'logarithmic'
                             : 'linear'
@@ -355,54 +441,34 @@ function updateChart(){
             }
         });
 
-        // --------------------------------------------------
-        // 🧭 Initial Domain Fit
-        // --------------------------------------------------
-        fitTimeDomain(chartInstance,data);
+        // Initial fit
+        fitTimeDomain(chartInstance, data);
         chartInstance.update('none');
 
         // --------------------------------------------------
         // 🖱️ Double-Click Reset (LIVE DATA FIX)
         // --------------------------------------------------
-        canvas.addEventListener(
-            'dblclick',
-            ()=>{
+        canvas.addEventListener('dblclick', () => {
 
-                if(!chartInstance) return;
+            if(!chartInstance) return;
 
-                // 🔄 Always recompute filtered dataset
-                const raw =
-                    dataCache[
-                        reviewChartState.fiat
-                    ];
+            const raw = dataCache[reviewChartState.fiat];
+            if(!raw) return;
 
-                if(!raw) return;
+            const filtered = filterData(raw);
+            if(!filtered.length) return;
 
-                const filtered =
-                    filterData(raw);
-
-                if(!filtered.length) return;
-
-                // 🔄 Reset zoom
-                chartInstance.resetZoom?.();
-
-                // 🎯 Re-fit correct domain
-                fitTimeDomain(
-                    chartInstance,
-                    filtered
-                );
-
-                chartInstance.update('none');
-            }
-        );
+            chartInstance.resetZoom?.();
+            fitTimeDomain(chartInstance, filtered);
+            chartInstance.update('none');
+        });
 
     // --------------------------------------------------
     // 🔄 Chart Update
     // --------------------------------------------------
     } else {
 
-        chartInstance.data.datasets[0] =
-            dataset;
+        chartInstance.data.datasets[0] = dataset;
 
         chartInstance.options.scales.y.type =
             reviewChartState.logScale
@@ -415,101 +481,139 @@ function updateChart(){
         chartInstance.options.scales.x.ticks.callback =
             timeCfg.callback;
 
-        fitTimeDomain(chartInstance,data);
+        fitTimeDomain(chartInstance, data);
         chartInstance.update('none');
     }
 }
-
 
 // --------------------------------------------------
 // 🎛️ Controls
 // --------------------------------------------------
 function bindControls(){
 
-    document
-    .getElementById('review-fiat-select')
-    .onchange = e=>{
-        reviewChartState.fiat = e.target.value;
-        updateChart();
-    };
+    const fiatSelect      = document.getElementById('review-fiat-select');
+    const timeModeSelect  = document.getElementById('review-time-mode-select');
+    const yearSelect      = document.getElementById('review-year-select');
+    const halvingSelect   = document.getElementById('review-halving-select');
+    const logToggle       = document.getElementById('review-log-scale-toggle');
 
-    document
-    .getElementById('review-time-mode-select')
-    .onchange = e=>{
+    const yearControl     = document.getElementById('review-year-control');
+    const halvingControl  = document.getElementById('review-halving-control');
 
-        reviewChartState.timeMode =
-            e.target.value;
+    // 🆕 Custom controls
+    const customControl   = document.getElementById('review-custom-control');
+    const dateStartInput  = document.getElementById('review-date-start');
+    const dateEndInput    = document.getElementById('review-date-end');
 
-        if(reviewChartState.timeMode!=='year')
-            reviewChartState.year=null;
+    if(fiatSelect){
+        fiatSelect.onchange = (e) => {
+            reviewChartState.fiat = e.target.value;
+            updateChart();
+        };
+    }
 
-        if(reviewChartState.timeMode!=='halving')
-            reviewChartState.halvingCycle=null;
+    if(timeModeSelect){
+        timeModeSelect.onchange = (e) => {
 
-        document
-        .getElementById('review-year-control')
-        .classList.toggle(
-            'review-control-hidden',
-            e.target.value!=='year'
-        );
+            reviewChartState.timeMode = e.target.value;
 
-        document
-        .getElementById('review-halving-control')
-        .classList.toggle(
-            'review-control-hidden',
-            e.target.value!=='halving'
-        );
+            // Reset unrelated state
+            if(reviewChartState.timeMode !== 'year')
+                reviewChartState.year = null;
 
-        updateChart();
-    };
+            if(reviewChartState.timeMode !== 'halving')
+                reviewChartState.halvingCycle = null;
 
-    document
-    .getElementById('review-year-select')
-    .onchange = e=>{
-        reviewChartState.year =
-            Number(e.target.value);
-        updateChart();
-    };
+            if(reviewChartState.timeMode !== 'custom'){
+                reviewChartState.customStart = null;
+                reviewChartState.customEnd   = null;
 
-    document
-    .getElementById('review-halving-select')
-    .onchange = e=>{
-        reviewChartState.halvingCycle =
-            e.target.value;
-        updateChart();
-    };
+                // Also clear UI inputs if present
+                if(dateStartInput) dateStartInput.value = '';
+                if(dateEndInput)   dateEndInput.value = '';
+            }
 
-    document
-    .getElementById('review-log-scale-toggle')
-    .onchange = e=>{
-        reviewChartState.logScale =
-            e.target.checked;
-        updateChart();
-    };
+            // Toggle controls
+            if(yearControl){
+                yearControl.classList.toggle(
+                    'review-control-hidden',
+                    e.target.value !== 'year'
+                );
+            }
+
+            if(halvingControl){
+                halvingControl.classList.toggle(
+                    'review-control-hidden',
+                    e.target.value !== 'halving'
+                );
+            }
+
+            if(customControl){
+                customControl.classList.toggle(
+                    'review-control-hidden',
+                    e.target.value !== 'custom'
+                );
+            }
+
+            updateChart();
+        };
+    }
+
+    if(yearSelect){
+        yearSelect.onchange = (e) => {
+            reviewChartState.year = Number(e.target.value);
+            updateChart();
+        };
+    }
+
+    if(halvingSelect){
+        halvingSelect.onchange = (e) => {
+            reviewChartState.halvingCycle = e.target.value;
+            updateChart();
+        };
+    }
+
+    if(logToggle){
+        logToggle.onchange = (e) => {
+            reviewChartState.logScale = e.target.checked;
+            updateChart();
+        };
+    }
+
+    // 🆕 Custom date inputs
+    if(dateStartInput){
+        dateStartInput.addEventListener('change', (e) => {
+            reviewChartState.customStart = e.target.value || null;
+            updateChart();
+        });
+    }
+
+    if(dateEndInput){
+        dateEndInput.addEventListener('change', (e) => {
+            reviewChartState.customEnd = e.target.value || null;
+            updateChart();
+        });
+    }
 }
 
 // --------------------------------------------------
-// 🗓️ Populate Years
+// 🗓️ Populate Years (unchanged, based on USD history)
 // --------------------------------------------------
 function populateYearSelect(){
 
-    const years=[
-        ...new Set(
-            dataCache.usd.map(
-                p=>p.x.getUTCFullYear()
-            )
-        )
-    ].sort((a,b)=>b-a);
+    const raw = dataCache.usd;
+    if(!raw?.length) return;
 
-    const select =
-        document.getElementById(
-            'review-year-select'
-        );
+    const years = [
+        ...new Set(raw.map(p => p.x.getUTCFullYear()))
+    ].sort((a,b) => b-a);
 
-    select.innerHTML =
-        years.map(y=>
-            `<option value="${y}">${y}</option>`
-        ).join('');
+    const select = document.getElementById('review-year-select');
+    if(!select) return;
+
+    select.innerHTML = years
+        .map(y => `<option value="${y}">${y}</option>`)
+        .join('');
 }
 
 // --------------------------------------------------
@@ -523,13 +627,12 @@ async function loadReviewBtcVsFiat(){
         populateYearSelect();
         bindControls();
 
-        initialized=true;
+        initialized = true;
     }
 
     updateChart();
 }
 
-window.loadReviewBtcVsFiat =
-    loadReviewBtcVsFiat;
+window.loadReviewBtcVsFiat = loadReviewBtcVsFiat;
 
 })();

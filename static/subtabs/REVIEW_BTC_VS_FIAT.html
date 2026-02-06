@@ -29,6 +29,7 @@
             <option value="all" selected>All-Time</option>
             <option value="year">Single Year</option>
             <option value="halving">Halving Cycle</option>
+            <option value="custom">Custom Range</option>
         </select>
     </div>
 
@@ -50,6 +51,15 @@
             <option value="2020_2024">2020 – 2024</option>
             <option value="2024_now">2024 – Now</option>
         </select>
+    </div>
+
+    <!-- 🆕 Custom Date Range -->
+    <div class="review-control review-control-hidden" id="review-custom-control">
+        <label>Custom Range</label>
+        <div class="review-date-grid">
+            <input type="date" id="review-date-start" class="review-date-input">
+            <input type="date" id="review-date-end"   class="review-date-input">
+        </div>
     </div>
 
     <!-- Log Scale Toggle -->
