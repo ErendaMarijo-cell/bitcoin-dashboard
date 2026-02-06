@@ -171,6 +171,80 @@ function filterData(raw){
 }
 
 // --------------------------------------------------
+// 📈 Performance Calculation
+// --------------------------------------------------
+function calculatePerformance(data){
+
+    if(!data?.length) return null;
+
+    const start = data[0].y;
+    const end   = data.at(-1).y;
+
+    if(!start || !end) return null;
+
+    const perf =
+        ((end - start) / start) * 100;
+
+    return perf;
+}
+
+// --------------------------------------------------
+// 🖊️ Performance Overlay Plugin
+// --------------------------------------------------
+const performanceOverlayPlugin = {
+
+    id: 'performanceOverlay',
+
+    afterDraw(chart){
+
+        const ctx = chart.ctx;
+
+        const raw =
+            dataCache[reviewChartState.fiat];
+
+        if(!raw) return;
+
+        const filtered =
+            filterData(raw);
+
+        if(!filtered.length) return;
+
+        const perf =
+            calculatePerformance(filtered);
+
+        if(perf === null) return;
+
+        const sign =
+            perf >= 0 ? '+' : '';
+
+        const text =
+            `Performance: ${sign}${perf.toFixed(1)} %`;
+
+        ctx.save();
+
+        ctx.font =
+            '600 14px Inter, system-ui';
+
+        ctx.fillStyle =
+            perf >= 0
+                ? '#16c784'
+                : '#ea3943';
+
+        ctx.textAlign = 'left';
+
+        ctx.fillText(
+            text,
+            chart.chartArea.left + 10,
+            chart.chartArea.top + 20
+        );
+
+        ctx.restore();
+    }
+};
+
+
+
+// --------------------------------------------------
 // 🧭 Auto-Fit
 // --------------------------------------------------
 function fitTimeDomain(chart,data){
@@ -232,10 +306,24 @@ function updateChart(){
     const dataset = buildDataset(data);
     const timeCfg = getTimeScaleConfig();
 
+    // --------------------------------------------------
+    // 🆕 Chart Creation
+    // --------------------------------------------------
     if(!chartInstance){
 
         chartInstance = new Chart(ctx,{
-            data:{datasets:[dataset]},
+
+            // --------------------------------------------------
+            // 🧩 Plugin Registrierung
+            // --------------------------------------------------
+            plugins:[
+                performanceOverlayPlugin
+            ],
+
+            data:{
+                datasets:[dataset]
+            },
+
             options:{
                 responsive:true,
                 maintainAspectRatio:false,
@@ -267,20 +355,26 @@ function updateChart(){
             }
         });
 
+        // --------------------------------------------------
+        // 🧭 Initial Domain Fit
+        // --------------------------------------------------
         fitTimeDomain(chartInstance,data);
         chartInstance.update('none');
 
+        // --------------------------------------------------
+        // 🖱️ Double-Click Reset (LIVE DATA FIX)
+        // --------------------------------------------------
         canvas.addEventListener(
             'dblclick',
             ()=>{
 
                 if(!chartInstance) return;
 
-                // --------------------------------------------------
-                // 🔄 Always recompute filtered dataset (live state)
-                // --------------------------------------------------
+                // 🔄 Always recompute filtered dataset
                 const raw =
-                    dataCache[reviewChartState.fiat];
+                    dataCache[
+                        reviewChartState.fiat
+                    ];
 
                 if(!raw) return;
 
@@ -289,23 +383,26 @@ function updateChart(){
 
                 if(!filtered.length) return;
 
-                // --------------------------------------------------
-                // 🔄 Reset Zoom (plugin)
-                // --------------------------------------------------
+                // 🔄 Reset zoom
                 chartInstance.resetZoom?.();
 
-                // --------------------------------------------------
-                // 🎯 Re-fit correct time domain
-                // --------------------------------------------------
-                fitTimeDomain(chartInstance, filtered);
+                // 🎯 Re-fit correct domain
+                fitTimeDomain(
+                    chartInstance,
+                    filtered
+                );
 
                 chartInstance.update('none');
             }
         );
 
+    // --------------------------------------------------
+    // 🔄 Chart Update
+    // --------------------------------------------------
     } else {
 
-        chartInstance.data.datasets[0] = dataset;
+        chartInstance.data.datasets[0] =
+            dataset;
 
         chartInstance.options.scales.y.type =
             reviewChartState.logScale
@@ -322,6 +419,7 @@ function updateChart(){
         chartInstance.update('none');
     }
 }
+
 
 // --------------------------------------------------
 // 🎛️ Controls
