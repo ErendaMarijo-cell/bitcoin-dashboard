@@ -400,12 +400,33 @@ function fitTimeDomain(chart, data){
 }
 
 // --------------------------------------------------
+// 💱 Fiat Display Names
+// --------------------------------------------------
+const FIAT_DISPLAY_NAMES = {
+    usd: 'US Dollar',
+    eur: 'Euro',
+    jpy: 'Japanese Yen',
+
+    gbp: 'British Pound',
+    chf: 'Swiss Franc',
+
+    aud: 'Australian Dollar',
+    cad: 'Canadian Dollar',
+    nzd: 'New Zealand Dollar',
+
+    cny: 'Chinese Yuan',
+    inr: 'Indian Rupee',
+    sgd: 'Singapore Dollar'
+};
+
+// --------------------------------------------------
 // 📊 Dataset Builder (Line Only)
 // --------------------------------------------------
 function buildDataset(data){
 
-    const fiatLabel = reviewChartState.fiat.toUpperCase();
-    const legendLabel = `BTC • ${fiatLabel}`;
+    const fiatKey   = reviewChartState.fiat;
+    const fiatLabel = FIAT_DISPLAY_NAMES[fiatKey] || fiatKey.toUpperCase();
+    const legendLabel = `Bitcoin  •  ${fiatLabel}`;
 
     return {
         type: 'line',
@@ -466,25 +487,79 @@ function updateChart(){
                     intersect: false
                 },
 
-                plugins: {
-                    legend: { position: 'top' },
 
+                plugins: {
+
+                    // --------------------------------------------------
+                    // 🏷️ LEGEND (final styling)
+                    // --------------------------------------------------
+                    legend: {
+                        position: 'top',
+
+                        labels: {
+
+                            // Typography
+                            font: {
+                                size: 16,
+                                weight: '300',
+                                family: 'Inter, system-ui'
+                            },
+
+                            // Text color (slightly softened for dark UI)
+                            color: 'rgba(232, 241, 255, 0.85)',
+
+                            // Legend line appearance
+                            boxWidth: 18,
+                            boxHeight: 2,
+
+                            // Spacing between legend + text
+                            padding: 14,
+
+                            // Optional: use point style instead of box
+                            usePointStyle: false
+                        }
+                    },
+
+                    // --------------------------------------------------
+                    // 🧲 TOOLTIP
+                    // --------------------------------------------------
                     tooltip: {
                         callbacks: {
+
                             // Show exact date quickly
                             title: (items) => {
                                 const x = items?.[0]?.parsed?.x;
                                 if(!x) return '';
                                 return formatISODateUTC(new Date(x));
+                            },
+
+                            // 🆕 VALUE FORMAT → whole numbers only
+                            label: (ctx) => {
+
+                                const v = ctx.parsed?.y;
+                                if(v === null || v === undefined) return '';
+
+                                // round to whole number
+                                const rounded = Math.round(v);
+
+                                // optional: thousands separator
+                                const formatted = rounded.toLocaleString('en-US');
+
+                                return `${ctx.dataset.label}: ${formatted}`;
                             }
+
                         }
                     },
 
+                    // --------------------------------------------------
+                    // 🔍 ZOOM
+                    // --------------------------------------------------
                     zoom: {
                         pan: { enabled: true, mode: 'x' },
                         zoom: { wheel: { enabled: true }, mode: 'x' }
                     }
                 },
+
 
                 scales: {
                     x: {
