@@ -12,27 +12,38 @@
 <!-- ====================================================== -->
 <div class="review-controls">
 
-    <!-- Fiat Selector -->
-    <div class="review-control">
-        <label for="review-fiat-select">Fiat Currency</label>
-        <select id="review-fiat-select" class="review-select">
-            <!-- Core Base -->
-            <option value="usd" selected>USD</option>
-            <!-- Major Developed -->
-            <option value="eur">EUR</option>
-            <option value="jpy">JPY</option>
-            <option value="gbp">GBP</option>
-            <option value="chf">CHF</option>
-            <!-- Commodity / Anglo Bloc -->
-            <option value="aud">AUD</option>
-            <option value="cad">CAD</option>
-            <option value="nzd">NZD</option>
-            <!-- Asia Majors -->
-            <option value="cny">CNY</option>
-            <option value="inr">INR</option>
-            <option value="sgd">SGD</option>
-        </select>
-    </div>
+    <select id="review-fiat-select" class="review-select">
+
+        <!-- Core Base -->
+        <option value="usd" selected>USD</option>
+
+        <!-- Major Developed -->
+        <option value="eur">EUR</option>
+        <option value="jpy">JPY</option>
+        <option value="gbp">GBP</option>
+        <option value="chf">CHF</option>
+
+        <!-- Commodity / Anglo Bloc -->
+        <option value="aud">AUD</option>
+        <option value="cad">CAD</option>
+        <option value="nzd">NZD</option>
+
+        <!-- Asia Majors -->
+        <option value="cny">CNY</option>
+        <option value="inr">INR</option>
+        <option value="sgd">SGD</option>
+
+        <!-- Eurasia -->
+        <option value="rub">RUB</option>
+
+        <!-- Inflation / High Debasement -->
+        <option value="try">TRY</option>
+        <option value="ars">ARS</option>
+        <option value="brl">BRL</option>
+        <option value="zar">ZAR</option>
+
+    </select>
+
 
     <!-- Time Mode Selector -->
     <div class="review-control">
@@ -104,25 +115,28 @@
 <!-- Info Box -->
 <!-- ====================================================== -->
 <div class="info-box info-box-review-btc-fiat">
-    <strong>About Bitcoin Value vs Fiat</strong><br><br>
+    <strong>About Bitcoin Value vs Fiat Currencies</strong><br><br>
 
-    This chart analyzes Bitcoin’s long-term value relative to a broad range of global fiat currencies.
-    Rather than focusing on short-term price fluctuations, it highlights structural shifts in purchasing
-    power across completed historical periods.<br><br>
+    This chart tracks Bitcoin’s long-term price and purchasing power relative to major global fiat currencies
+    including the US Dollar (USD), Euro (EUR), Japanese Yen (JPY), British Pound (GBP), Swiss Franc (CHF),
+    Australian Dollar (AUD), Canadian Dollar (CAD), New Zealand Dollar (NZD), Chinese Yuan (CNY),
+    Indian Rupee (INR), Singapore Dollar (SGD), Russian Ruble (RUB), Turkish Lira (TRY),
+    Argentine Peso (ARS), Brazilian Real (BRL), and South African Rand (ZAR).<br><br>
 
-    By switching between different currencies, users can observe how Bitcoin’s performance varies across
-    monetary systems with distinct inflation dynamics, interest rate regimes, and monetary policies.
-    Because Bitcoin is globally priced in U.S. dollars, its valuation in other currencies also reflects
-    foreign exchange movements. As a result, periods of fiat currency debasement can amplify Bitcoin’s
-    nominal performance when measured in weakening currencies.<br><br>
+    By comparing Bitcoin against multiple monetary systems, this dashboard highlights how BTC performs
+    not just as a speculative asset, but as a long-term store of value relative to inflationary and
+    non-inflationary currencies alike.<br><br>
 
-    Year-based views allow focused analysis of Bitcoin’s behavior within specific market environments,
-    while halving-cycle segmentation provides insight into performance across Bitcoin’s structurally
-    defined supply eras.<br><br>
+    Because Bitcoin is globally priced in US Dollars, its valuation in other currencies reflects both
+    BTC market cycles and foreign exchange movements. This makes it possible to analyze how local
+    currency debasement, inflation, or macroeconomic instability impact Bitcoin’s perceived value
+    in different regions of the world.<br><br>
 
-    The integrated performance overlay quantifies Bitcoin’s percentage return across the selected
-    timeframe, enabling direct comparison between currencies, cycles, and macroeconomic phases.<br><br>
+    Users can explore Bitcoin price performance in USD, EUR, JPY, GBP, CHF, AUD, CAD, NZD, CNY, INR,
+    SGD, RUB, TRY, ARS, BRL, and ZAR across full history, individual years, halving cycles, or custom
+    time ranges.<br><br>
 
-    The default logarithmic scale reflects Bitcoin’s exponential growth trajectory and allows meaningful
-    visual comparison across more than a decade of historical data.
+    The logarithmic default scale reflects Bitcoin’s exponential growth over time and enables meaningful
+    comparison between early adoption phases and mature market cycles.
 </div>
+

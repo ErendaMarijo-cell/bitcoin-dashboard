@@ -48,8 +48,18 @@ const dataCache = {
 
     cny: null,
     inr: null,
-    sgd: null
+    sgd: null,
+
+    // 🆕 Eurasia
+    rub: null,
+
+    // 🆕 Inflation / Debasement
+    try: null,
+    ars: null,
+    brl: null,
+    zar: null
 };
+
 
 
 let chartInstance = null;
@@ -282,6 +292,37 @@ async function ensureDataLoaded(){
             '/data/review/btc_vs_fiat/sgd/btc_vs_sgd_all.jsonl'
         );
     }
+
+    if(!dataCache.rub){
+        dataCache.rub = await loadJSONL(
+            '/data/review/btc_vs_fiat/rub/btc_vs_rub_all.jsonl'
+        );
+    }
+
+    if(!dataCache.try){
+        dataCache.try = await loadJSONL(
+            '/data/review/btc_vs_fiat/try/btc_vs_try_all.jsonl'
+        );
+    }
+
+    if(!dataCache.ars){
+        dataCache.ars = await loadJSONL(
+            '/data/review/btc_vs_fiat/ars/btc_vs_ars_all.jsonl'
+        );
+    }
+
+    if(!dataCache.brl){
+        dataCache.brl = await loadJSONL(
+            '/data/review/btc_vs_fiat/brl/btc_vs_brl_all.jsonl'
+        );
+    }
+
+    if(!dataCache.zar){
+        dataCache.zar = await loadJSONL(
+            '/data/review/btc_vs_fiat/zar/btc_vs_zar_all.jsonl'
+        );
+    }
+
 }
 
 
@@ -416,8 +457,18 @@ const FIAT_DISPLAY_NAMES = {
 
     cny: 'Chinese Yuan',
     inr: 'Indian Rupee',
-    sgd: 'Singapore Dollar'
+    sgd: 'Singapore Dollar',
+
+    // 🆕 Eurasia
+    rub: 'Russian Ruble',
+
+    // 🆕 Inflation / Debasement
+    try: 'Turkish Lira',
+    ars: 'Argentine Peso',
+    brl: 'Brazilian Real',
+    zar: 'South African Rand',
 };
+
 
 // --------------------------------------------------
 // 📊 Dataset Builder (Line Only)
