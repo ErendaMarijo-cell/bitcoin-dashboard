@@ -6,6 +6,8 @@
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>
+
+  
   <url>
     <loc>https://bitcoin-dashboard.net/revolution/history</loc>
     <lastmod>2026-01-23</lastmod>
@@ -24,6 +26,8 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/network/structure</loc>
     <lastmod>2026-01-23</lastmod>
@@ -48,6 +52,8 @@
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/metrics/price</loc>
     <lastmod>2026-01-23</lastmod>
@@ -84,11 +90,25 @@
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+
+
   <url>
-    <loc>https://bitcoin-dashboard.net/review/value</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://bitcoin-dashboard.net/review/btc-fiat</loc>
+    <lastmod>2026-02-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bitcoin-dashboard.net/review/btc-gold</loc>
+    <lastmod>2026-02-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bitcoin-dashboard.net/review/btc-silver</loc>
+    <lastmod>2026-02-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://bitcoin-dashboard.net/review/tx-volume</loc>
@@ -108,6 +128,8 @@
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/explorer/transaction</loc>
     <lastmod>2026-01-23</lastmod>
@@ -126,6 +148,8 @@
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/treasuries/companies</loc>
     <lastmod>2026-01-23</lastmod>
@@ -144,6 +168,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/market-cap/crypto</loc>
     <lastmod>2026-01-23</lastmod>
@@ -168,6 +194,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/indicators/pi-cycle-top</loc>
     <lastmod>2026-01-23</lastmod>
@@ -210,6 +238,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+
+
   <url>
     <loc>https://bitcoin-dashboard.net/info/status</loc>
     <lastmod>2026-01-23</lastmod>

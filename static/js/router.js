@@ -15,57 +15,59 @@ const ROUTES = {
   "": { tab: "home", subtab: null },
 
   // Revolution
-  "revolution/history": { tab: "revolution", subtab: "REVOLUTION_HISTORY" },
-  "revolution/pioneers": { tab: "revolution", subtab: "REVOLUTION_PIONEERS" },
-  "revolution/whitepaper": { tab: "revolution", subtab: "REVOLUTION_WHITEPAPER" },
+  "revolution/history":     { tab: "revolution", subtab: "REVOLUTION_HISTORY" },
+  "revolution/pioneers":    { tab: "revolution", subtab: "REVOLUTION_PIONEERS" },
+  "revolution/whitepaper":  { tab: "revolution", subtab: "REVOLUTION_WHITEPAPER" },
 
   // Network
-  "network/structure": { tab: "network", subtab: "NETWORK_STRUCTURE" },
+  "network/structure":  { tab: "network", subtab: "NETWORK_STRUCTURE" },
   "network/technology": { tab: "network", subtab: "NETWORK_TECHNOLOGY" },
-  "network/nodes": { tab: "network", subtab: "NETWORK_NODES" },
-  "network/miners": { tab: "network", subtab: "NETWORK_MINER" },
+  "network/nodes":      { tab: "network", subtab: "NETWORK_NODES" },
+  "network/miners":     { tab: "network", subtab: "NETWORK_MINER" },
 
   // Metrics
-  "metrics/price": { tab: "metrics", subtab: "METRICS_BTC_USD_EUR" },
+  "metrics/price":      { tab: "metrics", subtab: "METRICS_BTC_USD_EUR" },
   "metrics/difficulty": { tab: "metrics", subtab: "METRICS_BTC_DIFFICULTY" },
-  "metrics/tx-volume": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME" },
-  "metrics/tx-amount": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT" },
-  "metrics/tx-fees": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES" },
-  "metrics/hashrate": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE" },
+  "metrics/tx-volume":  { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME" },
+  "metrics/tx-amount":  { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT" },
+  "metrics/tx-fees":    { tab: "metrics", subtab: "METRICS_BTC_TX_FEES" },
+  "metrics/hashrate":   { tab: "metrics", subtab: "METRICS_BTC_HASHRATE" },
 
   // Review
-  "review/value":  { tab: "review", subtab: "REVIEW_BTC_VALUE" },
+  "review/btc-fiat":   { tab: "review", subtab: "REVIEW_BTC_VS_FIAT" },
+  "review/btc-gold":   { tab: "review", subtab: "REVIEW_BTC_VS_GOLD" },
+  "review/btc-silver": { tab: "review", subtab: "REVIEW_BTC_VS_SILVER" },
   "review/tx-volume":  { tab: "review", subtab: "REVIEW_BTC_TX_VOLUME" },
   "review/tx-amount":  { tab: "review", subtab: "REVIEW_BTC_TX_AMOUNT" },
   "review/tx-fees":    { tab: "review", subtab: "REVIEW_BTC_TX_FEES" },
 
   // Explorer
   "explorer/transaction": { tab: "explorer", subtab: "EXPLORER_TXID" },
-  "explorer/address": { tab: "explorer", subtab: "EXPLORER_ADDRESS" },
-  "explorer/wallet": { tab: "explorer", subtab: "EXPLORER_WALLET" },
+  "explorer/address":     { tab: "explorer", subtab: "EXPLORER_ADDRESS" },
+  "explorer/wallet":      { tab: "explorer", subtab: "EXPLORER_WALLET" },
 
   // Treasuries
-  "treasuries/companies": { tab: "treasuries", subtab: "TREASURIES_COMPANIES" },
-  "treasuries/institutions": { tab: "treasuries", subtab: "TREASURIES_INSTITUTIONS" },
-  "treasuries/countries": { tab: "treasuries", subtab: "TREASURIES_COUNTRIES" },
+  "treasuries/companies":     { tab: "treasuries", subtab: "TREASURIES_COMPANIES" },
+  "treasuries/institutions":  { tab: "treasuries", subtab: "TREASURIES_INSTITUTIONS" },
+  "treasuries/countries":     { tab: "treasuries", subtab: "TREASURIES_COUNTRIES" },
 
   // Market Cap
-  "market-cap/crypto": { tab: "market_cap", subtab: "MARKET_CAP_COINS" },
-  "market-cap/companies": { tab: "market_cap", subtab: "MARKET_CAP_COMPANIES" },
-  "market-cap/currencies": { tab: "market_cap", subtab: "MARKET_CAP_CURRENCIES" },
+  "market-cap/crypto":      { tab: "market_cap", subtab: "MARKET_CAP_COINS" },
+  "market-cap/companies":   { tab: "market_cap", subtab: "MARKET_CAP_COMPANIES" },
+  "market-cap/currencies":  { tab: "market_cap", subtab: "MARKET_CAP_CURRENCIES" },
   "market-cap/commodities": { tab: "market_cap", subtab: "MARKET_CAP_COMMODITIES" },
 
   // Indicators
-  "indicators/pi-cycle-top": { tab: "indicators", subtab: "INDICATORS_PI_CYCLE_TOP" },
-  "indicators/golden-ratio": { tab: "indicators", subtab: "INDICATORS_GOLDEN_RATIO" },
-  "indicators/rainbow": { tab: "indicators", subtab: "INDICATORS_RAINBOW_CHART" },
-  "indicators/mayer-multiple": { tab: "indicators", subtab: "INDICATORS_MAYER_MULTIPLE" },
-  "indicators/stock-to-flow": { tab: "indicators", subtab: "INDICATORS_STOCK_TO_FLOW" },
-  "indicators/btc-vs-m2": { tab: "indicators", subtab: "INDICATORS_BTC_M2" },
-  "indicators/sp500-vs-btc": { tab: "indicators", subtab: "INDICATORS_S&P500_BTC" },
+  "indicators/pi-cycle-top":    { tab: "indicators", subtab: "INDICATORS_PI_CYCLE_TOP" },
+  "indicators/golden-ratio":    { tab: "indicators", subtab: "INDICATORS_GOLDEN_RATIO" },
+  "indicators/rainbow":         { tab: "indicators", subtab: "INDICATORS_RAINBOW_CHART" },
+  "indicators/mayer-multiple":  { tab: "indicators", subtab: "INDICATORS_MAYER_MULTIPLE" },
+  "indicators/stock-to-flow":   { tab: "indicators", subtab: "INDICATORS_STOCK_TO_FLOW" },
+  "indicators/btc-vs-m2":       { tab: "indicators", subtab: "INDICATORS_BTC_M2" },
+  "indicators/sp500-vs-btc":    { tab: "indicators", subtab: "INDICATORS_S&P500_BTC" },
 
   // Info
-  "info/status": { tab: "info", subtab: "INFO_STATUS" },
+  "info/status":  { tab: "info", subtab: "INFO_STATUS" },
   "info/traffic": { tab: "info", subtab: "INFO_DASHBOARD_TRAFFIC" },
   "info/imprint": { tab: "info", subtab: "INFO_IMPRESSUM" }
 };
