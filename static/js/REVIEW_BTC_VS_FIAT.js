@@ -37,8 +37,20 @@ const reviewChartState = {
 const dataCache = {
     usd: null,
     eur: null,
-    jpy: null
+    jpy: null,
+
+    gbp: null,
+    chf: null,
+
+    aud: null,
+    cad: null,
+    nzd: null,
+
+    cny: null,
+    inr: null,
+    sgd: null
 };
+
 
 let chartInstance = null;
 let initialized   = false;
@@ -195,31 +207,83 @@ async function loadJSONL(path){
         .map(l => JSON.parse(l))
         .map(p => ({
             x: new Date(p.date),
-            y: p.c
+
+            // ✅ FIX: value statt c
+            y: p.value
         }));
 }
+
 
 // --------------------------------------------------
 async function ensureDataLoaded(){
 
     if(!dataCache.usd){
         dataCache.usd = await loadJSONL(
-            '/data/review/bitcoin_value/btc_vs_fiat/usd/btc_vs_usd_all.jsonl'
+            '/data/review/btc_vs_fiat/usd/btc_vs_usd_all.jsonl'
         );
     }
 
     if(!dataCache.eur){
         dataCache.eur = await loadJSONL(
-            '/data/review/bitcoin_value/btc_vs_fiat/eur/btc_vs_eur_all.jsonl'
+            '/data/review/btc_vs_fiat/eur/btc_vs_eur_all.jsonl'
         );
     }
 
     if(!dataCache.jpy){
         dataCache.jpy = await loadJSONL(
-            '/data/review/bitcoin_value/btc_vs_fiat/jpy/btc_vs_jpy_all.jsonl'
+            '/data/review/btc_vs_fiat/jpy/btc_vs_jpy_all.jsonl'
+        );
+    }
+
+    if(!dataCache.gbp){
+        dataCache.gbp = await loadJSONL(
+            '/data/review/btc_vs_fiat/gbp/btc_vs_gbp_all.jsonl'
+        );
+    }
+
+    if(!dataCache.chf){
+        dataCache.chf = await loadJSONL(
+            '/data/review/btc_vs_fiat/chf/btc_vs_chf_all.jsonl'
+        );
+    }
+
+    if(!dataCache.aud){
+        dataCache.aud = await loadJSONL(
+            '/data/review/btc_vs_fiat/aud/btc_vs_aud_all.jsonl'
+        );
+    }
+
+    if(!dataCache.cad){
+        dataCache.cad = await loadJSONL(
+            '/data/review/btc_vs_fiat/cad/btc_vs_cad_all.jsonl'
+        );
+    }
+
+    if(!dataCache.nzd){
+        dataCache.nzd = await loadJSONL(
+            '/data/review/btc_vs_fiat/nzd/btc_vs_nzd_all.jsonl'
+        );
+    }
+
+    if(!dataCache.cny){
+        dataCache.cny = await loadJSONL(
+            '/data/review/btc_vs_fiat/cny/btc_vs_cny_all.jsonl'
+        );
+    }
+
+    if(!dataCache.inr){
+        dataCache.inr = await loadJSONL(
+            '/data/review/btc_vs_fiat/inr/btc_vs_inr_all.jsonl'
+        );
+    }
+
+    if(!dataCache.sgd){
+        dataCache.sgd = await loadJSONL(
+            '/data/review/btc_vs_fiat/sgd/btc_vs_sgd_all.jsonl'
         );
     }
 }
+
 
 // --------------------------------------------------
 // 🔍 Filter Logic
