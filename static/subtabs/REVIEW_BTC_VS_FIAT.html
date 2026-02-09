@@ -7,91 +7,176 @@
     Bitcoin Value vs Fiat Currencies
 </h1>
 
+
 <!-- ====================================================== -->
 <!-- Chart Controls -->
 <!-- ====================================================== -->
-<div class="review-controls">
-
-    <select id="review-fiat-select" class="review-select">
-
-        <!-- Core Base -->
-        <option value="usd" selected>USD</option>
-
-        <!-- Major Developed -->
-        <option value="eur">EUR</option>
-        <option value="jpy">JPY</option>
-        <option value="gbp">GBP</option>
-        <option value="chf">CHF</option>
-
-        <!-- Commodity / Anglo Bloc -->
-        <option value="aud">AUD</option>
-        <option value="cad">CAD</option>
-        <option value="nzd">NZD</option>
-
-        <!-- Asia Majors -->
-        <option value="cny">CNY</option>
-        <option value="inr">INR</option>
-        <option value="sgd">SGD</option>
-
-        <!-- Eurasia -->
-        <option value="rub">RUB</option>
-
-        <!-- Inflation / High Debasement -->
-        <option value="try">TRY</option>
-        <option value="ars">ARS</option>
-        <option value="brl">BRL</option>
-        <option value="zar">ZAR</option>
-
-    </select>
+<div class="review-controls-fiat">
 
 
-    <!-- Time Mode Selector -->
-    <div class="review-control">
-        <label for="review-time-mode-select">Time Range</label>
-        <select id="review-time-mode-select" class="review-select">
+    <!-- Fiat Currency -->
+    <div class="review-control-fiat">
+
+        <label
+          for="review-fiat-select"
+          class="review-label-fiat">
+
+            Currency
+
+        </label>
+
+        <select
+          id="review-fiat-select"
+          class="review-select-fiat">
+
+            <option value="usd" selected>USD</option>
+
+            <option value="eur">EUR</option>
+            <option value="jpy">JPY</option>
+            <option value="gbp">GBP</option>
+            <option value="chf">CHF</option>
+
+            <option value="aud">AUD</option>
+            <option value="cad">CAD</option>
+            <option value="nzd">NZD</option>
+
+            <option value="cny">CNY</option>
+            <option value="inr">INR</option>
+            <option value="sgd">SGD</option>
+
+            <option value="rub">RUB</option>
+
+            <option value="try">TRY</option>
+            <option value="ars">ARS</option>
+            <option value="brl">BRL</option>
+            <option value="zar">ZAR</option>
+
+        </select>
+    </div>
+
+
+
+    <!-- Time Range -->
+    <div class="review-control-fiat">
+
+        <label
+          for="review-time-mode-select"
+          class="review-label-fiat">
+
+            Time Range
+
+        </label>
+
+        <select
+          id="review-time-mode-select"
+          class="review-select-fiat">
+
             <option value="all" selected>All-Time</option>
             <option value="year">Single Year</option>
             <option value="halving">Halving Cycle</option>
             <option value="custom">Custom Range</option>
+
         </select>
     </div>
 
-    <!-- Year Selector -->
-    <div class="review-control review-control-hidden" id="review-year-control">
-        <label for="review-year-select">Year</label>
-        <select id="review-year-select" class="review-select">
-            <!-- populated by JS -->
+
+
+    <!-- Year -->
+    <div
+        class="review-control-fiat review-control-hidden"
+        id="review-year-control">
+
+        <label
+          for="review-year-select"
+          class="review-label-fiat">
+
+            Year
+
+        </label>
+
+        <select
+          id="review-year-select"
+          class="review-select-fiat">
         </select>
+
     </div>
 
-    <!-- Halving Selector -->
-    <div class="review-control review-control-hidden" id="review-halving-control">
-        <label for="review-halving-select">Halving Cycle</label>
-        <select id="review-halving-select" class="review-select">
+
+
+    <!-- Halving -->
+    <div
+        class="review-control-fiat review-control-hidden"
+        id="review-halving-control">
+
+        <label
+          for="review-halving-select"
+          class="review-label-fiat">
+
+            Halving Cycle
+
+        </label>
+
+        <select
+          id="review-halving-select"
+          class="review-select-fiat">
+
             <option value="2009_2012">2009 – 2012</option>
             <option value="2012_2016">2012 – 2016</option>
             <option value="2016_2020">2016 – 2020</option>
             <option value="2020_2024">2020 – 2024</option>
             <option value="2024_now">2024 – Now</option>
+
         </select>
     </div>
 
-    <!-- 🆕 Custom Date Range -->
-    <div class="review-control review-control-hidden" id="review-custom-control">
-        <label>Custom Range</label>
+
+
+    <!-- Custom Range -->
+    <div
+        class="review-control-fiat review-control-hidden"
+        id="review-custom-control">
+
+        <label class="review-label-fiat">
+            Custom Range
+        </label>
+
         <div class="review-date-grid">
-            <input type="date" id="review-date-start" class="review-date-input">
-            <input type="date" id="review-date-end"   class="review-date-input">
+
+            <input
+              type="date"
+              id="review-date-start"
+              class="review-date-input-fiat">
+
+            <input
+              type="date"
+              id="review-date-end"
+              class="review-date-input-fiat">
+
         </div>
     </div>
 
-    <!-- Log Scale Toggle -->
-    <div class="review-control review-control-toggle">
-        <label for="review-log-scale-toggle">Log Scale</label>
-        <input type="checkbox" id="review-log-scale-toggle" checked>
+
+
+    <!-- Log Toggle -->
+    <div class="review-control-fiat">
+
+        <label
+          for="review-log-scale-toggle"
+          class="review-label-fiat">
+
+            Log Scale
+
+        </label>
+
+        <input
+          type="checkbox"
+          id="review-log-scale-toggle"
+          checked>
+
     </div>
 
 </div>
+
 
 
 <!-- ====================================================== -->
@@ -102,41 +187,39 @@
     class="subtab-container">
 
     <div class="chart-wrapper chart-flex">
+
         <canvas
             id="REVIEW_BTC_VS_FIAT_CANVAS"
             class="chart-canvas">
         </canvas>
+
     </div>
-    
+
 </div>
+
 
 
 <!-- ====================================================== -->
 <!-- Info Box -->
 <!-- ====================================================== -->
 <div class="info-box info-box-review-btc-fiat">
+
     <strong>About Bitcoin Value vs Fiat Currencies</strong><br><br>
 
-    This chart tracks Bitcoin’s long-term price and purchasing power relative to major global fiat currencies
-    including the US Dollar (USD), Euro (EUR), Japanese Yen (JPY), British Pound (GBP), Swiss Franc (CHF),
-    Australian Dollar (AUD), Canadian Dollar (CAD), New Zealand Dollar (NZD), Chinese Yuan (CNY),
-    Indian Rupee (INR), Singapore Dollar (SGD), Russian Ruble (RUB), Turkish Lira (TRY),
-    Argentine Peso (ARS), Brazilian Real (BRL), and South African Rand (ZAR).<br><br>
+    This chart tracks Bitcoin’s long-term price and purchasing power relative
+    to major global fiat currencies including USD, EUR, JPY, GBP, CHF, AUD,
+    CAD, NZD, CNY, INR, SGD, RUB, TRY, ARS, BRL, and ZAR.<br><br>
 
-    By comparing Bitcoin against multiple monetary systems, this dashboard highlights how BTC performs
-    not just as a speculative asset, but as a long-term store of value relative to inflationary and
-    non-inflationary currencies alike.<br><br>
+    By comparing Bitcoin against multiple monetary systems, this dashboard
+    highlights how BTC performs as a long-term store of value relative to
+    inflationary and non-inflationary currencies alike.<br><br>
 
-    Because Bitcoin is globally priced in US Dollars, its valuation in other currencies reflects both
-    BTC market cycles and foreign exchange movements. This makes it possible to analyze how local
-    currency debasement, inflation, or macroeconomic instability impact Bitcoin’s perceived value
-    in different regions of the world.<br><br>
+    Because Bitcoin is globally priced in US Dollars, its valuation in other
+    currencies reflects both BTC market cycles and foreign exchange movements.<br><br>
 
-    Users can explore Bitcoin price performance in USD, EUR, JPY, GBP, CHF, AUD, CAD, NZD, CNY, INR,
-    SGD, RUB, TRY, ARS, BRL, and ZAR across full history, individual years, halving cycles, or custom
-    time ranges.<br><br>
+    Users can explore Bitcoin price performance across full history,
+    individual years, halving cycles, or custom time ranges.<br><br>
 
-    The logarithmic default scale reflects Bitcoin’s exponential growth over time and enables meaningful
-    comparison between early adoption phases and mature market cycles.
+    The logarithmic default scale reflects Bitcoin’s exponential growth over time.
+
 </div>
-

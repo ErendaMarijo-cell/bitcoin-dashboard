@@ -1235,12 +1235,12 @@ body {
 /* ================================================================================================================================================================= */
 
 
-
 /* =================================== */
-/* REVIEW_BTC_VS_FIAT – Headline Style */
+/* REVIEW_BTC_VS_FIAT – Headline       */
 /* =================================== */
 
 .headline-review-btc-fiat {
+
     font-family: "Courier New", monospace;
     font-weight: 400;
     text-transform: uppercase;
@@ -1250,118 +1250,280 @@ body {
     text-align: center;
     margin-bottom: 1.25rem;
 
-    /* 🔵 Tech Blue → ⚪ Ice White */
     background: linear-gradient(
         90deg,
-        #4fc3ff 0%,     /* Light Tech Blue */
+        #4fc3ff 0%,
         #4fc3ff 65%,
-        #ffffff 100%   /* White Fade */
+        #ffffff 100%
     );
 
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
 
-    /* ✨ dezenter Data Glow */
     text-shadow:
         0 1px 0 rgba(255,255,255,0.25),
         0 0 6px rgba(79,195,255,0.35);
-
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 
-/* ======================================== */
-/* REVIEW_BTC_VS_FIAT – Control Input Style */
-/* Canvas-Matched Dark Panel Controls       */
-/* ======================================== */
 
-.review-control label,
-.review-select,
-.review-date-input {
+/* =================================== */
+/* Controls – Typography               */
+/* =================================== */
+
+.review-label-fiat,
+.review-select-fiat,
+.review-date-input-fiat {
 
     font-family: "Courier New", monospace;
-
-    font-size: 1.05rem;          /* 🔧 Scalable base size */
+    font-size: 1.05rem;
     letter-spacing: 0.08em;
 
     color: #cfeeff;
 }
 
-/* ---------------------------------------- */
-/* Dropdown + Date Fields                   */
-/* ---------------------------------------- */
 
-.review-select,
-.review-date-input {
 
-    background: rgba(15, 15, 15, 0.85);   /* 🎯 Canvas exact match */
+/* =================================== */
+/* Inputs                              */
+/* =================================== */
 
-    border: 0.0625rem solid rgba(79,195,255,0.35);  /* 1px → rem */
+.review-select-fiat,
+.review-date-input-fiat {
+
+    background: rgba(15,15,15,0.85);
+
+    border: 0.0625rem solid
+        rgba(79,195,255,0.35);
+
     border-radius: 0.45rem;
-
-    padding: 0.35rem 0.55rem;  /* ≈ 5.5px / 9px scalable */
+    padding: 0.35rem 0.55rem;
 
     outline: none;
     transition: all 0.15s ease;
 }
 
 
+
 /* Hover */
-.review-select:hover,
-.review-date-input:hover {
-    border-color: rgba(79,195,255,0.65);
+
+.review-select-fiat:hover,
+.review-date-input-fiat:hover {
+
+    border-color:
+        rgba(79,195,255,0.65);
 }
 
 
+
 /* Focus */
-.review-select:focus,
-.review-date-input:focus {
+
+.review-select-fiat:focus,
+.review-date-input-fiat:focus {
 
     border-color: #4fc3ff;
 
     box-shadow:
-        0 0 0.375rem rgba(79,195,255,0.35);  /* 6px → rem */
+        0 0 0.375rem
+        rgba(79,195,255,0.35);
 }
 
 
-/* ======================================== */
-/* REVIEW_BTC_VS_FIAT – Date Picker Icon    */
-/* ======================================== */
 
-.review-date-input::-webkit-calendar-picker-indicator {
+/* =================================== */
+/* Date Picker Icon                    */
+/* =================================== */
+
+.review-date-input-fiat::-webkit-calendar-picker-indicator {
+
     filter: invert(1) brightness(1.2);
     opacity: 0.75;
 }
 
 
-/* ======================================== */
-/* REVIEW_BTC_VS_FIAT – Custom Range hidden */
-/* ======================================== */
 
-.review-control-hidden{
-    display:none;
+/* =================================== */
+/* Hidden Controls                     */
+/* =================================== */
+
+.review-control-hidden {
+    display: none;
 }
 
 
-/* ========================================= */
-/* REVIEW_BTC_VS_FIAT – Info Box Styling     */
-/* ========================================= */
 
-/* Abstand zwischen Chart und Info-Box */
+/* =================================== */
+/* Container Gap                       */
+/* =================================== */
+
 #REVIEW_BTC_VS_FIAT_CONTAINER {
     margin-bottom: 3rem;
 }
 
-/* Info-Box – orientiert an BTC-Line-Color */
+
+
+/* =================================== */
+/* Info Box                            */
+/* =================================== */
+
 .info-box-review-btc-fiat {
+
     box-shadow:
-        /* 🔵 BTC Chart Line – gedämpftes Blau */
-        0 0 0 1px rgba(0, 170, 255, 1),
-        0 0 10px rgba(0, 170, 255, 0.9);
+        0 0 0 1px rgba(0,170,255,1),
+        0 0 10px rgba(0,170,255,0.9);
 }
 
+
+
+
+/* ================================================================================================================================================================= */
+
+
+
+/* =================================== */
+/* REVIEW_BTC_VS_GOLD – Headline       */
+/* =================================== */
+
+.headline-review-btc-gold {
+
+    font-family: "Courier New", monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+
+    background: linear-gradient(
+        90deg,
+        #f2c94c 0%,
+        #f2c94c 60%,
+        #fff4c2 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 1px 0 rgba(255,255,255,0.25),
+        0 0 8px rgba(242,201,76,0.45);
+}
+
+
+
+/* =================================== */
+/* Controls – Typography               */
+/* =================================== */
+
+.review-label-gold,
+.review-select-gold,
+.review-date-input-gold {
+
+    font-family: "Courier New", monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+
+    color: #f6e6b4;
+}
+
+
+
+/* =================================== */
+/* Inputs                              */
+/* =================================== */
+
+.review-select-gold,
+.review-date-input-gold {
+
+    background: rgba(15,15,15,0.85);
+
+    border: 0.0625rem solid
+        rgba(242,201,76,0.35);
+
+    border-radius: 0.45rem;
+    padding: 0.35rem 0.55rem;
+
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+
+
+/* Hover */
+
+.review-select-gold:hover,
+.review-date-input-gold:hover {
+
+    border-color:
+        rgba(242,201,76,0.65);
+}
+
+
+
+/* Focus */
+
+.review-select-gold:focus,
+.review-date-input-gold:focus {
+
+    border-color: #f2c94c;
+
+    box-shadow:
+        0 0 0.375rem
+        rgba(242,201,76,0.35);
+}
+
+
+
+/* =================================== */
+/* Date Picker Icon                    */
+/* =================================== */
+
+.review-date-input-gold::-webkit-calendar-picker-indicator {
+
+    filter: invert(1)
+            sepia(1)
+            saturate(4)
+            hue-rotate(10deg)
+            brightness(1.15);
+
+    opacity: 0.85;
+}
+
+
+
+/* =================================== */
+/* Hidden Controls                     */
+/* =================================== */
+
+.review-control-hidden {
+    display: none;
+}
+
+
+
+/* =================================== */
+/* Container Gap                       */
+/* =================================== */
+
+#REVIEW_BTC_VS_GOLD_CONTAINER {
+    margin-bottom: 3rem;
+}
+
+
+
+/* =================================== */
+/* Info Box                            */
+/* =================================== */
+
+.info-box-review-btc-gold {
+
+    box-shadow:
+        0 0 0 1px rgba(242,201,76,1),
+        0 0 12px rgba(242,201,76,0.85);
+}
 
 
 /* ================================================================================================================================================================= */

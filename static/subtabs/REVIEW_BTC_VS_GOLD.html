@@ -1,0 +1,188 @@
+<!-- ====================================================================== -->
+<!-- REVIEW_BTC_VS_GOLD.html – Bitcoin vs Gold (troy ounce) -->
+<!-- Rolle: LEAF (Controls + Chart + State Binding) -->
+<!-- ====================================================================== -->
+
+<h1 class="headline-review-btc-gold">
+    Bitcoin vs Gold (troy ounce)
+</h1>
+
+
+<!-- ====================================================== -->
+<!-- Chart Controls -->
+<!-- ====================================================== -->
+<div class="review-controls-gold">
+
+
+    <!-- Time Mode -->
+    <div class="review-control-gold">
+
+        <label
+          for="review-gold-time-mode-select"
+          class="review-label-gold">
+
+            Time Range
+
+        </label>
+
+        <select
+          id="review-gold-time-mode-select"
+          class="review-select-gold">
+
+            <option value="all" selected>All-Time</option>
+            <option value="year">Single Year</option>
+            <option value="halving">Halving Cycle</option>
+            <option value="custom">Custom Range</option>
+
+        </select>
+    </div>
+
+
+    <!-- Year -->
+    <div
+        class="review-control-gold review-control-hidden"
+        id="review-gold-year-control">
+
+        <label
+          for="review-gold-year-select"
+          class="review-label-gold">
+
+            Year
+
+        </label>
+
+        <select
+          id="review-gold-year-select"
+          class="review-select-gold">
+        </select>
+
+    </div>
+
+
+    <!-- Halving -->
+    <div
+        class="review-control-gold review-control-hidden"
+        id="review-gold-halving-control">
+
+        <label
+          for="review-gold-halving-select"
+          class="review-label-gold">
+
+            Halving Cycle
+
+        </label>
+
+        <select
+          id="review-gold-halving-select"
+          class="review-select-gold">
+
+            <option value="2009_2012">2009 – 2012</option>
+            <option value="2012_2016">2012 – 2016</option>
+            <option value="2016_2020">2016 – 2020</option>
+            <option value="2020_2024">2020 – 2024</option>
+            <option value="2024_now">2024 – Now</option>
+
+        </select>
+
+    </div>
+
+
+    <!-- Custom Range -->
+    <div
+        class="review-control-gold review-control-hidden"
+        id="review-gold-custom-control">
+
+        <label class="review-label-gold">
+            Custom Range
+        </label>
+
+        <div class="review-date-grid">
+
+            <input
+              type="date"
+              id="review-gold-date-start"
+              class="review-date-input-gold">
+
+            <input
+              type="date"
+              id="review-gold-date-end"
+              class="review-date-input-gold">
+
+        </div>
+    </div>
+
+
+    <!-- Log Toggle -->
+    <div class="review-control-gold">
+
+        <label
+          for="review-gold-log-scale-toggle"
+          class="review-label-gold">
+
+            Log Scale
+
+        </label>
+
+        <input
+          type="checkbox"
+          id="review-gold-log-scale-toggle"
+          checked>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- Chart Container -->
+<!-- ====================================================== -->
+<div
+    id="REVIEW_BTC_VS_GOLD_CONTAINER"
+    class="subtab-container">
+
+    <div class="chart-wrapper chart-flex">
+
+        <canvas
+            id="REVIEW_BTC_VS_GOLD_CANVAS"
+            class="chart-canvas">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- Info Box -->
+<!-- ====================================================== -->
+<div class="info-box info-box-review-btc-gold">
+
+    <strong>About Bitcoin vs Gold</strong><br><br>
+
+    This chart measures Bitcoin’s long-term valuation relative to physical
+    gold, priced in troy ounces per BTC.<br><br>
+
+    By denominating Bitcoin in gold instead of fiat currency, the dashboard
+    removes distortions caused by monetary inflation, currency debasement,
+    and foreign exchange volatility. This allows Bitcoin’s purchasing power
+    to be evaluated against one of humanity’s oldest and most widely
+    recognized stores of value.<br><br>
+
+    Gold has historically functioned as hard money — scarce, durable, and
+    resistant to inflationary supply expansion. Comparing Bitcoin to gold
+    therefore provides insight into Bitcoin’s performance as a digital
+    monetary asset rather than a speculative fiat-priced instrument.<br><br>
+
+    When Bitcoin rises in gold terms, it indicates that BTC is appreciating
+    faster than gold and gaining real purchasing power. When it falls, gold
+    is outperforming Bitcoin as a store of value.<br><br>
+
+    Users can explore Bitcoin’s valuation in gold across full history,
+    individual years, halving cycles, or custom time ranges.<br><br>
+
+    The logarithmic default scale reflects Bitcoin’s exponential monetization
+    phases relative to gold over time.
+
+</div>

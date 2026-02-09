@@ -483,16 +483,22 @@ function buildDataset(data){
         type: 'line',
         label: legendLabel,
         data,
+
         borderWidth: 1.6,
         tension: 0.15,
         fill: false,
+
+        // Punkte normal unsichtbar
         pointRadius: 0,
 
-        // 🧲 Hover / Tooltip easier to trigger
+        // 🧲 Magnetischer Hover-Fangbereich
         pointHitRadius: 30,
-        pointHoverRadius: 0
+
+        // ✅ Punkt erscheint beim Hover
+        pointHoverRadius: 4
     };
 }
+
 
 // --------------------------------------------------
 // 📊 Render
@@ -577,28 +583,31 @@ function updateChart(){
                     tooltip: {
                         callbacks: {
 
-                            // Show exact date quickly
+                            // Exact date
                             title: (items) => {
                                 const x = items?.[0]?.parsed?.x;
                                 if(!x) return '';
                                 return formatISODateUTC(new Date(x));
                             },
 
-                            // 🆕 VALUE FORMAT → whole numbers only
+                            // Monetary Ratio Label
                             label: (ctx) => {
 
                                 const v = ctx.parsed?.y;
                                 if(v === null || v === undefined) return '';
 
-                                // round to whole number
+                                // Whole number rounding
                                 const rounded = Math.round(v);
 
-                                // optional: thousands separator
+                                // Thousands separator
                                 const formatted = rounded.toLocaleString('en-US');
 
-                                return `${ctx.dataset.label}: ${formatted}`;
-                            }
+                                // Fiat code (USD, EUR, etc.)
+                                const fiatKey =
+                                    reviewChartState.fiat?.toUpperCase() || '';
 
+                                return `1 Bitcoin = ${formatted} ${fiatKey}`;
+                            }
                         }
                     },
 
