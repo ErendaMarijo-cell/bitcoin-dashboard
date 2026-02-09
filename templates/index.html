@@ -675,6 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="/static/js/METRICS_BTC_HASHRATE.js"></script>
 <script src="/static/js/REVIEW_BTC_VS_FIAT.js"></script>
 <script src="/static/js/REVIEW_BTC_VS_GOLD.js"></script>
+<script src="/static/js/REVIEW_BTC_VS_SILVER.js"></script>
 <script src="/static/js/EXPLORER_ADDRESS.js" defer></script>
 <script src="/static/js/EXPLORER_TXID.js" defer></script>
 <script src="/static/js/EXPLORER_WALLET.js" defer></script>
@@ -846,6 +847,7 @@ function showSubTab(btn) {
                 if (subTabId === 'METRICS_BTC_USD_EUR' && typeof loadBTCMetrics === 'function') loadBTCMetrics();
                 if (subTabId === 'REVIEW_BTC_VS_FIAT' && typeof loadReviewBtcVsFiat === 'function') loadReviewBtcVsFiat();
                 if (subTabId === 'REVIEW_BTC_VS_GOLD' && typeof loadReviewBtcVsGold === 'function') loadReviewBtcVsGold();
+                if (subTabId === 'REVIEW_BTC_VS_SILVER' && typeof loadReviewBtcVsSilver === 'function') loadReviewBtcVsSilver();
                 if (subTabId === 'EXPLORER_TXID' && typeof loadExplorerTxid === 'function') loadExplorerTxid();
                 if (subTabId === 'EXPLORER_ADDRESS' && typeof loadExplorerAddress === 'function') loadExplorerAddress();
                 if (subTabId === 'EXPLORER_WALLET' && typeof loadExplorerWallet === 'function') loadExplorerWallet();

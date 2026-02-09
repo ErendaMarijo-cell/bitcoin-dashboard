@@ -1526,6 +1526,105 @@ body {
 }
 
 
+
+/* ================================================================================================================================================================= */
+
+
+
+/* =================================== */
+/* REVIEW_BTC_VS_SILVER – Headline */
+/* =================================== */
+
+.headline-review-btc-silver {
+
+    font-family: "Courier New", monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 1.25rem;
+
+    background: linear-gradient(
+        90deg,
+        #c0c0c0 0%,
+        #c0c0c0 60%,
+        #f2f4f6 100%
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-shadow:
+        0 1px 0 rgba(255,255,255,0.25),
+        0 0 8px rgba(192,192,192,0.45);
+
+}
+
+
+
+/* =================================== */
+/* Controls */
+/* =================================== */
+
+.review-label-silver,
+.review-select-silver,
+.review-date-input-silver {
+
+    font-family: "Courier New", monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+
+    color: #e8edf2;
+}
+
+.review-select-silver,
+.review-date-input-silver {
+
+    background: rgba(15,15,15,0.85);
+
+    border: 0.0625rem solid
+        rgba(192,192,192,0.35);
+
+    border-radius: 0.45rem;
+    padding: 0.35rem 0.55rem;
+
+    outline: none;
+    transition: all 0.15s ease;
+}
+
+.review-select-silver:hover,
+.review-date-input-silver:hover {
+
+    border-color:
+        rgba(192,192,192,0.65);
+}
+
+.review-select-silver:focus,
+.review-date-input-silver:focus {
+
+    border-color: #c0c0c0;
+
+    box-shadow:
+        0 0 0.375rem
+        rgba(192,192,192,0.35);
+}
+
+
+
+/* Info Box */
+
+.info-box-review-btc-silver {
+
+    box-shadow:
+        0 0 0 1px rgba(192,192,192,1),
+        0 0 12px rgba(192,192,192,0.85);
+}
+
+
+
 /* ================================================================================================================================================================= */
 /* ================================================================================================================================================================= */
 /* ================================================================================================================================================================= */

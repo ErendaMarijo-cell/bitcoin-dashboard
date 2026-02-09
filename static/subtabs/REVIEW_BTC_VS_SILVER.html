@@ -1,0 +1,180 @@
+<!-- ====================================================================== -->
+<!-- REVIEW_BTC_VS_SILVER.html – Bitcoin vs Silver (troy ounce) -->
+<!-- Rolle: LEAF -->
+<!-- ====================================================================== -->
+
+<h1 class="headline-review-btc-silver">
+    Bitcoin vs Silver (troy ounce)
+</h1>
+
+
+<!-- ====================================================== -->
+<!-- Chart Controls -->
+<!-- ====================================================== -->
+<div class="review-controls-silver">
+
+    <!-- Time Mode -->
+    <div class="review-control-silver">
+
+        <label
+          for="review-silver-time-mode-select"
+          class="review-label-silver">
+
+            Time Range
+
+        </label>
+
+        <select
+          id="review-silver-time-mode-select"
+          class="review-select-silver">
+
+            <option value="all" selected>All-Time</option>
+            <option value="year">Single Year</option>
+            <option value="halving">Halving Cycle</option>
+            <option value="custom">Custom Range</option>
+
+        </select>
+    </div>
+
+
+    <!-- Year -->
+    <div
+        class="review-control-silver review-control-hidden"
+        id="review-silver-year-control">
+
+        <label
+          for="review-silver-year-select"
+          class="review-label-silver">
+
+            Year
+
+        </label>
+
+        <select
+          id="review-silver-year-select"
+          class="review-select-silver">
+        </select>
+
+    </div>
+
+
+    <!-- Halving -->
+    <div
+        class="review-control-silver review-control-hidden"
+        id="review-silver-halving-control">
+
+        <label
+          for="review-silver-halving-select"
+          class="review-label-silver">
+
+            Halving Cycle
+
+        </label>
+
+        <select
+          id="review-silver-halving-select"
+          class="review-select-silver">
+
+            <option value="2009_2012">2009 – 2012</option>
+            <option value="2012_2016">2012 – 2016</option>
+            <option value="2016_2020">2016 – 2020</option>
+            <option value="2020_2024">2020 – 2024</option>
+            <option value="2024_now">2024 – Now</option>
+
+        </select>
+    </div>
+
+
+    <!-- Custom -->
+    <div
+        class="review-control-silver review-control-hidden"
+        id="review-silver-custom-control">
+
+        <label class="review-label-silver">
+            Custom Range
+        </label>
+
+        <div class="review-date-grid">
+
+            <input
+              type="date"
+              id="review-silver-date-start"
+              class="review-date-input-silver">
+
+            <input
+              type="date"
+              id="review-silver-date-end"
+              class="review-date-input-silver">
+
+        </div>
+    </div>
+
+
+    <!-- Log Toggle -->
+    <div class="review-control-silver">
+
+        <label
+          for="review-silver-log-scale-toggle"
+          class="review-label-silver">
+
+            Log Scale
+
+        </label>
+
+        <input
+          type="checkbox"
+          id="review-silver-log-scale-toggle"
+          checked>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- Chart -->
+<!-- ====================================================== -->
+<div
+    id="REVIEW_BTC_VS_SILVER_CONTAINER"
+    class="subtab-container">
+
+    <div class="chart-wrapper chart-flex">
+
+        <canvas
+            id="REVIEW_BTC_VS_SILVER_CANVAS"
+            class="chart-canvas">
+        </canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- Info Box -->
+<!-- ====================================================== -->
+<div class="info-box info-box-review-btc-silver">
+
+<strong>About Bitcoin vs Silver</strong><br><br>
+
+This chart measures Bitcoin’s long-term valuation relative to physical
+silver, priced in troy ounces per BTC.<br><br>
+
+By denominating Bitcoin in silver rather than fiat currency, the chart
+provides insight into Bitcoin’s purchasing power relative to one of the
+world’s most widely traded monetary and industrial metals.<br><br>
+
+Silver has historically functioned as both currency metal and commodity,
+bridging monetary and industrial demand. Comparing Bitcoin to silver
+therefore highlights Bitcoin’s performance not only as a store of value,
+but also relative to broader commodity markets.<br><br>
+
+When Bitcoin rises in silver terms, BTC is gaining purchasing power
+relative to silver. When it falls, silver is outperforming Bitcoin.<br><br>
+
+Users can explore Bitcoin’s valuation in silver across full history,
+individual years, halving cycles, or custom date ranges.
+
+</div>

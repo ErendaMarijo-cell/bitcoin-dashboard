@@ -2,27 +2,29 @@
 
 /*
 ====================================================================
-REVIEW_BTC_VS_GOLD.js
-Bitcoin vs Gold (troy ounce)
+REVIEW_BTC_VS_SILVER.js
+Bitcoin vs Silver (troy ounce)
 
-Template Clone of BTC vs Fiat Leaf
 ✔ All Time Modes
 ✔ Halving Cycles
 ✔ Custom Range
-✔ Log / Linear
+✔ Log / Linear Toggle
 ✔ Performance Overlay
 ✔ Zoom + Reset
 ✔ Adaptive Time Scale
-✔ Gold Styling
+✔ Hover Points
+✔ Ratio Tooltip
+✔ Legend Styling
 ====================================================================
 */
+
 
 // --------------------------------------------------
 // 🧠 State
 // --------------------------------------------------
-const reviewGoldState = {
+const reviewSilverState = {
 
-    timeMode: 'all',   // all | year | halving | custom
+    timeMode: 'all',
     year: null,
     halvingCycle: null,
     logScale: true,
@@ -31,12 +33,14 @@ const reviewGoldState = {
     customEnd: null
 };
 
+
 // --------------------------------------------------
 // 📦 Cache
 // --------------------------------------------------
-let goldData   = null;
-let chart      = null;
-let initialized = false;
+let silverData   = null;
+let chart        = null;
+let initialized  = false;
+
 
 // --------------------------------------------------
 // 🗓️ Halving Ranges
@@ -49,12 +53,13 @@ const HALVING_RANGES = {
     '2024_now':['2024-04-20',null]
 };
 
+
 // --------------------------------------------------
 // 🧮 Helpers
 // --------------------------------------------------
 function clampDateOrder(start,end){
-    if(!start || !end) return {start,end};
-    if(start > end) return {start:end,end:start};
+    if(!start||!end) return {start,end};
+    if(start>end) return {start:end,end:start};
     return {start,end};
 }
 
@@ -70,6 +75,7 @@ function formatISODateUTC(d){
     }`;
 }
 
+
 // --------------------------------------------------
 // 🧭 Adaptive Time Scale
 // --------------------------------------------------
@@ -83,7 +89,7 @@ function getTimeScaleConfig(data){
     const end   = data.at(-1).x;
     const years = diffYears(start,end);
 
-    if(reviewGoldState.timeMode === 'all'){
+    if(reviewSilverState.timeMode==='all'){
         return {
             unit:'quarter',
             callback:v=>{
@@ -94,7 +100,7 @@ function getTimeScaleConfig(data){
         };
     }
 
-    if(reviewGoldState.timeMode === 'year'){
+    if(reviewSilverState.timeMode==='year'){
         return {
             unit:'month',
             callback:v=>{
@@ -106,7 +112,7 @@ function getTimeScaleConfig(data){
         };
     }
 
-    if(reviewGoldState.timeMode === 'halving'){
+    if(reviewSilverState.timeMode==='halving'){
         return {
             unit:'month',
             callback:v=>{
@@ -119,9 +125,9 @@ function getTimeScaleConfig(data){
         };
     }
 
-    if(reviewGoldState.timeMode === 'custom'){
+    if(reviewSilverState.timeMode==='custom'){
 
-        if(years < 1){
+        if(years<1){
             return {
                 unit:'month',
                 callback:v=>{
@@ -133,7 +139,7 @@ function getTimeScaleConfig(data){
             };
         }
 
-        if(years < 5){
+        if(years<5){
             return {
                 unit:'quarter',
                 callback:v=>{
@@ -163,6 +169,7 @@ function getTimeScaleConfig(data){
     return {unit:'month'};
 }
 
+
 // --------------------------------------------------
 // 📥 Loader
 // --------------------------------------------------
@@ -171,7 +178,7 @@ async function loadJSONL(path){
     const res = await fetch(path);
     if(!res.ok) throw new Error(path);
 
-    const txt = (await res.text()).trim();
+    const txt=(await res.text()).trim();
 
     return txt.split('\n')
         .map(l=>JSON.parse(l))
@@ -183,63 +190,62 @@ async function loadJSONL(path){
 
 async function ensureLoaded(){
 
-    if(!goldData){
-        goldData = await loadJSONL(
-            '/data/review/btc_vs_gold/btc_vs_gold_all.jsonl'
+    if(!silverData){
+        silverData = await loadJSONL(
+            '/data/review/btc_vs_silver/btc_vs_silver_all.jsonl'
         );
     }
 }
+
 
 // --------------------------------------------------
 // 🔍 Filter
 // --------------------------------------------------
 function filterData(){
 
-    let out = goldData;
+    let out = silverData;
 
-    if(reviewGoldState.timeMode==='year'
-       && reviewGoldState.year){
+    if(reviewSilverState.timeMode==='year'
+       && reviewSilverState.year){
 
         out = out.filter(p =>
             p.x.getUTCFullYear()
-            === reviewGoldState.year
+            === reviewSilverState.year
         );
     }
 
-    if(reviewGoldState.timeMode==='halving'
-       && reviewGoldState.halvingCycle){
+    if(reviewSilverState.timeMode==='halving'
+       && reviewSilverState.halvingCycle){
 
         const [s,e] =
             HALVING_RANGES[
-                reviewGoldState.halvingCycle
+                reviewSilverState.halvingCycle
             ];
 
         const start=new Date(s);
         const end=e?new Date(e):null;
 
         out = out.filter(p =>
-            p.x>=start && (!end || p.x<=end)
+            p.x>=start && (!end||p.x<=end)
         );
     }
 
-    if(reviewGoldState.timeMode==='custom'
-       && reviewGoldState.customStart
-       && reviewGoldState.customEnd){
+    if(reviewSilverState.timeMode==='custom'
+       && reviewSilverState.customStart
+       && reviewSilverState.customEnd){
 
         let start=new Date(
-            reviewGoldState.customStart
+            reviewSilverState.customStart
         );
 
         let end=new Date(
-            reviewGoldState.customEnd
+            reviewSilverState.customEnd
         );
 
-        ({start,end} =
-            clampDateOrder(start,end));
+        ({start,end}=clampDateOrder(start,end));
 
         end=new Date(
-            end.getTime()
-            +86400000-1
+            end.getTime()+86400000-1
         );
 
         out = out.filter(p =>
@@ -249,6 +255,7 @@ function filterData(){
 
     return out;
 }
+
 
 // --------------------------------------------------
 // 📈 Performance
@@ -263,6 +270,7 @@ function calculatePerformance(data){
     return ((e-s)/s)*100;
 }
 
+
 // --------------------------------------------------
 // 🖊️ Overlay
 // --------------------------------------------------
@@ -275,8 +283,7 @@ const performanceOverlayPlugin={
         const data=filterData();
         if(!data?.length) return;
 
-        const perf=
-            calculatePerformance(data);
+        const perf=calculatePerformance(data);
         if(perf===null) return;
 
         const ctx=chart.ctx;
@@ -287,19 +294,21 @@ const performanceOverlayPlugin={
 
         ctx.save();
 
-        ctx.font = '600 1.05rem Inter, system-ui';
-        ctx.fillStyle = perf >= 0 ? '#16c784' : '#ea3943';
-        ctx.textAlign = 'left';
+        ctx.font='600 1.05rem Inter, system-ui';
+        ctx.fillStyle=
+            perf>=0?'#16c784':'#ea3943';
+        ctx.textAlign='left';
 
         ctx.fillText(
             text,
-            chart.chartArea.left + 80,
-            chart.chartArea.top - 8
+            chart.chartArea.left+80,
+            chart.chartArea.top-8
         );
 
         ctx.restore();
     }
 };
+
 
 // --------------------------------------------------
 // 📊 Dataset
@@ -308,18 +317,21 @@ function buildDataset(data){
 
     return {
         type:'line',
-        label:'Bitcoin  •  Gold (oz)',
+        label:'Bitcoin  •  Silver (oz)',
         data,
 
-        borderColor:'#f2c94c',
-        backgroundColor:'#f2c94c',
+        borderColor:'#c0c0c0',
+        backgroundColor:'#c0c0c0',
 
         borderWidth:1.8,
         tension:0.15,
+
         pointRadius:0,
-        pointHitRadius:30
+        pointHitRadius:30,
+        pointHoverRadius:4
     };
 }
+
 
 // --------------------------------------------------
 // 📈 Render
@@ -328,10 +340,10 @@ function updateChart(){
 
     const canvas=
         document.getElementById(
-            'REVIEW_BTC_VS_GOLD_CANVAS'
+            'REVIEW_BTC_VS_SILVER_CANVAS'
         );
 
-    if(!canvas || !goldData) return;
+    if(!canvas||!silverData) return;
 
     const ctx=canvas.getContext('2d');
     const data=filterData();
@@ -360,54 +372,52 @@ function updateChart(){
                     intersect:false
                 },
 
-                
                 plugins:{
 
-                    // --------------------------------------------------
-                    // 🏷️ LEGEND (Fiat parity)
-                    // --------------------------------------------------
-                    legend: {
-                        position: 'top',
+                    legend:{
+                        position:'top',
 
-                        labels: {
-                            font: {
-                                size: 16,
-                                weight: '300',
-                                family: 'Inter, system-ui'
+                        labels:{
+                            font:{
+                                size:16,
+                                weight:'300',
+                                family:'Inter, system-ui'
                             },
 
-                            color: 'rgba(242, 201, 76, 0.9)',
+                            color:
+                              'rgba(192,192,192,0.9)',
 
-                            boxWidth: 18,
-                            boxHeight: 2,
-                            padding: 14,
-                            usePointStyle: false
+                            boxWidth:18,
+                            boxHeight:2,
+                            padding:14
                         }
                     },
 
-                    // --------------------------------------------------
-                    // 🧲 TOOLTIP (unverändert)
-                    // --------------------------------------------------
                     tooltip:{
                         callbacks:{
+
                             title:i=>
                                 formatISODateUTC(
-                                    new Date(i[0].parsed.x)
+                                    new Date(
+                                        i[0].parsed.x
+                                    )
                                 ),
 
                             label:c=>{
 
-                                const v = c.parsed?.y;
-                                if(v===null||v===undefined) return '';
+                                const v=c.parsed?.y;
+                                if(v===null
+                                   ||v===undefined)
+                                   return '';
 
-                                return `1 Bitcoin = ${v.toFixed(2)} Gold (oz)`;
+                                return
+                                  `1 Bitcoin = ${
+                                    v.toFixed(2)
+                                  } Silver (oz)`;
                             }
                         }
                     },
 
-                    // --------------------------------------------------
-                    // 🔍 ZOOM (unverändert)
-                    // --------------------------------------------------
                     zoom:{
                         pan:{enabled:true,mode:'x'},
                         zoom:{
@@ -416,7 +426,6 @@ function updateChart(){
                         }
                     }
                 },
-
 
                 scales:{
                     x:{
@@ -430,9 +439,9 @@ function updateChart(){
 
                     y:{
                         type:
-                            reviewGoldState.logScale
-                            ?'logarithmic'
-                            :'linear'
+                          reviewSilverState.logScale
+                          ?'logarithmic'
+                          :'linear'
                     }
                 }
             }
@@ -451,13 +460,14 @@ function updateChart(){
         chart.data.datasets[0]=ds;
 
         chart.options.scales.y.type=
-            reviewGoldState.logScale
+            reviewSilverState.logScale
             ?'logarithmic'
             :'linear';
 
         chart.update('none');
     }
 }
+
 
 // --------------------------------------------------
 // 🎛️ Controls
@@ -466,54 +476,55 @@ function bindControls(){
 
     const timeSel=
         document.getElementById(
-            'review-gold-time-mode-select'
+            'review-silver-time-mode-select'
         );
 
     const yearSel=
         document.getElementById(
-            'review-gold-year-select'
+            'review-silver-year-select'
         );
 
     const halvingSel=
         document.getElementById(
-            'review-gold-halving-select'
+            'review-silver-halving-select'
         );
 
     const logToggle=
         document.getElementById(
-            'review-gold-log-scale-toggle'
+            'review-silver-log-scale-toggle'
         );
 
     const yearCtrl=
         document.getElementById(
-            'review-gold-year-control'
+            'review-silver-year-control'
         );
 
     const halvCtrl=
         document.getElementById(
-            'review-gold-halving-control'
+            'review-silver-halving-control'
         );
 
     const custCtrl=
         document.getElementById(
-            'review-gold-custom-control'
+            'review-silver-custom-control'
         );
 
     const startInput=
         document.getElementById(
-            'review-gold-date-start'
+            'review-silver-date-start'
         );
 
     const endInput=
         document.getElementById(
-            'review-gold-date-end'
+            'review-silver-date-end'
         );
+
 
     if(timeSel){
 
         timeSel.onchange=e=>{
 
-            reviewGoldState.timeMode=
+            reviewSilverState.timeMode=
                 e.target.value;
 
             yearCtrl?.classList.toggle(
@@ -535,33 +546,37 @@ function bindControls(){
         };
     }
 
+
     if(yearSel){
         yearSel.onchange=e=>{
-            reviewGoldState.year=
+            reviewSilverState.year=
                 Number(e.target.value);
             updateChart();
         };
     }
 
+
     if(halvingSel){
         halvingSel.onchange=e=>{
-            reviewGoldState.halvingCycle=
+            reviewSilverState.halvingCycle=
                 e.target.value;
             updateChart();
         };
     }
 
+
     if(logToggle){
         logToggle.onchange=e=>{
-            reviewGoldState.logScale=
+            reviewSilverState.logScale=
                 e.target.checked;
             updateChart();
         };
     }
 
+
     if(startInput){
         startInput.onchange=e=>{
-            reviewGoldState.customStart=
+            reviewSilverState.customStart=
                 e.target.value;
             updateChart();
         };
@@ -569,23 +584,24 @@ function bindControls(){
 
     if(endInput){
         endInput.onchange=e=>{
-            reviewGoldState.customEnd=
+            reviewSilverState.customEnd=
                 e.target.value;
             updateChart();
         };
     }
 }
 
+
 // --------------------------------------------------
 // 🗓️ Year Populate
 // --------------------------------------------------
 function populateYearSelect(){
 
-    if(!goldData?.length) return;
+    if(!silverData?.length) return;
 
     const years=[
         ...new Set(
-            goldData.map(p=>
+            silverData.map(p=>
                 p.x.getUTCFullYear()
             )
         )
@@ -593,7 +609,7 @@ function populateYearSelect(){
 
     const sel=
         document.getElementById(
-            'review-gold-year-select'
+            'review-silver-year-select'
         );
 
     if(!sel) return;
@@ -605,10 +621,11 @@ function populateYearSelect(){
         .join('');
 }
 
+
 // --------------------------------------------------
 // 🚀 Loader
 // --------------------------------------------------
-async function loadReviewBtcVsGold(){
+async function loadReviewBtcVsSilver(){
 
     if(!initialized){
 
@@ -622,7 +639,7 @@ async function loadReviewBtcVsGold(){
     updateChart();
 }
 
-window.loadReviewBtcVsGold=
-    loadReviewBtcVsGold;
+window.loadReviewBtcVsSilver =
+    loadReviewBtcVsSilver;
 
 })();
