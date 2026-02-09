@@ -398,22 +398,16 @@ function updateChart(){
 
                             title:i=>
                                 formatISODateUTC(
-                                    new Date(
-                                        i[0].parsed.x
-                                    )
+                                    new Date(i[0].parsed.x)
                                 ),
 
                             label:c=>{
 
                                 const v=c.parsed?.y;
-                                if(v===null
-                                   ||v===undefined)
-                                   return '';
+                                if(v===null || v===undefined)
+                                    return '';
 
-                                return
-                                  `1 Bitcoin = ${
-                                    v.toFixed(2)
-                                  } Silver (oz)`;
+                                return `1 Bitcoin = ${v.toFixed(2)} Silver (oz)`;
                             }
                         }
                     },

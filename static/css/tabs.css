@@ -1613,6 +1613,13 @@ body {
 }
 
 
+/* =================================== */
+/* Container Gap                       */
+/* =================================== */
+
+#REVIEW_BTC_VS_SILVER_CONTAINER {
+    margin-bottom: 3rem;
+}
 
 /* Info Box */
 
