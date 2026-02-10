@@ -858,7 +858,18 @@ def network_technology():
 ## ================================================================================================================================================================ ##
 
 
+# ===========================================================
+# NETWORK_NODES – SSR Content Page
+# Global Node Distribution & Decentralization Metrics
+# ===========================================================
+@app.route("/network/nodes")
+def network_nodes_page():
+    return render_template(
+        "pages/network/nodes.html"
+    )
 
+
+## ================================================================================================================================================================ ##
 
 
 # =================================================
@@ -979,7 +990,7 @@ subtab_nodes_cache = None
 subtab_nodes_cache_time = 0
 
 @app.route("/api/network/nodes")
-def network_nodes():
+def api_network_nodes():
     global subtab_nodes_cache, subtab_nodes_cache_time
     now = time.time()
 

@@ -1,0 +1,121 @@
+<!-- =================================================================== -->
+<!-- NETWORK_NODES – Bitcoin Full Node Distribution (SSR + SPA Hybrid) -->
+<!-- Global Node Count • Countries • Decentralization Metrics           -->
+<!-- =================================================================== -->
+
+{% extends "base/base.html" %}
+
+{% block title %}
+Bitcoin Nodes – Global Full Node Distribution & Network Decentralization
+{% endblock %}
+
+{% block description %}
+Explore the global distribution of Bitcoin full nodes, geographic decentralization and network infrastructure statistics.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div id="NETWORK_NODES" class="subtab-container">
+
+    <!-- Title -->
+    <h1 class="subtab-title">Active Bitcoin Nodes</h1>
+
+    <!-- Introduction -->
+    <section id="NETWORK_NODES_intro" class="subtab-section">
+        <p>
+            Bitcoin nodes are the fundamental building blocks of the Bitcoin network.
+            They validate, store, and propagate transactions and blocks, ensuring the
+            technical decentralization of the system.
+            Each node maintains a full or partial copy of the blockchain and operates
+            independently within the peer-to-peer network.
+            <br><br>
+        </p>
+
+        <p>
+            <strong>Basic requirements for running a node:</strong>
+        </p>
+
+        <ul>
+            <li>💻 Computer or server with a permanent internet connection</li>
+            <li>💾 Sufficient storage space (Full Node &gt; 700 GB, Pruned Node significantly less)</li>
+            <li>🌐 Reliable upload and download bandwidth</li>
+            <li>
+                ⚙️ Bitcoin client –
+                <a href="https://bitcoincore.org" target="_blank" rel="noopener noreferrer">
+                    Bitcoin Core
+                </a>
+            </li>
+        </ul>
+
+        <p><br><br>
+            The values shown below for the geographic distribution of Bitcoin nodes are
+            estimates and refer exclusively to nodes that are publicly reachable and can
+            be assigned to a specific country.
+            The actual number of Bitcoin nodes is significantly higher than the sum of the
+            country-level values listed here, as many nodes are operated behind Tor, VPNs,
+            or firewalls and therefore cannot be clearly geolocated.
+            <br><br>
+        </p>
+
+        <p>
+            Such non-publicly reachable nodes are not directly captured by most counting
+            methods, <br>
+            but are included in estimates of the total number of Bitcoin nodes.
+        </p>
+
+    </section>
+
+    <!-- Total number of nodes -->
+    <section id="NETWORK_NODES_total-nodes-section" class="subtab-section">
+        <h4>Total number of nodes worldwide</h4>
+        <p id="NETWORK_NODES_total-nodes">Loading data…</p>
+        <p id="NETWORK_NODES_last-update"></p>
+    </section>
+
+    <!-- Nodes by country -->
+    <section id="NETWORK_NODES_nodes-by-country-section" class="subtab-section">
+        <h4>Nodes by country</h4>
+        <div id="NETWORK_NODES_countries-container">
+            <p>
+                United States: 5,000<br>
+                Germany: 2,000<br>
+                Japan: 1,500
+            </p>
+        </div>
+    </section>
+
+    <!-- World map -->
+    <section id="NETWORK_NODES_world-map-section" class="subtab-section">
+        <h4>World map of nodes</h4>
+        <div id="NETWORK_NODES_world-map" aria-busy="true">
+            <p>Loading map…</p>
+        </div>
+    </section>
+
+</div>
+
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<!-- NETWORK_NODES – Data Loader -->
+<script src="/static/js/NETWORK_NODES.js"></script>
+
+<!-- Auto-load Node Data when opened via SSR -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.loadNodeData) {
+        window.loadNodeData();
+    }
+});
+</script>
+
+
+
+{% endblock %}
