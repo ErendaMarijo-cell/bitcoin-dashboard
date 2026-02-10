@@ -2171,6 +2171,22 @@ def api_treasuries_companies():
 
 
 
+# =================================================
+# TREASURIES_INSTITUTIONS – Investment Funds / ETFs
+# SSR Page + SPA Deep Link
+# =================================================
+@app.route("/treasuries/institutions")
+def treasuries_institutions():
+    return render_template(
+        "pages/treasuries/institutions.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
 # ========================================
 # 🔹 TREASURIES_INSTITUTIONS - DATENLOADER
 # ========================================
