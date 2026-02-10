@@ -1,0 +1,83 @@
+<!-- ====================================================================== -->
+<!-- TREASURIES_COUNTRIES – Bitcoin Treasury by Country (SSR + SPA Hybrid) -->
+<!-- Nation State Holdings • Sovereign BTC Exposure                         -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Bitcoin Treasury Countries – Nation State BTC Holdings
+{% endblock %}
+
+{% block description %}
+Explore Bitcoin holdings by countries and nation states holding BTC as part of sovereign reserves and strategic assets.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<div id="COUNTRIES" class="subtab-container fade-in-on-scroll">
+
+    <h1 class="subtab-title text-center mb-4">
+        Bitcoin Treasury – Countries
+    </h1>
+
+    <!-- Tabelle -->
+    <div class="treasuries-table-wrapper">
+        <table class="treasuries-table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Country</th>
+                    <th>BTC Holdings</th>
+                </tr>
+            </thead>
+            <tbody id="treasuries-countries-table-body">
+                <!-- JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pie Chart + Legend (same pattern as Institutions) -->
+    <div class="pie-chart-container mt-5">
+        <div class="pie-chart"></div>
+        <ul class="pie-legend"></ul>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- TREASURIES_COUNTRIES – Data Loader -->
+<script src="/static/js/TREASURIES_COUNTRIES.js"></script>
+
+<!-- Auto-load Countries when opened via SSR -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (window.loadTreasuriesCountries) {
+        window.loadTreasuriesCountries();
+    }
+
+});
+</script>
+
+{% endblock %}

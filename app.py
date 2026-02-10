@@ -2276,6 +2276,22 @@ def api_treasuries_institutions():
 
 
 
+# ================================================
+# TREASURIES_COUNTRIES – Nation State BTC Holdings
+# SSR Page + SPA Deep Link
+# ================================================
+@app.route("/treasuries/countries")
+def treasuries_countries():
+    return render_template(
+        "pages/treasuries/countries.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
 # =====================================
 # 🔹 TREASURIES_COUNTRIES - DATENLOADER
 # =====================================
