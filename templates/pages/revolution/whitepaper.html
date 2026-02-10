@@ -1,0 +1,70 @@
+<!-- =================================================================== -->
+<!-- REVOLUTION_WHITEPAPER – Bitcoin Whitepaper (SSR + SPA Hybrid)       -->
+<!-- Original Paper by Satoshi Nakamoto                                  -->
+<!-- =================================================================== -->
+
+{% extends "base/base.html" %}
+
+{% block title %}
+Bitcoin Whitepaper – Peer-to-Peer Electronic Cash System
+{% endblock %}
+
+{% block description %}
+Read the original Bitcoin whitepaper by Satoshi Nakamoto and explore the foundation of decentralized digital money.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div id="WHITEPAPER" class="subtab-container fade-in-on-scroll">
+
+    <!-- Main Heading -->
+    <h1 class="subtab-title">
+        Bitcoin Whitepaper
+    </h1>
+
+    <!-- Description text above the PDF -->
+    <p class="WHITEPAPER-text">
+        Here you can read or download the original Bitcoin whitepaper
+        written by Satoshi Nakamoto.
+    </p>
+
+    <!--
+        Wrapper for the embedded PDF
+        - full width / height
+        - no white borders
+        - centered layout
+        - shadow and rounded corners
+    -->
+    <div class="WHITEPAPER-pdf-wrapper">
+
+        <!--
+            PDF Viewer:
+            - embedded via <embed>
+            - requires /static/pdf/bitcoin_whitepaper.pdf
+            - uses 100% width and height of the wrapper
+        -->
+        <embed
+            src="/static/pdf/bitcoin_whitepaper.pdf"
+            type="application/pdf"
+            class="WHITEPAPER-pdf"
+        >
+    </div>
+
+    <!-- Download link for the PDF -->
+    <p class="mt-3 text-center">
+        <a
+            href="/static/pdf/bitcoin_whitepaper.pdf"
+            download
+            class="WHITEPAPER-btn btn btn-primary"
+        >
+            Download Whitepaper
+        </a>
+    </p>
+
+</div>
+
+
+
+{% endblock %}
