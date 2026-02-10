@@ -58,6 +58,8 @@ nav button:hover,
 nav a:hover,
 .main-navbar a:hover {
     color: #f2a900;
+    border-bottom: none;   /* ← forced override */
+    text-decoration: none; /* ← killt Browser-Underline */
 }
 
 
@@ -125,9 +127,6 @@ nav a.active,
     position: relative;
     z-index: 1;   /* Unter Navbar, über Canvas */
 }
-
-
-
 
 
 

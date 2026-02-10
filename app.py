@@ -784,7 +784,10 @@ def system_health():
 
 
 
-
+# ==============================================
+# REVOLUTION_HISTORY – SSR Master Template Route
+# Hybrid SPA + SSR Deep-Link Entry Point
+# ==============================================
 @app.route("/revolution/history")
 def revolution_history():
     return render_template(
