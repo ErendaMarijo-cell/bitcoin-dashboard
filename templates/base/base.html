@@ -6,51 +6,148 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
+    <!-- ===================================== -->
+    <!-- 📄 META & SEO CORE                    -->
+    <!-- ===================================== -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Dynamic Page Title -->
     <title>{% block title %}Bitcoin Dashboard{% endblock %}</title>
-    <meta name="description" content="{% block description %}Live Bitcoin analytics dashboard{% endblock %}">
+
+    <!-- Dynamic SEO Description -->
+    <meta name="description"
+          content="{% block description %}Live Bitcoin analytics dashboard{% endblock %}">
+
+    <!-- Search Engine Indexing -->
     <meta name="robots" content="index, follow">
+
+    <!-- Canonical URL (Prevents Duplicate Indexing) -->
     <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Favicon -->
     <link rel="icon" href="/static/favicon.ico">
 
+
+    <!-- ===================================== -->
+    <!-- 🎨 GLOBAL CSS – Layout & Tabs         -->
+    <!-- ===================================== -->
+
+    <!-- Base Layout Styling (Navbar, Footer, Grid) -->
     <link rel="stylesheet" href="/static/css/base.css">
+
+    <!-- Desktop Tab System Styling -->
     <link rel="stylesheet" href="/static/css/tabs.css">
+
+    <!-- Mobile Tab Navigation -->
     <link rel="stylesheet" href="/static/css/tabs-mobile.css">
+
+    <!-- Home Tab Mobile Optimizations -->
     <link rel="stylesheet" href="/static/css/home-mobile.css">
 
+
+    <!-- ===================================== -->
+    <!-- 🔤 FONTS                              -->
+    <!-- ===================================== -->
+
+    <!-- Google Fonts – JetBrains Mono (Metrics / Tables) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+          rel="stylesheet">
+
+
+    <!-- ===================================== -->
+    <!-- ⚙️ CORE LIBRARIES                     -->
+    <!-- ===================================== -->
+
+    <!-- jQuery – DOM Manipulation & AJAX -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS – Grid & UI Components -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <!-- Bootstrap JS – Modals, Dropdowns, Tooltips -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <!-- ===================================== -->
+    <!-- 📊 CHART & DATA VISUALIZATION STACK   -->
+    <!-- ===================================== -->
+
+    <!-- Plotly.js – Advanced Interactive Charts -->
     <script src="https://cdn.plot.ly/plotly-2.25.2.min.js"></script>
+
+    <!-- Chart.js – Core Chart Engine -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chart.js Date Adapter – Time Axis Support -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- Chart.js Financial Plugin – Candlestick Charts -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
+
+    <!-- Chart.js Zoom Plugin – Zoom & Pan -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+
+
+    <!-- ===================================== -->
+    <!-- 🏷️ GLOBAL LABELS / I18N               -->
+    <!-- ===================================== -->
+
+    <!-- labels.js – Translation & UI Labels -->
     <script src="/static/js/labels.js"></script>
 
+
+    <!-- ===================================== -->
+    <!-- 📦 PAGE-SPECIFIC HEAD INJECTIONS      -->
+    <!-- ===================================== -->
+
     {% block head_extra %}{% endblock %}
+
 </head>
+
+
 
 <body>
 
-    <!-- 🧭 Navbar -->
+    <!-- ===================================== -->
+    <!-- 🧭 GLOBAL NAVBAR (Partial Include)    -->
+    <!-- ===================================== -->
+
     {% include "partials/navbar.html" %}
 
-    <!-- 📄 Content -->
+
+
+    <!-- ===================================== -->
+    <!-- 📄 PAGE CONTENT INJECTION             -->
+    <!-- ===================================== -->
+
     <main class="page-content">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- 🦶 Footer -->
+
+
+    <!-- ===================================== -->
+    <!-- 🦶 GLOBAL FOOTER (Partial Include)    -->
+    <!-- ===================================== -->
+
     {% include "partials/footer.html" %}
 
+
+
+    <!-- ===================================== -->
+    <!-- ⚡ PAGE-SPECIFIC SCRIPTS              -->
+    <!-- ===================================== -->
+
     {% block scripts %}{% endblock %}
+
 </body>
 </html>
