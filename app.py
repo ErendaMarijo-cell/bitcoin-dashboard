@@ -2384,6 +2384,22 @@ def api_treasuries_countries():
 
 
 
+# ========================================================
+# MARKET_CAP_CRYPTO – Cryptocurrency Market Capitalization
+# SSR Page + SPA Deep Link
+# ========================================================
+@app.route("/market-cap/crypto")
+def market_cap_crypto():
+    return render_template(
+        "pages/market_cap/coins.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
 # ================================================================
 # MARKET_CAP_COINS – Top Kryptowährungen nach Market Cap (Coins)
 # Server-side Refresh Loop + Single Redis Cache + Distributed Lock

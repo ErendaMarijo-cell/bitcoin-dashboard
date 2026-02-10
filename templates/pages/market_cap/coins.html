@@ -1,0 +1,81 @@
+<!-- ====================================================================== -->
+<!-- MARKET_CAP_COINS – Crypto Market Capitalization (SSR + SPA Hybrid)    -->
+<!-- Digital Assets • Crypto Rankings • Market Size Comparison              -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Cryptocurrencies by Market Cap – Crypto Market Capitalization Ranking
+{% endblock %}
+
+{% block description %}
+Explore the largest cryptocurrencies by market capitalization including Bitcoin, Ethereum, and major digital assets ranked by total market value.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<div id="MARKET_CAP_COINS" class="subtab-container fade-in-on-scroll">
+
+    <!-- Heading -->
+    <h1 class="subtab-title">
+        Cryptocurrencies by Market Capitalization
+    </h1>
+
+    <!-- Table Container -->
+    <div class="market-cap-table-wrapper overflow-auto">
+        <table class="market-cap-table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Coin</th>
+                    <th>Symbol</th>
+                    <th>Market Cap</th>
+                    <th>Price</th>
+                    <th>24h Change</th>
+                </tr>
+            </thead>
+            <tbody id="MARKET_CAP_COINS-tbody">
+                <!-- Data injected via JS -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- MARKET_CAP_COINS – Data Loader -->
+<script src="/static/js/MARKET_CAP_COINS.js"></script>
+
+<!-- Auto-load Coins Market Cap when opened via SSR -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (window.loadMarketCapCoins) {
+        window.loadMarketCapCoins();
+    }
+
+});
+</script>
+
+{% endblock %}
