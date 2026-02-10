@@ -1,0 +1,115 @@
+<!-- =================================================================== -->
+<!-- NETWORK_MINER – Bitcoin Mining Pools & Hashrate Distribution        -->
+<!-- SSR + SPA Hybrid Template                                           -->
+<!-- =================================================================== -->
+
+{% extends "base/base.html" %}
+
+{% block title %}
+Bitcoin Miners – Global Mining Pools & Hashrate Distribution
+{% endblock %}
+
+{% block description %}
+Explore Bitcoin mining pools, hashrate distribution and the global mining infrastructure securing the network.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div id="NETWORK_MINER" class="subtab-container">
+
+    <h1 class="subtab-title">Bitcoin Mining Pools</h1>
+
+    <!-- Introduction -->
+    <section class="subtab-section">
+        <p>
+            Bitcoin mining pools play a central role in securing the Bitcoin network.
+            They coordinate the hashing power of many individual miners in order to
+            find new blocks more efficiently and reduce payout variance.
+            Instead of mining alone, participants contribute their computational power
+            to a shared pool and receive rewards proportional to their contribution.
+
+            The distribution of mined blocks across pools provides important insights
+            into the current structure of the Bitcoin mining ecosystem.
+            While no mining pool directly controls the network, the relative block share
+            of large pools is often used as an indicator for decentralization,
+            hashrate concentration, and potential systemic risks.
+
+            It is important to note that mining pools do not usually own the hashrate
+            themselves. The actual hashing power belongs to individual miners, who can
+            switch pools at any time.
+            As a result, the mining landscape is highly dynamic and can change
+            significantly within short timeframes.
+        </p>
+    </section>
+
+    <!-- Mining pool block share -->
+    <section id="NETWORK_MINER_known" class="subtab-section">
+        <h4>Mining pool block share</h4>
+
+        <ul id="NETWORK_MINER_known_list">
+            <li>Loading mining pools…</li>
+        </ul>
+
+        <p>
+            The percentages shown above represent the share of Bitcoin blocks
+            mined by each pool over the last 24 hours.
+            This metric is commonly referred to as <strong>block share</strong>
+            and serves as a statistical proxy for a pool’s relative hashrate.
+
+            Because mining is a probabilistic process, short-term fluctuations
+            are expected and do not necessarily reflect structural changes.
+            Over longer periods, block share tends to converge toward the
+            actual distribution of hashrate across the network.
+
+            The total percentage may not equal exactly 100%.
+            Smaller mining pools and solo miners are typically grouped together
+            or omitted from the list, and rounding effects can also introduce
+            minor deviations.
+        </p>
+    </section>
+
+    <!-- Decentralization & security -->
+    <section class="subtab-section">
+        <h4>Mining pools, decentralization and network security</h4>
+
+        <p>
+            From a network security perspective, mining pool distribution is closely
+            monitored by researchers and the Bitcoin community.
+            A highly decentralized mining landscape reduces the risk of coordinated
+            attacks, censorship, or manipulation of transaction ordering.
+
+            Concerns often arise when individual pools approach large shares of the
+            total network hashrate.
+            However, since miners can freely leave a pool, market forces tend to
+            counteract excessive concentration over time.
+            Historical data shows that mining dominance frequently shifts between pools.
+
+            For this reason, mining pool statistics should always be interpreted
+            in context and over longer time horizons.
+            Short-term snapshots provide valuable insights,
+            but do not by themselves imply long-term centralization or control.
+        </p>
+    </section>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<!-- NETWORK_MINER – Data Loader -->
+<script src="/static/js/NETWORK_MINER.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.loadMinerData) {
+        window.loadMinerData();
+    }
+});
+</script>
+
+{% endblock %}
