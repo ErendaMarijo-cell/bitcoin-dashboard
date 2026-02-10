@@ -1,0 +1,109 @@
+<!-- ====================================================================== -->
+<!-- METRICS_BTC_TX_AMOUNT – Bitcoin Transaction Count (SSR + SPA Hybrid)  -->
+<!-- Network Activity • Transaction Throughput • On-Chain Usage             -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Bitcoin Transactions – On-Chain Activity & Transaction Count
+{% endblock %}
+
+{% block description %}
+Analyze Bitcoin transaction count across multiple time frames and explore real-time network usage and on-chain demand.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<h1 class="headline-metrics-btc-tx-amount">
+    Largest Bitcoin Transactions – by Time Range
+</h1>
+
+<div class="METRICS_BTC_TX_AMOUNT-subnav subnav mb-3 text-center">
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW">MEMPOOL</button>
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_24H">24 <span class="range-unit">HOURS</span></button>
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_1W">1 <span class="range-unit">WEEK</span></button>
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_1M">1 <span class="range-unit">MONTH</span></button>
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_1Y">1 <span class="range-unit">YEAR</span></button>
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_HALVING">SINCE <span class="range-unit">HALVING</span></button>
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_EVER">ALL <span class="range-unit">TIME</span></button>
+</div>
+
+
+<div id="METRICS_BTC_TX_AMOUNT_CONTAINER" class="subtab-container">
+    <div id="METRICS_BTC_TX_AMOUNT_NOW" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_NOW_TABLE"></table>
+    </div>
+    <div id="METRICS_BTC_TX_AMOUNT_24H" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_24H_TABLE"></table>
+    </div>
+    <div id="METRICS_BTC_TX_AMOUNT_1W" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_1W_TABLE"></table>
+    </div>
+    <div id="METRICS_BTC_TX_AMOUNT_1M" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_1M_TABLE"></table>
+    </div>
+    <div id="METRICS_BTC_TX_AMOUNT_1Y" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_1Y_TABLE"></table>
+    </div>
+    <div id="METRICS_BTC_TX_AMOUNT_HALVING" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_HALVING_TABLE"></table>
+    </div>
+    <div id="METRICS_BTC_TX_AMOUNT_EVER" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
+        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_EVER_TABLE"></table>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- TX Amount Chart Loader -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Default Tab sichtbar machen (SSR Entry)
+    const defaultTab = document.getElementById(
+        "METRICS_BTC_TX_AMOUNT_NOW"
+    );
+
+    if (defaultTab) {
+        defaultTab.style.display = "block";
+    }
+
+    // Default Button aktiv
+    const defaultBtn = document.querySelector(
+        '.METRICS_BTC_TX_AMOUNT-subTabButton[data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW"]'
+    );
+
+    if (defaultBtn) {
+        defaultBtn.classList.add("active");
+    }
+
+    // Daten laden
+    if (window.loadMetricsTxAmountNow) {
+        window.loadMetricsTxAmountNow();
+    }
+
+});
+</script>
+
+
+{% endblock %}
