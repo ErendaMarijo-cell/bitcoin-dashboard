@@ -1,0 +1,79 @@
+<!-- ====================================================================== -->
+<!-- TREASURIES_COMPANIES – Bitcoin Treasury Companies (SSR + SPA Hybrid)  -->
+<!-- Corporate Holdings • Public Companies • Balance Sheet Exposure        -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Bitcoin Treasury Companies – Public Corporate BTC Holdings
+{% endblock %}
+
+{% block description %}
+Explore public companies holding Bitcoin on their balance sheets and analyze corporate treasury exposure to BTC.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<div id="TREASURIES-COMPANIES" class="subtab-container fade-in-on-scroll">
+
+    <h1 class="subtab-title text-center mb-4">
+        Bitcoin Treasury – Public Companies
+    </h1>
+
+    <div
+        id="treasuries-companies-status"
+        class="treasuries-companies-status explorer-status">
+    </div>
+
+    <div class="treasuries-table-wrapper">
+        <table class="treasuries-table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Company</th>
+                    <th>Country</th>
+                    <th>Ticker</th>
+                    <th>BTC Holdings</th>
+                </tr>
+            </thead>
+
+            <tbody id="treasuries-companies-table-body">
+                <!-- populated via JS -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<!-- TREASURIES_COMPANIES – Data Loader -->
+<script src="/static/js/TREASURIES_COMPANIES.js"></script>
+
+<!-- Auto-load Treasury Companies when opened via SSR -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.loadTreasuriesCompanies) {
+        window.loadTreasuriesCompanies();
+    }
+});
+</script>
+
+{% endblock %}
