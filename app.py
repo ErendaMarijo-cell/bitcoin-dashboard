@@ -1714,10 +1714,42 @@ def review_data(filename):
 # REVIEW_BTC_VS_FIAT – Bitcoin vs Fiat Currencies
 # SSR Page + SPA Deep Link
 # ===============================================
-@app.route("/review/btc-vs-fiat")
+@app.route("/review/btc-fiat")
 def review_btc_vs_fiat():
     return render_template(
         "pages/review/btc_vs_fiat.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
+# ====================================
+# REVIEW_BTC_VS_GOLD – Bitcoin vs Gold
+# SSR Page + SPA Deep Link
+# ====================================
+@app.route("/review/btc-gold")
+def review_btc_vs_gold():
+    return render_template(
+        "pages/review/btc_vs_gold.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
+# ========================================
+# REVIEW_BTC_VS_SILVER – Bitcoin vs Silver
+# SSR Page + SPA Deep Link
+# ========================================
+@app.route("/review/btc-silver")
+def review_btc_vs_silver():
+    return render_template(
+        "pages/review/btc_vs_silver.html"
     )
 
 

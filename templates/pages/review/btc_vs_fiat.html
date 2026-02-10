@@ -257,10 +257,13 @@ Compare Bitcoin’s purchasing power across global fiat currencies including USD
 
 {% block scripts %}
 
+<!-- REVIEW_BTC_VS_FIAT – Chart + Controls Loader -->
+<script src="/static/js/REVIEW_BTC_VS_FIAT.js"></script>
+
+<!-- Auto-load Fiat Review when opened via SSR -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Default Chart Loader (SSR Entry)
     if (window.loadReviewBtcVsFiat) {
         window.loadReviewBtcVsFiat();
     }
