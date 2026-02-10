@@ -831,6 +831,20 @@ def revolution_whitepaper():
 
 
 # =================================================
+# NETWORK_STRUCTURE – SSR Content Page (Static SEO)
+# Bitcoin Node Topology & Network Architecture
+# =================================================
+@app.route("/network/structure")
+def network_structure():
+    return render_template(
+        "pages/network/structure.html"
+    )
+
+
+## ================================================================================================================================================================ ##
+
+
+# =================================================
 # NETWORK_NODES – Redis + Short-Term + Subtab Cache
 # =================================================
 

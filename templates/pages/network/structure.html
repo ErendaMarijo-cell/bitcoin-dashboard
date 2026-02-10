@@ -1,0 +1,105 @@
+<!-- =================================================================== -->
+<!-- NETWORK_STRUCTURE – Bitcoin Network Architecture (SSR + SPA Hybrid) -->
+<!-- Nodes • Mining • Topology • Infrastructure                           -->
+<!-- =================================================================== -->
+
+{% extends "base/base.html" %}
+
+{% block title %}
+Bitcoin Network Structure – Nodes, Mining & Infrastructure
+{% endblock %}
+
+{% block description %}
+Explore the structure of the Bitcoin network, including node distribution, mining infrastructure and decentralized topology.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div id="NETWORK_STRUCTURE" class="subtab-container">
+    <h1 class="subtab-title">Architecture of the Bitcoin Network</h1>
+
+    <div class="NETWORK_STRUCTURE-network-tree">
+
+        <!-- Main Node -->
+        <div class="NETWORK_STRUCTURE-node NETWORK_STRUCTURE-main-node">
+            🌐 Bitcoin Network
+            <div class="NETWORK_STRUCTURE-node-info">
+                Layer 1 forms the base layer with the blockchain, nodes, and miners.
+                Layer 2 and adjacent extensions increase scalability and efficiency,
+                for example through Lightning and sidechains such as Liquid.
+            </div>
+        </div>
+
+        <!-- Nodes & Miners -->
+        <div class="NETWORK_STRUCTURE-network-base">
+            <div class="NETWORK_STRUCTURE-node" style="flex:1; margin-right: 10px;">
+                🖥️ Nodes
+                <div class="NETWORK_STRUCTURE-node-info">Decentralized computers</div>
+            </div>
+            <div class="NETWORK_STRUCTURE-node" style="flex:1; margin-left: 10px;">
+                ⛏️ Miners
+                <div class="NETWORK_STRUCTURE-node-info">Create blocks</div>
+            </div>
+        </div>
+
+        <!-- Layer 1 -->
+        <div class="NETWORK_STRUCTURE-layer1">
+            <div class="NETWORK_STRUCTURE-node" style="flex:1;">
+                🧱 Layer 1
+                <div class="NETWORK_STRUCTURE-node-info">
+                    Blockchain & core components – foundation of the network
+                </div>
+            </div>
+        </div>
+
+        <!-- Layer 2 -->
+        <div class="NETWORK_STRUCTURE-layer2">
+            <div class="NETWORK_STRUCTURE-node" style="flex:1;">
+                ⚡ Layer 2
+                <div class="NETWORK_STRUCTURE-node-info">
+                    Scaling & extensions – fast transactions
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub Layer 2: Liquid & Lightning + State Channels -->
+        <div class="NETWORK_STRUCTURE-layer2">
+            <div class="NETWORK_STRUCTURE-node" style="flex:1; margin-right:10px;">
+                💧 Liquid Network
+                <div class="NETWORK_STRUCTURE-node-info">
+                    Sidechain for fast and confidential transactions of large amounts.
+                    Bitcoins are locked on the main chain and moved as L-BTC on the Liquid sidechain.
+                    Secured via a federation, with conversion back to Bitcoin possible.
+                </div>
+            </div>
+            <div class="NETWORK_STRUCTURE-node" style="flex:1; margin-left:10px;">
+                ⚡ Lightning Network
+                <div class="NETWORK_STRUCTURE-node-info">
+                    Layer-2 solution for micropayments.
+                    State channels enable many fast off-chain transactions between two parties,
+                    before only the final balance is settled on Bitcoin Layer 1.
+                </div>
+                <!-- State Channels under Lightning -->
+                <div class="NETWORK_STRUCTURE-node NETWORK_STRUCTURE-state-channels" style="flex:1; margin-top:10px; font-size:0.9em; background-color:#333; padding:5px; border-radius:5px;">
+                    🔒 State Channels
+                    <div class="NETWORK_STRUCTURE-node-info" style="font-size:0.85em;">
+                        Off-chain channels for fast, private micropayments within the Lightning Network.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.NETWORK_STRUCTURE-node').forEach(node => {
+    node.addEventListener('click', () => node.classList.toggle('active'));
+});
+</script>
+
+
+
+{% endblock %}
