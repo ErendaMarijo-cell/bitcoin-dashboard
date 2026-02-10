@@ -2528,6 +2528,22 @@ def api_market_cap_coins():
 
 
 
+# ===========================================================
+# MARKET_CAP_COMPANIES – Public Company Market Capitalization
+# SSR Page + SPA Deep Link
+# ===========================================================
+@app.route("/market-cap/companies")
+def market_cap_companies():
+    return render_template(
+        "pages/market_cap/companies.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
 # ================================================================
 # 🔹 MARKET_CAP - COMPANIES (+ BTC aus Redis)   -- REDIS CACHED --
 # ================================================================
@@ -2762,6 +2778,23 @@ def api_market_cap_companies():
 
 
 
+# =====================================================
+# MARKET_CAP_CURRENCIES – Fiat Money Supply (M2)
+# SSR Page + SPA Deep Link
+# Monetary Base • Fiat Supply • BTC Comparison
+# =====================================================
+@app.route("/market-cap/currencies")
+def market_cap_currencies():
+    return render_template(
+        "pages/market_cap/currencies.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
 # ============================================================
 # 🔹 MARKET_CAP – CURRENCIES (BTC + Fiat M2, USD-normalisiert)
 # ============================================================
@@ -2906,6 +2939,22 @@ def api_market_cap_currencies():
             "status": "error",
             "error": str(e)
         }), 500
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
+# ========================================================
+# MARKET_CAP_COMMODITIES – Commodity Market Capitalization
+# SSR Page + SPA Deep Link
+# ========================================================
+@app.route("/market-cap/commodities")
+def market_cap_commodities():
+    return render_template(
+        "pages/market_cap/commodities.html"
+    )
 
 
 

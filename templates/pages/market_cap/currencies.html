@@ -1,0 +1,94 @@
+<!-- ====================================================================== -->
+<!-- MARKET_CAP_CURRENCIES – Fiat Money Supply (SSR + SPA Hybrid)          -->
+<!-- M2 Supply • Fiat vs Bitcoin • Monetary Base Comparison                -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Fiat Money Supply vs Bitcoin – M2 Market Cap Comparison
+{% endblock %}
+
+{% block description %}
+Compare global fiat money supply (M2) against Bitcoin’s market capitalization and analyze monetary base expansion across currencies.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<div id="MARKET_CAP_CURRENCIES" class="subtab-container fade-in-on-scroll">
+
+    <!-- Heading -->
+    <h1 class="subtab-title">
+        Money Supply (M2) Comparison – Fiat vs. Bitcoin
+    </h1>
+
+    <!-- Global Table Wrapper -->
+    <div class="market-cap-table-wrapper">
+
+        <!-- Global Table -->
+        <table class="market-cap-table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Currency</th>
+                    <th>Symbol</th>
+                    <th>Type</th>
+                    <th>Market Cap</th>
+                </tr>
+            </thead>
+
+            <tbody id="MARKET_CAP_CURRENCIES-tbody">
+                <!-- Data injected via JS -->
+            </tbody>
+        </table>
+
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box info-box-market-cap-currencies">
+        <strong>Note:</strong><br>
+        All values are normalized to <strong>USD</strong> for comparability.<br>
+        Fiat currencies are government-issued forms of money without intrinsic value,
+        whose acceptance is based on legal tender status.<br>
+        The figures shown are based on the <strong>M2 money supply</strong>,
+        which includes cash, demand deposits, and short-term savings deposits.
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- MARKET_CAP_CURRENCIES – Data Loader -->
+<script src="/static/js/MARKET_CAP_CURRENCIES.js"></script>
+
+<!-- Auto-load Fiat Market Cap when opened via SSR -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (window.loadMarketCapCurrencies) {
+        window.loadMarketCapCurrencies();
+    }
+
+});
+</script>
+
+{% endblock %}

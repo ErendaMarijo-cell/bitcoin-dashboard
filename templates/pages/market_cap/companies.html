@@ -1,0 +1,81 @@
+<!-- ====================================================================== -->
+<!-- MARKET_CAP_COMPANIES – Public Companies Market Cap (SSR + SPA Hybrid) -->
+<!-- Equities • Corporate Valuation • Global Company Rankings              -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Public Companies by Market Cap – Global Equity Rankings
+{% endblock %}
+
+{% block description %}
+Explore the largest public companies ranked by market capitalization and compare corporate valuations across sectors.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<div id="MARKET_CAP_COMPANIES" class="subtab-container fade-in-on-scroll">
+
+    <!-- Heading -->
+    <h1 class="subtab-title">
+        Public Companies by Market Capitalization
+    </h1>
+
+    <!-- Global Market Cap Table Wrapper -->
+    <div class="market-cap-table-wrapper">
+        <table class="market-cap-table">
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Company</th>
+                    <th>Symbol</th>
+                    <th>Sector</th>
+                    <th>Market Cap</th>
+                </tr>
+            </thead>
+
+            <tbody id="MARKET_CAP_COMPANIES-tbody">
+                <!-- Data injected via JS -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- MARKET_CAP_COMPANIES – Data Loader -->
+<script src="/static/js/MARKET_CAP_COMPANIES.js"></script>
+
+<!-- Auto-load Companies Market Cap when opened via SSR -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (window.loadMarketCapCompanies) {
+        window.loadMarketCapCompanies();
+    }
+
+});
+</script>
+
+{% endblock %}
