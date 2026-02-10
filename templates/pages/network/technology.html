@@ -1,0 +1,718 @@
+<!-- =================================================================== -->
+<!-- NETWORK_TECHNOLOGY – Bitcoin Network Technology (SSR + SPA Hybrid) -->
+<!-- Consensus • Cryptography • Protocol • Infrastructure               -->
+<!-- =================================================================== -->
+
+{% extends "base/base.html" %}
+
+{% block title %}
+Bitcoin Network Technology – Blockchain, Mining & Consensus
+{% endblock %}
+
+{% block description %}
+Learn how Bitcoin’s technology works, including blockchain architecture, mining, cryptography and proof-of-work consensus.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div id="NETWORK_TECHNOLOGY" class="subtab-container">
+    <h1 class="subtab-title">Technology Behind Bitcoin</h1>
+
+    <div class="accordion accordion-container" id="technologyAccordion">
+
+        <!-- Decentralization -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseDecentralization" aria-expanded="false" aria-controls="collapseDecentralization">
+                Decentralization
+            </div>
+            <div id="collapseDecentralization" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        Bitcoin is built on the principle of decentralization, meaning there is no central authority that controls the entire network.
+                        Instead, all transactions are verified and recorded by many independent computers known as nodes.
+                        Each node downloads the blockchain, validates transactions, and ensures that all participants share the same state of data.
+                        Nodes communicate with one another, exchange information, and collectively form the backbone of the network.
+                        This structure ensures that no single party can manipulate or control the system.
+                    </p>
+
+                    <p>
+                        This architecture makes the Bitcoin network highly resilient.
+                        Even if a large number of nodes fail or go offline, the system continues to operate,
+                        as the remaining nodes maintain the blockchain.
+                        Each node contributes to the correctness and consistency of the network.
+                        This principle is often referred to as a “trustless system”:
+                        participants do not need to trust a central authority,
+                        but instead rely on the automatic rules of the protocol and its consensus mechanisms.
+                    </p>
+
+                    <p>
+                        Decentralization also plays a crucial role in governance.
+                        Changes to the Bitcoin protocol must be accepted by a majority of nodes,
+                        preventing any single group from unilaterally altering the rules.
+                        This distributed decision-making process promotes transparency and long-term stability,
+                        while still allowing the network to evolve through broadly accepted improvements.
+                    </p>
+
+                    <p>
+                        In addition, the large number of nodes enables continuous verification of transactions
+                        and protects against fraud or double spending.
+                        Miners and nodes work together: miners create new blocks,
+                        which nodes then validate before adding them to the blockchain.
+                        The result is a highly secure, robust, and self-regulating system.
+                    </p>
+
+                    <p>
+                        In summary, distributed nodes ensure that Bitcoin remains independent,
+                        trustworthy, and resistant to manipulation.
+                        They form the foundation of a digital monetary network
+                        that operates without central banks or government control
+                        while providing long-term security and stability.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blockchain -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseBlockchain" aria-expanded="false" aria-controls="collapseBlockchain">
+                Blockchain
+            </div>
+            <div id="collapseBlockchain" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        The blockchain is the core component of Bitcoin and forms the foundation for all transactions within the network.
+                        It can be understood as a continuously growing chain of blocks,
+                        each containing a record of individual transactions.
+                        In addition to transaction data, every block includes a timestamp
+                        and the hash of the previous block, making the chain immutable.
+                        The hash acts as a digital fingerprint,
+                        ensuring that any modification to a block is immediately detectable.
+                    </p>
+
+                    <p>
+                        The blockchain is decentralized and not controlled by any central institution.
+                        Instead, thousands of independent nodes around the world store a full copy of the blockchain.
+                        When a new transaction is broadcast,
+                        these nodes verify its validity according to predefined protocol rules.
+                        Only after a new block is accepted by the majority of the network
+                        is it permanently added to the blockchain.
+                    </p>
+
+                    <p>
+                        One of the most important properties of the blockchain is immutability.
+                        Once a block has been confirmed, it cannot be altered without being detected.
+                        This creates trust even among participants who do not know each other
+                        and do not rely on a central authority.
+                        As a result, the blockchain is highly resistant to fraud and manipulation.
+                    </p>
+
+                    <p>
+                        The blockchain also provides transparency.
+                        All transactions can be verified at any time
+                        without revealing the private identities of the participants.
+                        This pseudonymity protects user privacy
+                        while still ensuring full traceability of all transactions.
+                        Compared to traditional banks or centralized payment systems,
+                        this represents a significant advantage.
+                    </p>
+
+                    <p>
+                        From a technical perspective, Bitcoin uses the SHA-256 hash function
+                        to cryptographically secure each block.
+                        This function generates a unique hash from the block data
+                        that is practically impossible to reverse or forge.
+                        Combined with the chaining of blocks,
+                        this ensures the integrity of the entire system.
+                    </p>
+
+                    <p>
+                        The blockchain is not merely a transaction database,
+                        but also the foundation for further innovation within the Bitcoin ecosystem.
+                        Layer-2 solutions, wallet architectures,
+                        and advanced payment mechanisms are all built upon this secure and transparent structure.
+                        Anyone seeking to understand Bitcoin
+                        should recognize the blockchain as the central backbone
+                        upon which all functionality depends.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proof of Work -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapsePoW" aria-expanded="false" aria-controls="collapsePoW">
+                Proof of Work
+            </div>
+            <div id="collapsePoW" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        Proof of Work (PoW) is Bitcoin’s consensus mechanism
+                        that ensures transactions are securely confirmed and added to the blockchain.
+                        It is the process through which miners create new blocks
+                        while simultaneously protecting the network against fraud and manipulation.
+                        Without Proof of Work, it would be significantly easier
+                        for attackers to alter the blockchain or perform double-spending attacks.
+                    </p>
+
+                    <p>
+                        In Proof of Work, miners solve complex cryptographic puzzles
+                        that are computationally intensive to solve
+                        but easy for the network to verify.
+                        These puzzles involve finding a valid block hash
+                        that meets specific criteria.
+                        Miners test millions of possible combinations
+                        until a solution is found.
+                        This process is known as mining.
+                        The first miner to find a valid solution
+                        is allowed to add the block to the blockchain
+                        and receives a reward in newly issued bitcoins,
+                        known as the block reward.
+                    </p>
+
+                    <p>
+                        A critical component of Proof of Work is difficulty adjustment.
+                        Approximately every 2,016 blocks,
+                        the Bitcoin protocol automatically adjusts the mining difficulty
+                        to ensure that a new block is produced roughly every ten minutes on average.
+                        If more miners join the network,
+                        the difficulty increases to maintain a stable block interval.
+                        This mechanism provides predictability and stability
+                        regardless of fluctuations in total network hash power.
+                    </p>
+
+                    <p>
+                        Proof of Work is fundamental to Bitcoin’s security.
+                        An attacker would need to control more than 50% of the network’s total hash rate
+                        to manipulate transactions,
+                        a scenario known as a 51% attack.
+                        Due to the immense computational power and associated costs required,
+                        such an attack is considered economically infeasible in practice.
+                        At the same time, PoW ensures that all participants
+                        share a consistent view of the blockchain
+                        and that invalid blocks are rejected.
+                    </p>
+
+                    <p>
+                        In simple terms, Proof of Work functions as a verifiable proof of computation.
+                        Miners must expend real-world energy and computational resources
+                        to generate a valid block hash that satisfies network requirements.
+                        This verifiable effort makes manipulation extremely costly,
+                        secures the ordering of blocks,
+                        and ensures that only valid blocks become part of the blockchain.
+                    </p>
+
+                    <p>
+                        In summary, Proof of Work is the cornerstone of Bitcoin’s security model.
+                        It guarantees reliable transaction confirmation,
+                        preserves the immutability of the blockchain,
+                        and enables a decentralized and transparent system
+                        without relying on central authorities.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hashrate -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseHashrate" aria-expanded="false" aria-controls="collapseHashrate">
+                Hashrate
+            </div>
+            <div id="collapseHashrate" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        Hashrate refers to the total computational power
+                        dedicated to Proof of Work within the Bitcoin network.
+                        It represents how many cryptographic hash calculations per second
+                        are performed collectively by all miners
+                        to find valid blocks and confirm transactions.
+                        Hashrate is a key indicator of the network’s security and stability.
+                    </p>
+
+                    <p>
+                        A high hashrate indicates that a significant amount of computational power
+                        is actively securing the network.
+                        This makes attempts to manipulate the blockchain
+                        extremely costly and difficult,
+                        as an attacker would need to control a large portion of this power.
+                        As hashrate increases,
+                        the network becomes more resistant to attacks.
+                    </p>
+
+                    <p>
+                        Hashrate is primarily determined
+                        by the number of active miners
+                        and the hardware they use.
+                        Modern mining operations rely on specialized ASIC devices
+                        optimized exclusively for computing SHA-256 hashes,
+                        offering far greater efficiency
+                        than general-purpose computers or graphics cards.
+                    </p>
+
+                    <p>
+                        To maintain a consistent block time of approximately ten minutes,
+                        the Bitcoin protocol automatically adjusts mining difficulty.
+                        When hashrate rises, difficulty increases,
+                        making it computationally harder to find valid blocks.
+                        When hashrate declines, difficulty is reduced accordingly.
+                    </p>
+
+                    <p>
+                        Difficulty is measured relative to a fixed reference point known as Difficulty 1,
+                        which was defined at the launch of the network
+                        based on the computational power available at that time.
+                        Current difficulty levels express
+                        how much harder mining has become compared to this original baseline.
+                    </p>
+
+                    <p>
+                        In summary, hashrate reflects
+                        the collective computational effort protecting the Bitcoin network,
+                        while difficulty ensures that this effort
+                        translates into a stable and predictable block production schedule.
+                        Together, these mechanisms form a core element
+                        of Bitcoin’s security and self-regulation.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mempool -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseMempool" aria-expanded="false" aria-controls="collapseMempool">
+                Mempool
+            </div>
+            <div id="collapseMempool" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        The mempool (memory pool) is the temporary holding area
+                        for unconfirmed transactions within the Bitcoin network.
+                        Every valid transaction broadcast to the network
+                        is first placed in the mempool of nodes
+                        before being included in a block by miners.
+                    </p>
+
+                    <p>
+                        Block space is technically limited.
+                        A Bitcoin block can effectively include
+                        approximately 1,000,000 virtual bytes (vB) of transaction data.
+                        Because the number of pending transactions often exceeds available block space,
+                        a natural competition for inclusion arises.
+                    </p>
+
+                    <p>
+                        Miners typically prioritize transactions
+                        based on the fee paid per virtual byte (sat/vB)
+                        in order to use limited block space efficiently.
+                        Transactions with higher fees are generally confirmed more quickly,
+                        while lower-fee transactions may remain in the mempool longer
+                        during periods of high network congestion.
+                    </p>
+
+                    <p>
+                        The mempool is not a single centralized location,
+                        but exists independently across many nodes.
+                        Depending on node configuration,
+                        relay policies, and current network conditions,
+                        the exact contents of the mempool may vary slightly between nodes.
+                    </p>
+
+                    <p>
+                        When the number of unconfirmed transactions increases significantly,
+                        the mempool visibly fills up.
+                        During such periods, the fee market intensifies,
+                        as users are willing to pay higher fees
+                        to secure faster confirmation.
+                        When congestion decreases,
+                        the mempool clears and required fees decline accordingly.
+                    </p>
+
+                    <p>
+                        The mempool therefore represents the mechanism
+                        through which supply and demand for block space become visible.
+                        It explains why transaction fees fluctuate
+                        and why the required fee
+                        often exceeds the protocol’s minimum relay fee.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layer 1 -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseLayer1" aria-expanded="false" aria-controls="collapseLayer1">
+                Layer 1
+            </div>
+            <div id="collapseLayer1" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        Layer 1 refers to Bitcoin’s main blockchain
+                        and forms the technical foundation of the entire network.
+                        At this level, transactions are processed and recorded in blocks.
+                        Each block contains a list of transactions,
+                        a timestamp, and the hash of the previous block.
+                        Linking these blocks together creates the blockchain,
+                        ensuring the integrity and immutability of all transactions.
+                    </p>
+
+                    <p>
+                        The base layer is designed to support decentralized consensus mechanisms.
+                        In Bitcoin, this is achieved through Proof of Work,
+                        where miners solve cryptographic puzzles to produce new blocks.
+                        The resulting computational effort provides a high level of security
+                        and makes manipulation extremely difficult.
+                        All validation processes occur directly at the protocol level,
+                        without reliance on centralized intermediaries.
+                    </p>
+
+                    <p>
+                        A defining feature of this architecture is decentralization.
+                        There is no central authority approving transactions.
+                        Instead, thousands of nodes worldwide
+                        independently verify transactions,
+                        store copies of the blockchain,
+                        and ensure a consistent shared state.
+                        This design makes the network resilient
+                        to outages and coordinated attacks.
+                    </p>
+
+                    <p>
+                        Layer 1 also serves as the foundation of trust and security
+                        for the entire Bitcoin system.
+                        Transactions originating from higher layers, such as Layer 2,
+                        ultimately rely on Layer 1 for final settlement.
+                        For this reason, it is often referred to as the settlement layer,
+                        where transactions achieve irreversible finality.
+                    </p>
+
+                    <p>
+                        In simple terms, Layer 1 can be understood
+                        as the “main highway” of the Bitcoin network.
+                        Every transaction, regardless of size or purpose,
+                        must be anchored here
+                        before it is considered final.
+                        Miners, nodes, and consensus mechanisms
+                        work together to ensure security,
+                        transparency, and immutability.
+                    </p>
+
+                    <p>
+                        In summary, Layer 1 represents Bitcoin’s core infrastructure.
+                        It ensures that transactions are permanently,
+                        transparently, and securely recorded.
+                        Without this base layer,
+                        there would be no reliable foundation
+                        for Layer-2 solutions, wallets, or higher-level applications.
+                        Anyone seeking to understand Bitcoin
+                        should view Layer 1 as the fundamental backbone of the system.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Layer 2 -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseLayer2" aria-expanded="false" aria-controls="collapseLayer2">
+                Layer 2
+            </div>
+            <div id="collapseLayer2" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        Layer 2 refers to extensions built on top of the Bitcoin blockchain
+                        that aim to process transactions more efficiently
+                        without modifying the base layer itself.
+                        The primary goal is to increase speed and scalability,
+                        while security and final settlement
+                        remain anchored to the main blockchain.
+                    </p>
+
+                    <p>
+                        The most well-known and technically clear example
+                        of a true Layer-2 solution
+                        is the Lightning Network.
+                        It operates using payment channels
+                        that are opened directly between participants.
+                        Channel opening and closing occur on-chain,
+                        while all intermediate transactions take place off-chain.
+                    </p>
+
+                    <p>
+                        This allows an unlimited number of transactions
+                        to be executed almost instantly
+                        and with very low fees,
+                        without permanently storing each transaction on the blockchain.
+                        Only the final channel balance
+                        is recorded on-chain as a settled state.
+                        Security is derived directly
+                        from the rules of the base layer.
+                    </p>
+
+                    <p>
+                        In simplified terms,
+                        this creates an additional transaction layer
+                        that relieves congestion on the blockchain
+                        without altering its security model.
+                        The main chain continues to function
+                        as the final settlement layer,
+                        while frequent or small payments
+                        are handled off-chain.
+                    </p>
+
+                    <p>
+                        It is important to distinguish Layer-2 solutions
+                        from so-called sidechains.
+                        Sidechains operate in parallel to the Bitcoin blockchain
+                        and maintain their own consensus
+                        or trust assumptions.
+                        Although they can interact with Bitcoin,
+                        they are not considered true Layer-2 solutions,
+                        as their security is not fully derived
+                        from Bitcoin’s base layer.
+                    </p>
+
+                    <p>
+                        In summary, Layer 2 expands Bitcoin
+                        with a scalable usage layer
+                        without altering the properties of the base layer.
+                        True Layer-2 solutions such as the Lightning Network
+                        enable fast payments,
+                        while the blockchain remains responsible
+                        for security, scarcity, and final settlement.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Halving -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseHalving" aria-expanded="false" aria-controls="collapseHalving">
+                Halving
+            </div>
+            <div id="collapseHalving" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        The Bitcoin halving is a protocol-defined mechanism
+                        that periodically reduces the block reward paid to miners by half.
+                        Its purpose is to control the issuance of new bitcoins
+                        and permanently enforce the maximum supply of 21 million coins.
+                        As a result, Bitcoin follows a clearly defined
+                        and predictable monetary issuance schedule.
+                    </p>
+
+                    <p>
+                        The reduction of the block reward
+                        directly affects supply dynamics and market structure.
+                        With each halving, fewer new bitcoins enter circulation,
+                        while existing coins remain unchanged.
+                        Over time, this creates increasing scarcity.
+                    </p>
+
+                    <p>
+                        For miners, halving events reduce revenue per block.
+                        To remain profitable,
+                        efficiency, access to low-cost energy,
+                        and modern hardware become increasingly important.
+                        Despite declining block rewards,
+                        network security is preserved,
+                        as mining activity and difficulty
+                        automatically adjust.
+                    </p>
+
+                    <p>
+                        Technically, halving is triggered by a fixed rule:
+                        after every 210,000 blocks,
+                        the block reward is automatically reduced by half.
+                        With an average block time of approximately ten minutes,
+                        this corresponds to roughly four years.
+                        The mechanism operates autonomously
+                        without any central coordination.
+                    </p>
+
+                    <p>
+                        Historical overview of block rewards:
+                        <br>
+                        • 03/01/2009 – 28/11/2012: 50 BTC per block (initial phase)
+                        <br>
+                        • 28/11/2012 – 09/07/2016: 25 BTC per block (1st halving cycle)
+                        <br>
+                        • 09/07/2016 – 11/05/2020: 12.5 BTC per block (2nd halving cycle)
+                        <br>
+                        • 11/05/2020 – 20/04/2024: 6.25 BTC per block (3rd halving cycle)
+                        <br>
+                        • From 20/04/2024 onward: 3.125 BTC per block (4th halving cycle)
+                        <br>
+                        • Expected around year 2140: block reward reaches 0 BTC
+                    </p>
+
+                    <p>
+                        In summary, halving ensures that Bitcoin
+                        operates under a fixed and non-manipulable monetary policy.
+                        The gradual reduction of new supply
+                        makes the system predictable over the long term,
+                        fundamentally distinguishing Bitcoin
+                        from traditional fiat currencies
+                        and forming a core pillar
+                        of its economic design.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallet -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseWallet" aria-expanded="false" aria-controls="collapseWallet">
+                Wallet
+            </div>
+            <div id="collapseWallet" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        A wallet is the digital interface
+                        used to store and manage Bitcoin and other cryptocurrencies.
+                        Unlike traditional banks,
+                        bitcoins are not stored physically,
+                        but exist solely as entries on the blockchain.
+                        A wallet holds the private keys
+                        that grant access to these coins.
+                        Whoever controls the private key
+                        can send or receive bitcoin,
+                        making key security the most critical aspect
+                        of cryptocurrency ownership.
+                    </p>
+
+                    <p>
+                        There are different types of wallets,
+                        each offering varying levels of security
+                        and convenience.
+                        Software wallets are applications
+                        running on computers or smartphones.
+                        They are convenient for everyday use,
+                        but more vulnerable to malware or hacking.
+                        Hardware wallets are dedicated devices
+                        that store private keys offline,
+                        providing a very high level of security.
+                        Paper wallets consist of keys printed on paper
+                        and stored completely offline,
+                        offering strong security
+                        but reduced usability.
+                    </p>
+
+                    <p>
+                        Wallets operate using public-key cryptography.
+                        The public key functions as a receiving address,
+                        similar to a bank account number.
+                        The private key acts like a password
+                        that grants control over the coins.
+                        This cryptographic system ensures
+                        that transactions are secure and verifiable
+                        without requiring a central authority.
+                    </p>
+
+                    <p>
+                        Backup strategy is another critical consideration.
+                        Losing a private key
+                        or damaging a wallet
+                        results in permanent loss of access to the coins.
+                        Secure backups should therefore be stored
+                        in multiple locations,
+                        ideally in encrypted form.
+                        Many wallets also generate a recovery seed —
+                        a sequence of words
+                        that allows the wallet
+                        to be restored at any time.
+                    </p>
+
+                    <p>
+                        For newcomers, it is essential
+                        to understand wallets not merely as storage tools,
+                        but as key components of personal security.
+                        This includes using strong passwords,
+                        enabling two-factor authentication,
+                        and keeping software up to date.
+                        Wallets provide direct access to bitcoin
+                        and are therefore a central element
+                        of usage, custody, and security
+                        within the Bitcoin network.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security & Cryptography -->
+        <div class="accordion-card">
+            <div class="accordion-header" data-toggle="collapse" data-target="#collapseSecurity" aria-expanded="false" aria-controls="collapseSecurity">
+                Security & Cryptography
+            </div>
+            <div id="collapseSecurity" class="collapse" data-parent="#technologyAccordion">
+                <div class="accordion-body">
+                    <p>
+                        Bitcoin’s security is based on clearly defined
+                        cryptographic mechanisms
+                        that make manipulation practically impossible.
+                        Central components include cryptographic hash functions
+                        such as SHA-256
+                        as well as digital signatures.
+                        Each block contains a hash
+                        derived from its data,
+                        acting as a unique fingerprint:
+                        even the smallest modification
+                        would be immediately detected.
+                    </p>
+
+                    <p>
+                        Digital signatures ensure
+                        that transactions can only be authorized
+                        by the holder of the corresponding private key.
+                        These signatures can be verified
+                        by all network participants
+                        without revealing the private key itself.
+                        This guarantees authenticity and integrity
+                        without relying on centralized trust.
+                    </p>
+
+                    <p>
+                        This cryptographic security
+                        is reinforced by the Proof-of-Work consensus mechanism.
+                        The computational effort required
+                        makes retroactive changes to the blockchain
+                        extremely costly and practically infeasible.
+                        A successful attack
+                        would require overwhelming control
+                        over the network’s total hash power.
+                    </p>
+
+                    <p>
+                        Another critical security factor
+                        is decentralization.
+                        Thousands of independent nodes
+                        store and validate the blockchain in parallel.
+                        As a result,
+                        the network remains operational
+                        even if individual participants fail
+                        or are compromised.
+                        Security is therefore achieved
+                        not through trust in actors,
+                        but through verifiable rules
+                        and distributed enforcement.
+                    </p>
+
+                    <p>
+                        This security model
+                        can be summarized
+                        by a fundamental principle:
+                        “Don’t trust, verify.”
+                        Trust is replaced
+                        by transparent protocol rules,
+                        cryptographic proof,
+                        and independent verification.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
