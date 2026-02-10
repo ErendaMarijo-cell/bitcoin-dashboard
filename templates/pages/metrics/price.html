@@ -1,0 +1,96 @@
+<!-- ====================================================================== -->
+<!-- METRICS_BTC_USD_EUR – BTC/USD & BTC/EUR Chart (SSR + SPA Hybrid)      -->
+<!-- Live Price • Fiat Comparison • Macro Context                           -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Bitcoin Price – BTC/USD & BTC/EUR Live Chart
+{% endblock %}
+
+{% block description %}
+Track the live Bitcoin price in USD and EUR with historical context, fiat comparison and macro market analysis.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<!-- BTC/USD & BTC/EUR chart headline -->
+<h1 class="headline-metrics-btc-usd-eur">
+    Bitcoin Price Chart in USD and EUR
+</h1>
+
+
+<!-- Price Change Bar -->
+<div class="metrics-change-bar" id="BTC_METRICS_CHANGE_BAR">
+    <span data-range="24h">—</span>
+    <span data-range="7d">—</span>
+    <span data-range="30d">—</span>
+    <span data-range="1y">—</span>
+</div>
+
+
+<!-- Chart Container -->
+<div id="METRICS_BTC_USD_EUR" class="subtab-container">
+    <div class="chart-wrapper chart-flex">
+        <canvas
+            id="METRICS_BTC_USD_EUR_CANVAS"
+            class="chart-canvas">
+        </canvas>
+    </div>
+</div>
+
+
+<!-- Info Box -->
+<div class="info-box info-box-metrics-price">
+
+    <strong>About Bitcoin Price</strong><br><br>
+
+    This chart shows the Bitcoin reference price in USD and EUR over time.
+    It is intended as a macro-level price context, not as a short-term trading tool.<br><br>
+
+    Displaying both USD and EUR highlights Bitcoin’s behavior across different fiat systems
+    and helps distinguish global price trends from currency-specific effects.<br><br>
+
+    For deeper market analysis, price data should always be interpreted alongside
+    network metrics such as hash rate, difficulty, transaction volume, and fees.
+
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- BTC Price Chart Loader -->
+<script src="/static/js/METRICS_BTC_USD_EUR.js"></script>
+
+<!-- Auto-load when opened directly (SSR entry) -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // SPA + SSR Hybrid Loader
+    if (window.loadBTCMetrics) {
+        window.loadBTCMetrics();
+    }
+
+});
+</script>
+
+{% endblock %}
