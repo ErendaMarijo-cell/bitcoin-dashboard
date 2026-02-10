@@ -1,94 +1,29 @@
 <!-- =========================================== -->
 <!-- BITCOIN-DASHBOARD – Hauptseite / Index HTML -->
 <!-- =========================================== -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
 
+{% extends "base/base.html" %}
+
+{% block head_extra %}
     <!-- SEO: Default (Home) -->
     <title>Bitcoin Dashboard – Live Price, Volume, Fees, Hashrate & Mempool</title>
     <meta name="description"
-        content="Live Bitcoin dashboard with real-time price, transaction volume & amount, fees, difficulty, hashrate, mempool data, and rolling on-chain metrics." />
+          content="Live Bitcoin dashboard with real-time price, transaction volume & amount, fees, difficulty, hashrate, mempool data, and rolling on-chain metrics." />
     <meta name="robots" content="index, follow" />
-    
-    <!-- SEO: Canonical URL (HTTPS authoritative, prevent HTTP/HTTPS duplication) -->
+
+    <!-- SEO: Canonical URL -->
     <link rel="canonical" href="https://bitcoin-dashboard.net/" />
 
-    <!-- jQuery – DOM-Manipulation & Event Handling -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- (Optional) extra icons, wenn du sie behalten willst -->
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
+{% endblock %}
 
-    <!-- Popper.js – für Bootstrap Tooltips, Dropdowns & Popovers -->
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-
-    <!-- Bootstrap CSS – Grid-System & Layout -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-
-    <!-- Bootstrap JS – interaktive Komponenten (Modals, Dropdowns, etc.) -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- Plotly.js – für Subtabs, die Plotly-Charts nutzen -->
-    <script src="https://cdn.plot.ly/plotly-2.25.2.min.js"></script>
-
-    <!-- Chart.js – für Bitcoin Charts (BTC/USD, BTC/EUR, Hashrate, etc.) -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- Chart.js Date Adapter – für Zeitachsen (z.B. Kalenderwochen) -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-
-    <!-- Chart.js Zoom Plugin – Candle für Chart.js Charts -->    
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial"></script>
-
-    <!-- Chart.js Zoom Plugin – Zoom & Pan für Chart.js Charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-
-
-    <script src="/static/js/labels.js"></script>
-
-    <!-- FONTS -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-
-    <!-- Basis / Foundation -->
-    <link rel="stylesheet" href="/static/css/base.css">
-    <!-- Tabs & Subtabs – Desktop -->
-    <link rel="stylesheet" href="/static/css/tabs.css">
-    <!-- Home – Mobile (Spezialfall) -->
-    <link rel="stylesheet" href="/static/css/home-mobile.css">
-    <!-- Tabs & Subtabs – Mobile (Generic) -->
-    <link rel="stylesheet" href="/static/css/tabs-mobile.css">
-
-    
-
-</head>
+{% block content %}
 
 
 
-<!-- ============================================================================================================================================================== -->
-<!-- ============================================================================================================================================================== -->
 
-
-
-<body>
-
-    <!-- NAVBAR -->
-    <nav>
-        <button class="tabButton active" data-tab="home" data-i18n="nav.home">Home</button>
-        <button class="tabButton" data-tab="revolution" data-i18n="nav.revolution">Bitcoin Revolution</button>
-        <button class="tabButton" data-tab="network" data-i18n="nav.network">Bitcoin Network</button>
-        <button class="tabButton" data-tab="metrics" data-i18n="nav.metrics">Metrics</button>
-        <button class="tabButton" data-tab="review" data-i18n="nav.review">Review</button>
-        <button class="tabButton" data-tab="explorer" data-i18n="nav.explorer">Explorer</button>
-        <button class="tabButton" data-tab="treasuries" data-i18n="nav.treasuries">Bitcoin Treasuries</button>
-        <button class="tabButton" data-tab="market_cap" data-i18n="nav.marketcap">Market Capitalization</button>
-        <button class="tabButton" data-tab="indicators" data-i18n="nav.indicators">Indicators</button>
-        <button class="tabButton" data-tab="info" data-i18n="nav.info">Info</button>
-    </nav>
 
 
     <!-- HOME -->
@@ -720,37 +655,50 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!tabButtons.length) return;
 
     tabButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
 
-            const tab = btn.dataset.tab;
-            if (!tab) return;
+        const isSSR = btn.dataset.ssr === "1";
+        const isSPA = btn.dataset.spa === "1";
 
-            // 🔍 SEO: Meta-Tags für Haupt-Tab setzen
-            if (typeof updateMetaForMainTab === 'function') {
-                updateMetaForMainTab(tab);
-            }
+        // ✅ SSR-Link: nur bei echtem User-Klick navigieren
+        if (isSSR) {
+        if (!e.isTrusted) { e.preventDefault(); return; } // ⛔ verhindert Reload-Loop durch router.js
+        return; // Browser darf normal zu /revolution/history navigieren
+        }
 
-            document.querySelectorAll('.tabContent')
-                .forEach(div => div.style.display = 'none');
+        // ✅ SPA-Link: niemals normal navigieren (Hash/Link nur für SEO/Copy)
+        if (isSPA) e.preventDefault();
 
-            const container = document.getElementById(tab);
-            if (!container) return;
+        // ----- ab hier bleibt DEIN bestehender SPA Code -----
+        const tab = btn.dataset.tab;
+        if (!tab) return;
 
-            container.style.display = 'block';
+        if (typeof updateMetaForMainTab === 'function') {
+        updateMetaForMainTab(tab);
+        }
 
-            tabButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        document.querySelectorAll('.tabContent')
+        .forEach(div => div.style.display = 'none');
 
-            const firstSub = container.querySelector('.subTabButton');
-            if (firstSub && typeof showSubTab === 'function') {
-                showSubTab(firstSub);
-            }
+        const container = document.getElementById(tab);
+        if (!container) return;
 
-            if (typeof attachSubTabEvents === 'function') {
-                attachSubTabEvents(container);
-            }
-        });
+        container.style.display = 'block';
+
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const firstSub = container.querySelector('.subTabButton');
+        if (firstSub && typeof showSubTab === 'function') {
+        showSubTab(firstSub);
+        }
+
+        if (typeof attachSubTabEvents === 'function') {
+        attachSubTabEvents(container);
+        }
     });
+    });
+
 
 });
 
@@ -1903,5 +1851,5 @@ $(document).ready(function() {
 });
 
 </script>
-</body>
-</html>
+
+{% endblock %}
