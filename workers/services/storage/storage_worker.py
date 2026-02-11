@@ -536,6 +536,82 @@ def persist_btc_tx_fees():
 # ================================================================================================================================= #
 
 
+# ============================
+# STORAGE_SEO_TXID_INDEX
+# ============================
+
+def persist_seo_txid_index():
+    """
+    Persistiert den TXID SEO Index (Dedup / Flywheel State)
+
+    Quelle:
+        Redis Set → seo:txid:indexed
+
+    Ziel:
+        /raid/data/bitcoin_dashboard/seo/txid_index/
+
+    Typ:
+        Daily Snapshot (overwrite JSON)
+    """
+
+    SEO_TXID_INDEX_KEY = "seo:txid:indexed"
+
+    r = redis.Redis(
+        host="localhost",
+        port=6379,
+        db=0,
+        decode_responses=False
+    )
+
+    raw_txids = r.smembers(SEO_TXID_INDEX_KEY)
+
+    if not raw_txids:
+        print("[STORAGE][SEO_TXID] skip (no data)")
+        return
+
+    # Decode bytes → str
+    txids = sorted(
+        x.decode() if isinstance(x, bytes) else x
+        for x in raw_txids
+    )
+
+    # Safety Gate
+    if len(txids) < 10:
+        print("[STORAGE][SEO_TXID] skip (too few txids)")
+        return
+
+    DST_DIR = os.path.join(
+        BASE_DST_DIR,
+        "seo",
+        "txid_index"
+    )
+    os.makedirs(DST_DIR, exist_ok=True)
+
+    day = time.strftime("%Y-%m-%d", time.gmtime())
+    path = os.path.join(DST_DIR, f"txid_index_{day}.json")
+    tmp  = path + ".tmp"
+
+    payload = {
+        "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "total_indexed": len(txids),
+        "txids": txids
+    }
+
+    with open(tmp, "w") as f:
+        json.dump(payload, f, separators=(",", ":"))
+
+    os.replace(tmp, path)
+
+    print(
+        f"[STORAGE][SEO_TXID] snapshot → "
+        f"{os.path.basename(path)} "
+        f"({len(txids)} txids)"
+    )
+
+
+# ================================================================================================================================= #
+
+
 # ==============================
 # STORAGE_DASHBOARD_TRAFFIC
 # ==============================
@@ -683,6 +759,7 @@ def run_once():
     persist_btc_tx_volume()
     persist_btc_tx_amount()
     persist_btc_tx_fees()
+    persist_seo_txid_index()
     persist_dashboard_traffic()
     
 
