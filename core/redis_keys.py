@@ -369,7 +369,7 @@ EXPLORER_ADDRESSES_MAX_ADDRESSES_DEFAULT = 25
 # ============================================
 
 SEO_TXID_INDEXED_SET = "seo:txid:indexed"
-SEO_TXID_SITEMAP_PATH = "/home/marijo/Dokumente/NODE_DASHBOARD/sitemap_tx.xml"
+SEO_TXID_SITEMAP_PATH = "/home/marijo/Dokumente/NODE_DASHBOARD/static/sitemaps/txids/sitemap_txids_1.xml"
 
 SEO_TXID_EXTRACT_INTERVAL = 60  # seconds
 SEO_TXID_BATCH_LIMIT = 500      # max new per cycle

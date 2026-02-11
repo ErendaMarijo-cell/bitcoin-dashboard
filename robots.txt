@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bitcoin-dashboard.net/static/sitemaps/sitemap_index.xml
+
