@@ -1,11 +1,18 @@
 # ==================================================
 # 🔥 TXID SEO EXTRACTOR WORKER
-# Seeds TX Explorer Pages + Sitemap Flywheel
+# Sharded Sitemap Builder + Hourly Rebuild Policy
 # ==================================================
 
-
+import glob
 import sys
 import os
+import time
+import json
+import redis
+
+# ============================================
+# 🔧 Project Root
+# ============================================
 
 BASE_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../../")
@@ -14,23 +21,22 @@ BASE_DIR = os.path.abspath(
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
-
-
-import time
-import json
-import redis
-from xml.etree.ElementTree import Element, SubElement, ElementTree
+# ============================================
+# 🔑 Redis Keys / Config
+# ============================================
 
 from core.redis_keys import (
     BTC_TX_AMOUNT_HISTORY_KEY,
     SEO_TXID_INDEXED_SET,
-    SEO_TXID_SITEMAP_PATH,
     SEO_TXID_EXTRACT_INTERVAL,
     SEO_TXID_BATCH_LIMIT,
+    SEO_TXID_SITEMAP_DIRTY_KEY,
+    SEO_TXID_SITEMAP_LAST_BUILD_KEY,
+    SITEMAP_REBUILD_INTERVAL_SEC,
 )
 
 # ============================================
-# 🔧 Redis
+# 🔧 Redis Client
 # ============================================
 
 r = redis.Redis(
@@ -70,35 +76,167 @@ def load_all_txids():
     return list(txids)
 
 # ============================================
-# 🧱 Sitemap Builder
+# 🧱 Sharded Sitemap Builder
 # ============================================
 
-def build_sitemap(txids):
+SITEMAP_MAX_URLS = 50000
+SITEMAP_SHARD_PAD = 6
 
-    urlset = Element(
-        "urlset",
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-    )
+TXID_URL_PREFIX = "https://bitcoin-dashboard.net/explorer/tx/"
+SITEMAP_BASE_URL = "https://bitcoin-dashboard.net/static/sitemaps/txids/"
 
-    for txid in txids:
+def _write_urlset_header(fp):
+    fp.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+    fp.write('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
 
-        url = SubElement(urlset, "url")
+def _write_urlset_footer(fp):
+    fp.write("</urlset>\n")
 
-        loc = SubElement(url, "loc")
-        loc.text = f"https://bitcoin-dashboard.net/explorer/tx/{txid}"
+def _write_sitemapindex(path, shard_files):
 
-        changefreq = SubElement(url, "changefreq")
-        changefreq.text = "weekly"
+    tmp = path + ".tmp"
 
-        priority = SubElement(url, "priority")
-        priority.text = "0.8"
+    with open(tmp, "w", encoding="utf-8") as fp:
+        fp.write('<?xml version="1.0" encoding="UTF-8"?>\n')
+        fp.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
 
-    tree = ElementTree(urlset)
-    tree.write(
-        SEO_TXID_SITEMAP_PATH,
-        encoding="utf-8",
-        xml_declaration=True
-    )
+        for name in shard_files:
+            fp.write("  <sitemap>\n")
+            fp.write(f"    <loc>{SITEMAP_BASE_URL}{name}</loc>\n")
+            fp.write("  </sitemap>\n")
+
+        fp.write("</sitemapindex>\n")
+        fp.flush()
+        os.fsync(fp.fileno())
+
+    os.replace(tmp, path)
+
+def rebuild_txid_sitemaps_sharded():
+
+    sitemap_dir = os.path.join(BASE_DIR, "static", "sitemaps", "txids")
+    os.makedirs(sitemap_dir, exist_ok=True)
+
+    def shard_name(i: int) -> str:
+        return f"sitemap_txids_{i:0{SITEMAP_SHARD_PAD}d}.xml"
+
+    # Cleanup old shards
+    for old in glob.glob(os.path.join(sitemap_dir, "sitemap_txids_*.xml")):
+        if not old.endswith("index.xml"):
+            os.remove(old)
+
+    shard_files = []
+    shard_idx = 1
+    urls_in_shard = 0
+    total_written = 0
+
+    current_path = os.path.join(sitemap_dir, shard_name(shard_idx))
+    fp = open(current_path, "w", encoding="utf-8")
+
+    _write_urlset_header(fp)
+    shard_files.append(shard_name(shard_idx))
+
+    cursor = 0
+
+    try:
+        while True:
+
+            cursor, members = r.sscan(
+                SEO_TXID_INDEXED_SET,
+                cursor=cursor,
+                count=5000
+            )
+
+            if members:
+                for txid in members:
+
+                    if urls_in_shard >= SITEMAP_MAX_URLS:
+                        _write_urlset_footer(fp)
+                        fp.flush()
+                        os.fsync(fp.fileno())
+                        fp.close()
+
+                        shard_idx += 1
+                        urls_in_shard = 0
+
+                        current_path = os.path.join(
+                            sitemap_dir,
+                            shard_name(shard_idx)
+                        )
+
+                        fp = open(current_path, "w", encoding="utf-8")
+                        _write_urlset_header(fp)
+                        shard_files.append(shard_name(shard_idx))
+
+                    fp.write("  <url>\n")
+                    fp.write(f"    <loc>{TXID_URL_PREFIX}{txid}</loc>\n")
+                    fp.write("    <changefreq>weekly</changefreq>\n")
+                    fp.write("    <priority>0.8</priority>\n")
+                    fp.write("  </url>\n")
+
+                    urls_in_shard += 1
+                    total_written += 1
+
+            if cursor == 0:
+                break
+
+        _write_urlset_footer(fp)
+        fp.flush()
+        os.fsync(fp.fileno())
+        fp.close()
+
+        # Write shard index
+        index_path = os.path.join(
+            sitemap_dir,
+            "sitemap_txids_index.xml"
+        )
+
+        _write_sitemapindex(index_path, shard_files)
+
+        print(
+            f"[TXID SEO] Sharded sitemaps rebuilt: "
+            f"{len(shard_files)} files, {total_written} urls"
+        )
+
+        # 🔥 Set last rebuild timestamp
+        r.set(
+            SEO_TXID_SITEMAP_LAST_BUILD_KEY,
+            str(time.time())
+        )
+
+    finally:
+        try:
+            if not fp.closed:
+                fp.close()
+        except Exception:
+            pass
+
+# ============================================
+# 🕒 Rebuild Policy
+# ============================================
+
+def should_rebuild_sitemap():
+
+    # Dirty trigger
+    dirty = r.get(SEO_TXID_SITEMAP_DIRTY_KEY)
+    if dirty:
+        print("[TXID SEO] Rebuild trigger → DIRTY FLAG")
+        r.delete(SEO_TXID_SITEMAP_DIRTY_KEY)
+        return True
+
+    # Hourly trigger
+    last = r.get(SEO_TXID_SITEMAP_LAST_BUILD_KEY)
+
+    if not last:
+        print("[TXID SEO] Rebuild trigger → FIRST BUILD")
+        return True
+
+    elapsed = time.time() - float(last)
+
+    if elapsed >= SITEMAP_REBUILD_INTERVAL_SEC:
+        print("[TXID SEO] Rebuild trigger → HOURLY")
+        return True
+
+    return False
 
 # ============================================
 # 🔄 Extract Cycle
@@ -123,21 +261,16 @@ def extract_txids_cycle():
         print("[TXID SEO] No new TXIDs")
         return
 
-    # Batch Limit
     new_txids = new_txids[:SEO_TXID_BATCH_LIMIT]
 
-    # Update Indexed Set
-    if new_txids:
-        r.sadd(SEO_TXID_INDEXED_SET, *new_txids)
-
-    # Rebuild Sitemap
-    all_indexed = r.smembers(SEO_TXID_INDEXED_SET)
-    build_sitemap(all_indexed)
+    r.sadd(SEO_TXID_INDEXED_SET, *new_txids)
 
     print(
-        f"[TXID SEO] Added {len(new_txids)} new TXIDs "
-        f"(Total: {len(all_indexed)})"
+        f"[TXID SEO] Added {len(new_txids)} new TXIDs"
     )
+
+    if should_rebuild_sitemap():
+        rebuild_txid_sitemaps_sharded()
 
 # ============================================
 # 🔁 Worker Loop

@@ -368,11 +368,14 @@ EXPLORER_ADDRESSES_MAX_ADDRESSES_DEFAULT = 25
 # SEO – TXID Extractor
 # ============================================
 
-SEO_TXID_INDEXED_SET = "seo:txid:indexed"
-SEO_TXID_SITEMAP_PATH = "/home/marijo/Dokumente/NODE_DASHBOARD/static/sitemaps/txids/sitemap_txids_1.xml"
+SEO_TXID_INDEXED_SET            = "seo:txid:indexed"
+SEO_TXID_SITEMAP_DIRTY_KEY      = "seo:txid:sitemap:dirty"
+SEO_TXID_SITEMAP_LAST_BUILD_KEY = "seo:txid:sitemap:last_build"
+SEO_TXID_SITEMAP_PATH           = "/home/marijo/Dokumente/NODE_DASHBOARD/static/sitemaps/txids/sitemap_txids_1.xml"
 
-SEO_TXID_EXTRACT_INTERVAL = 60  # seconds
-SEO_TXID_BATCH_LIMIT = 500      # max new per cycle
+SITEMAP_REBUILD_INTERVAL_SEC    = 3600  # 1 hour
+SEO_TXID_EXTRACT_INTERVAL       = 60    # seconds
+SEO_TXID_BATCH_LIMIT            = 500   # max new per cycle
 
 
 # ================================================================================================================================= #
