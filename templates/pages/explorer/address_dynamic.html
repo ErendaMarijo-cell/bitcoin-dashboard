@@ -1,0 +1,133 @@
+<!-- ====================================================================== -->
+<!-- EXPLORER_ADDRESS_DYNAMIC – Bitcoin Address Detail Page                -->
+<!-- Dynamic SEO • Balance • Transactions • UTXOs                          -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Bitcoin Address {{ address }} – Balance, Transactions & UTXO Data
+{% endblock %}
+
+{% block description %}
+Explore Bitcoin address {{ address }}. View balance, transaction history, UTXOs and on-chain wallet activity.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- CANONICAL                                              -->
+<!-- ====================================================== -->
+
+{% block canonical %}
+<link rel="canonical"
+      href="https://bitcoin-dashboard.net/explorer/address/{{ address }}">
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<section class="explorer-section">
+
+    <!-- Title -->
+    <h1 class="headline-explorer">
+        Bitcoin Address Explorer
+    </h1>
+
+    <!-- Address String -->
+    <p class="explorer-description address-string">
+        {{ address }}
+    </p>
+
+
+    <!-- ================================================== -->
+    <!-- Hidden Input Bridge (Required for JS Loader)       -->
+    <!-- ================================================== -->
+    <div style="display:none;">
+
+        <input
+            type="text"
+            id="explorer-address-input"
+            value="{{ address }}"
+        />
+
+        <button id="explorer-address-search"></button>
+
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- Status                                             -->
+    <!-- ================================================== -->
+    <div
+        id="explorer-address-status"
+        class="explorer-status">
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- Summary                                            -->
+    <!-- ================================================== -->
+    <div
+        id="explorer-address-summary"
+        class="explorer-summary"
+        style="display:none;">
+    </div>
+
+
+    <!-- ================================================== -->
+    <!-- History                                            -->
+    <!-- ================================================== -->
+    <div
+        id="explorer-address-history"
+        class="explorer-result"
+        style="display:none;">
+    </div>
+
+</section>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<!-- Address Explorer Logic -->
+<script src="/static/js/EXPLORER_ADDRESS.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (!window.loadExplorerAddress) return;
+
+    // Init explorer
+    window.loadExplorerAddress();
+
+    // Auto-trigger search
+    const button = document.getElementById(
+        "explorer-address-search"
+    );
+
+    if (button) {
+        button.click();
+    }
+
+});
+</script>
+
+{% endblock %}

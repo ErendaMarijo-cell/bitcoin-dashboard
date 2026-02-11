@@ -27,7 +27,9 @@
     <meta name="robots" content="index, follow">
 
     <!-- Canonical URL (Prevents Duplicate Indexing) -->
-    <link rel="canonical" href="{{ request.url }}">
+    {% block canonical %}
+    <link rel="canonical" href="{{ request.base_url }}">
+    {% endblock %}
 
     <!-- Favicon -->
     <link rel="icon" href="/static/favicon.ico">

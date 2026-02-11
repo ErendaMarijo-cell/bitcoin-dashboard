@@ -1,6 +1,6 @@
 <!-- ====================================================================== -->
-<!-- EXPLORER_ADDRESS – Bitcoin Address Explorer (SSR + SPA Hybrid)        -->
-<!-- Balance • Transactions • UTXOs • On-Chain Activity                    -->
+<!-- EXPLORER_WALLET – Bitcoin Wallet Explorer (SSR + SPA Hybrid)          -->
+<!-- Multi-Address Analysis • Aggregated Balances • UTXOs                  -->
 <!-- ====================================================================== -->
 
 {% extends "base/base.html" %}
@@ -12,11 +12,11 @@
 <!-- ====================================================== -->
 
 {% block title %}
-Bitcoin Address Explorer – Balance, Transactions & UTXO Lookup
+Bitcoin Wallet Explorer – Multi-Address Balance & Transaction Analysis
 {% endblock %}
 
 {% block description %}
-Analyze any Bitcoin address and explore balance, transaction history, UTXOs and on-chain activity with the Bitcoin Address Explorer.
+Analyze multiple Bitcoin addresses as a single wallet. Explore aggregated balances, UTXOs, address breakdowns and on-chain wallet activity.
 {% endblock %}
 
 
@@ -30,29 +30,30 @@ Analyze any Bitcoin address and explore balance, transaction history, UTXOs and 
 <section class="explorer-section">
 
     <h1 class="headline-explorer">
-        Bitcoin Address Explorer
+        Bitcoin Wallet Explorer
     </h1>
 
     <p class="explorer-description">
-        View the balance, transaction history, and unspent outputs (UTXOs)
-        of any Bitcoin address. Analyze on-chain activity and monitor wallet flows
-        directly on the blockchain.
+        Analyze multiple Bitcoin addresses together as a single wallet.
+        View aggregated balances, UTXOs, transaction counts, and
+        address-level breakdowns across the blockchain.
     </p>
 
+
     <!-- ============================== -->
-    <!-- Address Input                  -->
+    <!-- Wallet Input                   -->
     <!-- ============================== -->
     <div class="explorer-input-group">
 
-        <input
-            type="text"
-            id="explorer-address-input"
-            placeholder="Enter a valid Bitcoin address"
-            autocomplete="off"
-        />
+        <textarea
+            id="explorer-wallet-input"
+            placeholder="Enter one Bitcoin address per line"
+            rows="6"
+            autocomplete="off">
+        </textarea>
 
-        <button id="explorer-address-search">
-            Search
+        <button id="explorer-wallet-analyze">
+            Analyze Wallet
         </button>
 
     </div>
@@ -62,31 +63,28 @@ Analyze any Bitcoin address and explore balance, transaction history, UTXOs and 
     <!-- Status                         -->
     <!-- ============================== -->
     <div
-        id="explorer-address-status"
+        id="explorer-wallet-status"
         class="explorer-status">
-        <!-- status message -->
     </div>
 
 
     <!-- ============================== -->
-    <!-- Address Summary                -->
+    <!-- Wallet Summary                 -->
     <!-- ============================== -->
     <div
-        id="explorer-address-summary"
+        id="explorer-wallet-summary"
         class="explorer-summary"
         style="display:none;">
-        <!-- balance / stats -->
     </div>
 
 
     <!-- ============================== -->
-    <!-- Transaction History            -->
+    <!-- Address Breakdown              -->
     <!-- ============================== -->
     <div
-        id="explorer-address-history"
+        id="explorer-wallet-breakdown"
         class="explorer-result"
         style="display:none;">
-        <!-- transaction list -->
     </div>
 
 </section>
@@ -101,15 +99,15 @@ Analyze any Bitcoin address and explore balance, transaction history, UTXOs and 
 
 {% block scripts %}
 
-<!-- Address Explorer Logic -->
-<script src="/static/js/EXPLORER_ADDRESS.js"></script>
+<!-- Wallet Explorer Logic -->
+<script src="/static/js/EXPLORER_WALLET.js"></script>
 
 <!-- Auto-load when opened via SSR -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    if (window.loadExplorerAddress) {
-        window.loadExplorerAddress();
+    if (window.loadExplorerWallet) {
+        window.loadExplorerWallet();
     }
 
 });

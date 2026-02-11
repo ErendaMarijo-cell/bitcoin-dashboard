@@ -1760,6 +1760,22 @@ def review_btc_vs_silver():
 
 
 
+# ===========================================
+# EXPLORER_ADDRESS – Bitcoin Address Explorer
+# SSR Page + SPA Entry
+# ===========================================
+@app.route("/explorer/address")
+def explorer_address():
+    return render_template(
+        "pages/explorer/address.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
 # ======================
 # 🔹 [EXPLORER] - ADRESS
 # ======================
@@ -1816,7 +1832,27 @@ def api_address(address: str):
             "error": str(e)  # ← temporär, damit wir sehen WAS passiert
         }), 500
 
+
+
 ## ================================================================================================================================================================ ##
+
+
+
+# ============================================
+# EXPLORER_TXID – Bitcoin Transaction Explorer
+# SSR Page + SPA Entry
+# ============================================
+@app.route("/explorer/transaction")
+def explorer_transaction():
+    return render_template(
+        "pages/explorer/txid.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
+
 
 # ===========================
 # 🔹 [EXPLORER_TXID] – Worker
@@ -1964,7 +2000,25 @@ def api_explorer_txid(txid: str):
         }), 500
 
 
+
 ## ================================================================================================================================================================ ##
+
+
+
+# =========================================
+# EXPLORER_WALLET – Bitcoin Wallet Explorer
+# SSR Page + SPA Entry
+# =========================================
+@app.route("/explorer/wallet")
+def explorer_wallet():
+    return render_template(
+        "pages/explorer/wallet.html"
+    )
+
+
+
+## ================================================================================================================================================================ ##
+
 
 
 # =================================
@@ -2088,6 +2142,24 @@ def api_explorer_wallet():
             "status": "error",
             "error": str(e)
         }), 500
+
+
+
+## ================================================================================================================================================================ ##
+
+
+
+# ======================================================
+# EXPLORER_ADDRESS_DYNAMIC – Bitcoin Address Detail Page
+# Dynamic SEO + Data Explorer
+# ======================================================
+@app.route("/explorer/address/<address>")
+def explorer_address_dynamic(address):
+
+    return render_template(
+        "pages/explorer/address_dynamic.html",
+        address=address
+    )
 
 
 

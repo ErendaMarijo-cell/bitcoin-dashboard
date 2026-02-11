@@ -1,4 +1,4 @@
-from .utils import address_to_scripthash
+from nodes.electrumx import address_to_scripthash
 
 async def get_address_overview(client, address: str):
     scripthash = address_to_scripthash(address)

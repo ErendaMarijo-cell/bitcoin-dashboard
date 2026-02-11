@@ -143,7 +143,23 @@
         console.log("[EXPLORER_ADDRESS] initialized");
     }
 
-    // 👉 Single controlled export
+
+    // ==================================================
+    // 👉 PUBLIC EXPORTS
+    // ==================================================
     window.loadExplorerAddress = loadExplorerAddress;
+
+    // 🔹 Dynamic Page Helper (optional but clean)
+    window.searchAddressDirect = function(addr){
+
+        const input  = document.getElementById("explorer-address-input");
+        const button = document.getElementById("explorer-address-search");
+
+        if(input && button){
+            input.value = addr;
+            button.click();
+        }
+    };
+
 
 })();
