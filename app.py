@@ -1848,6 +1848,20 @@ def explorer_transaction():
         "pages/explorer/txid.html"
     )
 
+## ================================================================================================================================================================ ##
+
+# ==========================================
+# EXPLORER_TXID_DYNAMIC – Transaction Detail
+# Dynamic SSR Page • TX Data • SEO Entry
+# ==========================================
+@app.route("/explorer/tx/<txid>")
+def explorer_txid_dynamic(txid):
+
+    return render_template(
+        "pages/explorer/txid_dynamic.html",
+        txid=txid
+    )
+
 
 
 ## ================================================================================================================================================================ ##

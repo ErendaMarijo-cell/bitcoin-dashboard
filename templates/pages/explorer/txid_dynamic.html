@@ -1,0 +1,51 @@
+{% extends "base/base.html" %}
+
+{% block title %}
+Bitcoin Transaction {{ txid }} – Details & Blockchain Data
+{% endblock %}
+
+{% block content %}
+
+<section class="explorer-section">
+
+  <h1 class="headline-explorer">
+    Bitcoin Transaction Explorer
+  </h1>
+
+  <p class="explorer-description">
+    TXID: {{ txid }}
+  </p>
+
+  <!-- Hidden Bridge -->
+  <div style="display:none;">
+    <input id="explorer-txid-input" value="{{ txid }}">
+    <button id="explorer-txid-search"></button>
+  </div>
+
+  <div id="explorer-txid-status"></div>
+  <div id="explorer-txid-summary"></div>
+  <div id="explorer-txid-history"></div>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/EXPLORER_TXID.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  if (!window.loadExplorerTxid) return;
+
+  window.loadExplorerTxid();
+
+  const btn = document.getElementById(
+    "explorer-txid-search"
+  );
+
+  if (btn) btn.click();
+
+});
+</script>
+{% endblock %}

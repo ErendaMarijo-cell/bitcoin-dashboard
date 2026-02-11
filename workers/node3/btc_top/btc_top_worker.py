@@ -1,3 +1,7 @@
+# ============================
+# 🔗 BTC_TOP_WORKER  -  NODE 3
+# ============================
+
 import os
 import json
 import time
