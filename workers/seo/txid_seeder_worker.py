@@ -15,7 +15,12 @@ if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
 import redis
-from core.redis_keys import SEO_TXID_INDEXED_SET
+from core.redis_keys import (
+    SEO_TXID_INDEXED_SET,
+    SEO_TXID_SITEMAP_DIRTY_KEY,
+
+)
+
 
 # ----------------------------
 # Paths
@@ -28,13 +33,11 @@ STATE_PATH = "/raid/data/bitcoin_dashboard/backfill/progress/txid_seeder_state.j
 # ----------------------------
 r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
 
-# Flag, damit Sitemap-Builder weiß: rebuild nötig
-SITEMAP_DIRTY_KEY = "seo:txid:sitemap:dirty"
 
 # ----------------------------
 # Tuning
 # ----------------------------
-BATCH_SIZE = 5000
+BATCH_SIZE = 1000
 SLEEP_SEC = 0.05
 
 # ----------------------------
@@ -118,7 +121,8 @@ def seed_batch(txids: list[str]) -> int:
     added = r.sadd(SEO_TXID_INDEXED_SET, *txids)
 
     # Trigger sitemap rebuild asynchronously
-    r.set(SITEMAP_DIRTY_KEY, "1")
+    r.set(SEO_TXID_SITEMAP_DIRTY_KEY, "1")
+
 
     return int(added)
 

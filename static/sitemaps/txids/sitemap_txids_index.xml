@@ -3,4 +3,16 @@
   <sitemap>
     <loc>https://bitcoin-dashboard.net/static/sitemaps/txids/sitemap_txids_000001.xml</loc>
   </sitemap>
+  <sitemap>
+    <loc>https://bitcoin-dashboard.net/static/sitemaps/txids/sitemap_txids_000002.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://bitcoin-dashboard.net/static/sitemaps/txids/sitemap_txids_000003.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://bitcoin-dashboard.net/static/sitemaps/txids/sitemap_txids_000004.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://bitcoin-dashboard.net/static/sitemaps/txids/sitemap_txids_000005.xml</loc>
+  </sitemap>
 </sitemapindex>

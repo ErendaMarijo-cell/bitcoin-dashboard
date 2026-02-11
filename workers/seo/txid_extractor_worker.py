@@ -223,11 +223,17 @@ def should_rebuild_sitemap():
         r.delete(SEO_TXID_SITEMAP_DIRTY_KEY)
         return True
 
-    # Hourly trigger
+    # URL count trigger
+    total = r.scard(SEO_TXID_INDEXED_SET)
+
+    if total >= 48000:
+        print("[TXID SEO] Rebuild trigger → URL THRESHOLD")
+        return True
+
+    # Hourly fallback
     last = r.get(SEO_TXID_SITEMAP_LAST_BUILD_KEY)
 
     if not last:
-        print("[TXID SEO] Rebuild trigger → FIRST BUILD")
         return True
 
     elapsed = time.time() - float(last)
@@ -237,6 +243,7 @@ def should_rebuild_sitemap():
         return True
 
     return False
+
 
 # ============================================
 # 🔄 Extract Cycle
