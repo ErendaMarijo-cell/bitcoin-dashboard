@@ -20,3 +20,8 @@ tmp/
 .DS_Store
 .vscode/
 .idea/
+
+# Generated SEO sitemaps
+static/sitemaps/txids/sitemap_txids_*.xml
+static/sitemaps/txids/sitemap_txids_index.xml
+
