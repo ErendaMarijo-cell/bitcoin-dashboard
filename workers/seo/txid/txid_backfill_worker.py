@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 # ============================================
 
 BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../")
+    os.path.join(os.path.dirname(__file__), "../../../")
 )
 
 if BASE_DIR not in sys.path:
@@ -26,7 +26,7 @@ if BASE_DIR not in sys.path:
 # 🔗 Progress Loader
 # ============================================
 
-from workers.seo.txid_backfill_progress import (
+from workers.seo.txid.txid_backfill_progress import (
     load_state,
     save_state_atomic,
     segment_range_for_height,
@@ -44,16 +44,9 @@ from nodes.rpc import BitcoinRPC
 # ⚙️ Config
 # ============================================
 
-STATE_PATH = (
-    "/raid/data/bitcoin_dashboard/"
-    "backfill/progress/"
-    "txid_backfill_state.json"
-)
+STATE_PATH = "/raid/lightning/seo/txids/progress/txid_backfill_state.json"
+OUT_DIR    = "/raid/lightning/seo/txids/confirmed"
 
-OUT_DIR = (
-    "/raid/data/bitcoin_dashboard/"
-    "backfill/txids_jsonl"
-)
 
 # Throttle to protect node + other workers
 LOOP_SLEEP_SEC = 0.02
