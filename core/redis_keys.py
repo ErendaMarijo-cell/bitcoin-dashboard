@@ -373,9 +373,9 @@ SEO_TXID_SITEMAP_DIRTY_KEY      = "seo:txid:sitemap:dirty"
 SEO_TXID_SITEMAP_LAST_BUILD_KEY = "seo:txid:sitemap:last_build"
 SEO_TXID_SITEMAP_PATH           = "/home/marijo/Dokumente/NODE_DASHBOARD/static/sitemaps/txids/sitemap_txids_1.xml"
 
-SITEMAP_REBUILD_INTERVAL_SEC    = 3600  # 1 hour
-SEO_TXID_EXTRACT_INTERVAL       = 60    # seconds
-SEO_TXID_BATCH_LIMIT            = 500   # max new per cycle
+SITEMAP_REBUILD_INTERVAL_SEC    = 60*60*24  # 1 day
+SEO_TXID_EXTRACT_INTERVAL       = 60        # seconds
+SEO_TXID_BATCH_LIMIT            = 500       # max new per cycle
 
 
 # ================================================================================================================================= #
