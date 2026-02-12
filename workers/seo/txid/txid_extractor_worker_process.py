@@ -7,9 +7,7 @@ import traceback
 # ===============================
 # 🔧 Projekt-Root setzen
 # ===============================
-PROJECT_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../")
-)
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -22,7 +20,7 @@ if PROJECT_ROOT not in sys.path:
 # Falls intern refactored → Alias Layer nutzen.
 
 try:
-    from workers.seo.txid_extractor_worker import (
+    from workers.seo.txid.txid_extractor_worker import (
         txid_extractor_worker_loop
     )
 except ImportError as e:
