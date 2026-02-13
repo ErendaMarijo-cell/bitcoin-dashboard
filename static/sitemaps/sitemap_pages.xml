@@ -197,50 +197,6 @@
 
 
   <url>
-    <loc>https://bitcoin-dashboard.net/indicators/pi-cycle-top</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/indicators/golden-ratio</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/indicators/rainbow</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/indicators/mayer-multiple</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/indicators/stock-to-flow</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/indicators/btc-vs-m2</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/indicators/sp500-vs-btc</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-
-  <url>
     <loc>https://bitcoin-dashboard.net/info/status</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>monthly</changefreq>
