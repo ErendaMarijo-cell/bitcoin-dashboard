@@ -78,27 +78,7 @@ Analyze Bitcoin mining difficulty across multiple time frames including 1 year, 
         <canvas id="METRICS_BTC_DIFFICULTY_1Y_CANVAS"></canvas>
     </div>
 
-    <!-- 5Y -->
-    <div id="METRICS_BTC_DIFFICULTY_5Y"
-         class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_DIFFICULTY_5Y_CANVAS"></canvas>
-    </div>
-
-    <!-- 10Y -->
-    <div id="METRICS_BTC_DIFFICULTY_10Y"
-         class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_DIFFICULTY_10Y_CANVAS"></canvas>
-    </div>
-
-    <!-- EVER -->
-    <div id="METRICS_BTC_DIFFICULTY_EVER"
-         class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_DIFFICULTY_EVER_CANVAS"></canvas>
-    </div>
-
 </div>
-
-
 
 <!-- ====================================================== -->
 <!-- INFO BOX                                               -->
@@ -108,17 +88,29 @@ Analyze Bitcoin mining difficulty across multiple time frames including 1 year, 
 
     <strong>About Bitcoin Difficulty</strong><br><br>
 
-    Bitcoin difficulty measures how hard it is to find a valid block
-    compared to the easiest possible difficulty defined by the protocol.<br><br>
+    Bitcoin mining difficulty measures how hard it is to find a valid block
+    compared to the easiest possible difficulty defined by the protocol.
+    It is a core indicator of mining competition and the computational
+    security protecting the Bitcoin network.<br><br>
 
-    It is recalculated every 2,016 blocks (≈ every 14 days)
-    to maintain an average block interval of 10 minutes.<br><br>
+    Difficulty is automatically recalculated every 2,016 blocks
+    (approximately every 14 days) to maintain an average block interval
+    of 10 minutes, regardless of fluctuations in global hash power.<br><br>
 
-    Rising difficulty reflects increasing network hash power,
-    while declining difficulty may indicate miner capitulation
-    or reduced mining participation.
+    Rising difficulty reflects increasing network hash rate,
+    expanding mining infrastructure, and intensifying competition
+    among miners, strengthening overall network security.
+    Declining difficulty may indicate miner capitulation,
+    reduced participation, or shifts in mining economics.<br><br>
+
+    Analyzing Bitcoin difficulty across multiple time frames —
+    from short-term adjustment cycles to full historical trends —
+    provides insight into mining growth, capital investment in hardware,
+    and the long-term resilience of Bitcoin’s proof-of-work consensus.
 
 </div>
+
+
 
 {% endblock %}
 
