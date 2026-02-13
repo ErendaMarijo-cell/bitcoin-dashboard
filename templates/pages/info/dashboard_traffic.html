@@ -1,0 +1,154 @@
+<!-- ====================================================================== -->
+<!-- INFO_DASHBOARD_TRAFFIC – Dashboard Traffic Metrics (SSR + SPA Hybrid) -->
+<!-- Live Usage • Access Patterns • Platform Activity                       -->
+<!-- File: templates/pages/info/dashboard_traffic.html                      -->
+<!-- ====================================================================== -->
+
+{% extends "base/base.html" %}
+
+
+<!-- ====================================================== -->
+<!-- SEO META                                               -->
+<!-- ====================================================== -->
+
+{% block title %}
+Dashboard Traffic – Usage & Visitor Analytics
+{% endblock %}
+
+{% block description %}
+Analyze dashboard traffic, visitor activity, and access patterns across multiple time frames.
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE CONTENT                                           -->
+<!-- ====================================================== -->
+
+{% block content %}
+
+<h1 class="headline-info-dashboard-traffic">
+    Dashboard Traffic Across Multiple Time Frames
+</h1>
+
+
+
+<!-- ====================================================== -->
+<!-- SubSubTab Navigation (SPA functional)                  -->
+<!-- ====================================================== -->
+
+<div class="INFO_DASHBOARD_TRAFFIC-subnav subnav mb-3 text-center">
+
+    <button class="INFO_DASHBOARD_TRAFFIC-subTabButton"
+            data-subsubtab="INFO_DASHBOARD_TRAFFIC_1H">
+        1 <span class="range-unit">HOUR</span>
+    </button>
+
+    <button class="INFO_DASHBOARD_TRAFFIC-subTabButton"
+            data-subsubtab="INFO_DASHBOARD_TRAFFIC_24H">
+        24 <span class="range-unit">HOURS</span>
+    </button>
+
+    <button class="INFO_DASHBOARD_TRAFFIC-subTabButton"
+            data-subsubtab="INFO_DASHBOARD_TRAFFIC_1W">
+        1 <span class="range-unit">WEEK</span>
+    </button>
+
+    <button class="INFO_DASHBOARD_TRAFFIC-subTabButton"
+            data-subsubtab="INFO_DASHBOARD_TRAFFIC_1M">
+        1 <span class="range-unit">MONTH</span>
+    </button>
+
+    <button class="INFO_DASHBOARD_TRAFFIC-subTabButton"
+            data-subsubtab="INFO_DASHBOARD_TRAFFIC_1Y">
+        1 <span class="range-unit">YEAR</span>
+    </button>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- SubSubTab Container – SSR Minimal                      -->
+<!-- Only default canvas rendered server-side               -->
+<!-- ====================================================== -->
+
+<div id="INFO_DASHBOARD_TRAFFIC_CONTAINER" class="subtab-container">
+
+    <!-- Default SSR Canvas -->
+    <div id="INFO_DASHBOARD_TRAFFIC_1H"
+         class="INFO_DASHBOARD_TRAFFIC-subsubtab chart-wrapper">
+
+        <canvas id="INFO_DASHBOARD_TRAFFIC_1H_CANVAS"></canvas>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- SEO / INFO BOX                                         -->
+<!-- ====================================================== -->
+
+<div class="info-box info-box-info-dashboard-traffic">
+
+    <strong>About Dashboard Traffic Data</strong><br><br>
+
+    The traffic metrics displayed here are based exclusively on
+    anonymized and aggregated access data
+    (e.g. number of requests per defined time interval).<br><br>
+
+    No personal data is stored, no user profiles are created,
+    and no external tracking or analytics services are used.<br>
+    All data collection is performed exclusively on the server side
+    and is intended solely for statistical analysis
+    of overall dashboard usage.<br><br>
+
+    Individual users are not identifiable at any time.
+    The values shown do not represent individual user activity,<br>
+    but only aggregated access frequencies
+    within predefined time windows.
+
+</div>
+
+{% endblock %}
+
+
+
+<!-- ====================================================== -->
+<!-- PAGE SCRIPTS                                           -->
+<!-- ====================================================== -->
+
+{% block scripts %}
+
+<script src="/static/js/INFO_DASHBOARD_TRAFFIC.js"></script>
+
+
+
+<!-- ====================================================== -->
+<!-- SSR ENTRY INITIALIZER                                  -->
+<!-- ====================================================== -->
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    if (window.__INFO_DASHBOARD_TRAFFIC_SSR_INIT__) return;
+    window.__INFO_DASHBOARD_TRAFFIC_SSR_INIT__ = true;
+
+
+    // Init SPA SubTabs
+    if (typeof window.initInfoDashboardTrafficSubTabs === "function") {
+        window.initInfoDashboardTrafficSubTabs();
+    }
+
+
+    // Default loader fallback
+    if (typeof window.loadInfoDashboardTraffic1H === "function") {
+        window.loadInfoDashboardTraffic1H();
+    }
+
+});
+</script>
+
+{% endblock %}

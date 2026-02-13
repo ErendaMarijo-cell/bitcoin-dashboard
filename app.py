@@ -3239,9 +3239,16 @@ def info_status():
 
 
 
+# ==========================================
+# INFO_DASHBOARD_TRAFFIC – Usage Analytics
+# Hybrid SSR Page • Visitor Metrics • SEO Entry
+# ==========================================
+@app.route("/info/traffic")
+def info_dashboard_traffic():
 
-
-
+    return render_template(
+        "pages/info/dashboard_traffic.html"
+    )
 
 
 
