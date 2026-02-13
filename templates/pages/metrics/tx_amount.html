@@ -65,6 +65,33 @@ Analyze Bitcoin transaction count across multiple time frames and explore real-t
     </div>
 </div>
 
+
+<!-- ====================================================== -->
+<!-- INFO BOX                                               -->
+<!-- ====================================================== -->
+
+<div class="info-box info-box-metrics-tx-amount">
+
+    <strong>About Bitcoin Transaction Amount</strong><br><br>
+
+    Bitcoin transaction amount measures the total value transferred within
+    a single on-chain Bitcoin transaction. Large transaction volumes often
+    reflect institutional activity, exchange flows, or whale movements
+    across the network.<br><br>
+
+    Monitoring high-value Bitcoin transactions provides insight into capital
+    distribution, liquidity shifts, and potential market-moving events.
+    Significant transfers between wallets or exchanges can signal accumulation,
+    distribution, or internal treasury management strategies.<br><br>
+
+    By analyzing the largest Bitcoin transactions across different time ranges —
+    from mempool activity to historical on-chain records — users can identify
+    notable value transfers and better understand how capital flows through
+    the Bitcoin ecosystem.
+
+</div>
+
+
 {% endblock %}
 
 
@@ -75,11 +102,13 @@ Analyze Bitcoin transaction count across multiple time frames and explore real-t
 
 {% block scripts %}
 
-<!-- TX Amount Chart Loader -->
+<!-- 1️⃣ Loader zuerst -->
+<script src="/static/js/METRICS_BTC_TX_AMOUNT.js"></script>
+
+<!-- 2️⃣ Dann Init -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Default Tab sichtbar machen (SSR Entry)
     const defaultTab = document.getElementById(
         "METRICS_BTC_TX_AMOUNT_NOW"
     );
@@ -88,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
         defaultTab.style.display = "block";
     }
 
-    // Default Button aktiv
     const defaultBtn = document.querySelector(
         '.METRICS_BTC_TX_AMOUNT-subTabButton[data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW"]'
     );
@@ -97,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         defaultBtn.classList.add("active");
     }
 
-    // Daten laden
+    // Jetzt existiert die Funktion sicher
     if (window.loadMetricsTxAmountNow) {
         window.loadMetricsTxAmountNow();
     }
@@ -105,5 +133,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-
 {% endblock %}
+

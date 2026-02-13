@@ -371,8 +371,8 @@ EXPLORER_ADDRESSES_MAX_ADDRESSES_DEFAULT = 25
 SEO_TXID_INDEXED_SET            = "seo:txid:indexed"
 SEO_TXID_SITEMAP_LAST_BUILD_KEY = "seo:txid:sitemap:last_build"
 
-SEO_TXID_EXTRACT_INTERVAL       = 60        # seconds
-SEO_TXID_BATCH_LIMIT            = 500       # max new per cycle
+SEO_TXID_EXTRACT_INTERVAL       = 1             # seconds — idle sleep when chain tip is reached (no new JSONL data)
+SEO_TXID_BATCH_LIMIT            = 10000         # max new per cycle
 
 
 # ================================================================================================================================= #

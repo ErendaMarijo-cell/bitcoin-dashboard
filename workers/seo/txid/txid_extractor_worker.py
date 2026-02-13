@@ -64,7 +64,7 @@ SITEMAP_BASE_URL = "https://bitcoin-dashboard.net/static/sitemaps/txids/"  # URL
 # ============================================
 # Crash-safety / dedupe window
 # ============================================
-TXID_RING_SIZE = 2000
+TXID_RING_SIZE = 50000
 
 
 # ============================================
