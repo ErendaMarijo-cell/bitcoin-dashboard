@@ -1,6 +1,7 @@
 <!-- ====================================================================== -->
 <!-- METRICS_BTC_TX_FEES – Bitcoin Transaction Fees (SSR + SPA Hybrid)     -->
 <!-- Fee Market • Blockspace Pricing • On-Chain Settlement Costs            -->
+<!-- File: templates/pages/metrics/tx_fees.html                             -->
 <!-- ====================================================================== -->
 
 {% extends "base/base.html" %}
@@ -30,52 +31,88 @@ Analyze Bitcoin transaction fees across multiple time frames and explore fee mar
     Bitcoin Transaction Fees Across Multiple Time Frames
 </h1>
 
-<!-- SubSubTab Navigation -->
+
+
+<!-- ====================================================== -->
+<!-- SubSubTab Navigation (SPA functional)                  -->
+<!-- ====================================================== -->
+
 <div class="METRICS_BTC_TX_FEES-subnav subnav mb-3 text-center">
-    <button class="METRICS_BTC_TX_FEES-subTabButton" data-subsubtab="METRICS_BTC_TX_FEES_24H">24 <span class="range-unit">HOURS</span></button>
-    <button class="METRICS_BTC_TX_FEES-subTabButton" data-subsubtab="METRICS_BTC_TX_FEES_1W">1 <span class="range-unit">WEEK</span></button>
-    <button class="METRICS_BTC_TX_FEES-subTabButton" data-subsubtab="METRICS_BTC_TX_FEES_1M">1 <span class="range-unit">MONTH</span></button>
-    <button class="METRICS_BTC_TX_FEES-subTabButton" data-subsubtab="METRICS_BTC_TX_FEES_1J">1 <span class="range-unit">YEAR</span></button>
+
+    <button class="METRICS_BTC_TX_FEES-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_FEES_24H">
+        24 <span class="range-unit">HOURS</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_FEES-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_FEES_1W">
+        1 <span class="range-unit">WEEK</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_FEES-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_FEES_1M">
+        1 <span class="range-unit">MONTH</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_FEES-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_FEES_1J">
+        1 <span class="range-unit">YEAR</span>
+    </button>
+
 </div>
 
 
-<!-- SubSubTab Container -->
+
+<!-- ====================================================== -->
+<!-- SubSubTab Container – SSR Minimal                      -->
+<!-- Only default canvas rendered server-side               -->
+<!-- ====================================================== -->
+
 <div id="METRICS_BTC_TX_FEES_CONTAINER" class="subtab-container">
 
-    <div id="METRICS_BTC_TX_FEES_24H" class="METRICS_BTC_TX_FEES-subsubtab chart-wrapper">
+    <!-- Default SSR Chart -->
+    <div id="METRICS_BTC_TX_FEES_24H"
+         class="METRICS_BTC_TX_FEES-subsubtab chart-wrapper">
+
         <canvas id="METRICS_BTC_TX_FEES_24H_CANVAS"></canvas>
-    </div>
 
-    <div id="METRICS_BTC_TX_FEES_1W" class="METRICS_BTC_TX_FEES-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_TX_FEES_1W_CANVAS"></canvas>
-    </div>
-
-    <div id="METRICS_BTC_TX_FEES_1M" class="METRICS_BTC_TX_FEES-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_TX_FEES_1M_CANVAS"></canvas>
-    </div>
-
-    <div id="METRICS_BTC_TX_FEES_1J" class="METRICS_BTC_TX_FEES-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_TX_FEES_1J_CANVAS"></canvas>
     </div>
 
 </div>
 
+
+
+<!-- ====================================================== -->
+<!-- SEO INFO BOX                                           -->
+<!-- ====================================================== -->
 
 <div class="info-box info-box-metrics-fees">
+
     <strong>About Bitcoin Transaction Fees</strong><br><br>
 
-    This chart displays the average transaction fee rate in sat/vB,
-    the unit miners use to compete for limited block space
+    Bitcoin transaction fees represent the price users pay
+    to secure blockspace on the Bitcoin network.
+    Fees are measured in satoshis per virtual byte (sat/vB),
+    the standard unit miners use to prioritize transactions
+    within each block’s limited capacity
     (≈ 1 million vBytes per block).<br><br>
 
-    Higher fee rates typically lead to faster confirmation,
-    while lower-fee transactions may remain in the mempool for extended periods. As a result, <br> 
-    the mempool is structurally dominated by low-fee transactions,
-    which explains why the average fee shown on the Home tab appears significantly lower.
+    Higher fee rates typically result in faster confirmation times,
+    while lower-fee transactions may remain in the mempool
+    for extended periods during times of network congestion.<br><br>
+
+    Fee market dynamics provide insight into real-time demand
+    for on-chain settlement.
+    Rising fees often signal increased transaction competition,
+    elevated economic activity, or liquidity movements,
+    whereas declining fees may indicate reduced network pressure.<br><br>
+
+    Because the mempool is structurally dominated
+    by lower-fee transactions,
+    aggregated averages — such as those shown on overview dashboards —
+    may appear significantly lower than priority settlement rates.
 
 </div>
-
-
 
 {% endblock %}
 
@@ -87,29 +124,31 @@ Analyze Bitcoin transaction fees across multiple time frames and explore fee mar
 
 {% block scripts %}
 
+<!-- Core Fees Loader -->
+<script src="/static/js/METRICS_BTC_TX_FEES.js"></script>
+
+
+
+<!-- ====================================================== -->
+<!-- SSR ENTRY INITIALIZER (Volume Logic übernommen)        -->
+<!-- ====================================================== -->
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Default Tab sichtbar machen (SSR Entry)
-    const defaultTab = document.getElementById(
-        "METRICS_BTC_TX_FEES_24H"
-    );
+    // Prevent double initialization
+    if (window.__METRICS_TX_FEES_SSR_INIT__) return;
+    window.__METRICS_TX_FEES_SSR_INIT__ = true;
 
-    if (defaultTab) {
-        defaultTab.style.display = "block";
+
+    // Init SPA SubTabs
+    if (typeof window.initMetricsTxFeesSubTabs === "function") {
+        window.initMetricsTxFeesSubTabs();
     }
 
-    // Default Button aktiv
-    const defaultBtn = document.querySelector(
-        '.METRICS_BTC_TX_FEES-subTabButton[data-subsubtab="METRICS_BTC_TX_FEES_24H"]'
-    );
 
-    if (defaultBtn) {
-        defaultBtn.classList.add("active");
-    }
-
-    // Default Chart laden
-    if (window.loadMetricsTxFees24H) {
+    // Fallback loader (Direct URL safety)
+    if (typeof window.loadMetricsTxFees24H === "function") {
         window.loadMetricsTxFees24H();
     }
 
