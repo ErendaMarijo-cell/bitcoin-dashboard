@@ -1,36 +1,88 @@
 <!-- ================================================= -->
 <!-- EXPLORER_WALLET.html – Wallet Explorer (Sub-HTML) -->
 <!-- ================================================= -->
+
 <section class="explorer-section">
 
-    <h1 class="headline-explorer">Wallet Explorer</h1>
+    <!-- ============================== -->
+    <!-- Headline                       -->
+    <!-- ============================== -->
+    <h1 class="headline-explorer">
+        Bitcoin Wallet Explorer – Multi-Address Balance
+    </h1>
 
+    <!-- ============================== -->
+    <!-- Description                    -->
+    <!-- ============================== -->
     <p class="explorer-description">
-        Analyze multiple Bitcoin addresses together as a single wallet and
-        view aggregated balances, UTXOs, and transaction histories.
+        Analyze multiple Bitcoin addresses together as a single wallet entity.<br>
+        This tool aggregates balances, UTXOs, transaction counts, and historical
+        activity across all submitted addresses, enabling comprehensive on-chain
+        wallet analysis and capital distribution insights.
     </p>
 
-    <!-- Input -->
+    <!-- ============================== -->
+    <!-- Wallet Input                   -->
+    <!-- ============================== -->
     <div class="explorer-input-group">
+
         <textarea
             id="explorer-wallet-input"
-            placeholder="Enter one Bitcoin address per line"
+            placeholder="Enter up to 100 Bitcoin addresses (one per line • Legacy, SegWit & Taproot supported)"
             rows="6"
             autocomplete="off"
+            aria-label="Bitcoin wallet address input"
         ></textarea>
 
         <button id="explorer-wallet-analyze">
-            Analyze Wallet
+            Analyze Wallet Cluster
         </button>
+
     </div>
 
-    <!-- Status -->
-    <div id="explorer-wallet-status" class="explorer-status"></div>
+    <!-- ============================== -->
+    <!-- Status                         -->
+    <!-- ============================== -->
+    <div id="explorer-wallet-status"
+         class="explorer-status">
+    </div>
 
-    <!-- Summary -->
-    <div id="explorer-wallet-summary" class="explorer-summary" style="display:none;"></div>
+    <!-- ============================== -->
+    <!-- Wallet Summary                 -->
+    <!-- ============================== -->
+    <div id="explorer-wallet-summary"
+         class="explorer-summary"
+         style="display:none;">
+    </div>
 
-    <!-- Breakdown -->
-    <div id="explorer-wallet-breakdown" class="explorer-result" style="display:none;"></div>
+    <!-- ============================== -->
+    <!-- Address Breakdown              -->
+    <!-- ============================== -->
+    <div id="explorer-wallet-breakdown"
+         class="explorer-result"
+         style="display:none;">
+    </div>
+
+    <!-- ============================== -->
+    <!-- SEO Info Box                   -->
+    <!-- ============================== -->
+    <div class="info-box info-box-explorer-wallet">
+
+        <strong>About Bitcoin Wallet Analysis</strong><br><br>
+
+        Bitcoin wallet analysis enables the aggregation of multiple on-chain
+        addresses into a unified analytical view. Because Bitcoin wallets often
+        distribute funds across many addresses, analyzing a single address rarely
+        reflects the full capital structure of an entity.<br><br>
+
+        By combining balances, unspent transaction outputs (UTXOs), transaction
+        histories, and address interaction patterns, wallet analysis reveals
+        capital concentration, spending behavior, and long-term holding dynamics.<br><br>
+
+        Multi-address wallet exploration is widely used for institutional treasury
+        tracking, exchange reserve monitoring, whale activity detection, and
+        forensic blockchain analysis.
+
+    </div>
 
 </section>
