@@ -1,0 +1,122 @@
+<!-- =================================================================== -->
+<!-- INFO_STATUS Subtab – SSR Hybrid Version                             -->
+<!-- File: templates/pages/info/status.html                              -->
+<!-- =================================================================== -->
+
+{% extends "base/base.html" %}
+
+{% block title %}
+Dashboard Status – System & Release Overview
+{% endblock %}
+
+{% block description %}
+Current operational status, release phase information, planned features and system updates of the Bitcoin Dashboard.
+{% endblock %}
+
+{% block content %}
+
+<section class="info-tab-container">
+    <h1 class="info-tab-headline">Dashboard Status</h1>
+
+    <!-- 1️⃣ System Status -->
+    <div class="info-tab-block">
+        <h2>System Status</h2>
+        <p>
+            The dashboard is currently fully operational.<br>
+            All data feeds, charts, explorer sections, and metric views
+            are running reliably and without known issues.
+            No problems have been detected so far.
+        </p>
+    </div>
+
+    <!-- 2️⃣ Release Status -->
+    <div class="info-tab-block">
+        <h2>Release Status</h2>
+        <p>
+            The dashboard is currently in its initial release phase.
+            All core features, data feeds, and visualizations
+            are stably implemented and ready for productive use.<br>
+            Additional features, refinements, and optimizations
+            will be introduced gradually in future updates.
+            <br><br>
+            Responsive support for mobile devices and tablets
+            is still in an early stage of development. <br>
+            Basic readability and usability are provided,
+            but certain layouts and tables are still being
+            unified and optimized.
+            <br><br>
+            For the best overall overview and user experience,
+            it is currently recommended to use the dashboard
+            primarily in desktop view.
+        </p>
+    </div>
+
+    <!-- 3️⃣ Planned Features -->
+    <div class="info-tab-block">
+        <h2>Planned Features</h2>
+        <p>
+            The Indicators section is still under active development.
+            At this time, no specific release date can be provided
+            for the first finalized indicator.<br>
+            During the initial development phase, the primary focus
+            has been on ensuring that existing tabs and core features
+            are fully functional, performant, and stable
+            before expanding into additional areas.
+            <br><br>
+            Some visualizations — particularly in the Network,
+            Nodes, and Miner sections — are currently simplified
+            by design and serve primarily for high-level
+            conceptual orientation.<br>
+            Further technical depth and extended detail
+            will be added incrementally.
+            <br><br>
+            In addition, a significant expansion of existing
+            chart visualizations and their underlying
+            historical data sets is planned.<br>
+            Specific scope, content, and timelines
+            cannot yet be defined at this stage.
+        </p>
+    </div>
+
+    <!-- 4️⃣ Planned System Updates -->
+    <div class="info-tab-block">
+        <h2>Planned System Updates</h2>
+        <p>
+            System updates, technical optimizations, and structural
+            adjustments are generally performed outside of peak usage hours.<br>
+            Timing is chosen to minimize any potential impact
+            on ongoing traffic and usage.
+            <br><br>
+            The goal is to apply all updates during live operation.
+            Only in exceptional cases may it become necessary
+            to temporarily restrict certain features
+            or take the dashboard offline for a short period.<br>
+            Scheduled system updates will be announced
+            at least 24 hours in advance within the status section.
+        </p>
+        <br>
+        <h3>Next Planned Actions</h3>
+        <p>
+            The next update window is currently in planning.
+            Further information will be published in due time
+            within the status section.
+        </p>
+    </div>
+
+    <!-- 5️⃣ Personal Note -->
+    <div class="info-tab-block">
+        <h2>Personal Note</h2>
+        <p>
+            This dashboard is developed as an independent project
+            outside of a fixed corporate or institutional context.<br>
+            If you are interested in custom-developed, tailored
+            web solutions for businesses or individual projects,
+            feel free to get in touch at any time.<br>
+            I am happy to review inquiries without obligation
+            and assess whether and how an implementation
+            could be meaningfully realized.
+        </p>
+    </div>
+</section>
+
+{% endblock %}
