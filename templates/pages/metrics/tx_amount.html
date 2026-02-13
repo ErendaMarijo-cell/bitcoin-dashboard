@@ -1,6 +1,6 @@
 <!-- ====================================================================== -->
-<!-- METRICS_BTC_TX_AMOUNT – Bitcoin Transaction Count (SSR + SPA Hybrid)  -->
-<!-- Network Activity • Transaction Throughput • On-Chain Usage             -->
+<!-- METRICS_BTC_TX_AMOUNT – Bitcoin Transaction Amount (SSR + SPA Hybrid) -->
+<!-- Network Activity • Capital Flow • High-Value Transfers                -->
 <!-- ====================================================================== -->
 
 {% extends "base/base.html" %}
@@ -11,11 +11,11 @@
 <!-- ====================================================== -->
 
 {% block title %}
-Bitcoin Transactions – On-Chain Activity & Transaction Count
+Largest Bitcoin Transactions – High-Value On-Chain Transfers
 {% endblock %}
 
 {% block description %}
-Analyze Bitcoin transaction count across multiple time frames and explore real-time network usage and on-chain demand.
+Explore the largest Bitcoin transactions across multiple time frames and analyze high-value capital transfers on the blockchain.
 {% endblock %}
 
 
@@ -30,44 +30,76 @@ Analyze Bitcoin transaction count across multiple time frames and explore real-t
     Largest Bitcoin Transactions – by Time Range
 </h1>
 
-<div class="METRICS_BTC_TX_AMOUNT-subnav subnav mb-3 text-center">
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW">MEMPOOL</button>
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_24H">24 <span class="range-unit">HOURS</span></button>
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_1W">1 <span class="range-unit">WEEK</span></button>
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_1M">1 <span class="range-unit">MONTH</span></button>
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_1Y">1 <span class="range-unit">YEAR</span></button>
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_HALVING">SINCE <span class="range-unit">HALVING</span></button>
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton" data-subsubtab="METRICS_BTC_TX_AMOUNT_EVER">ALL <span class="range-unit">TIME</span></button>
-</div>
-
-
-<div id="METRICS_BTC_TX_AMOUNT_CONTAINER" class="subtab-container">
-    <div id="METRICS_BTC_TX_AMOUNT_NOW" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_NOW_TABLE"></table>
-    </div>
-    <div id="METRICS_BTC_TX_AMOUNT_24H" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_24H_TABLE"></table>
-    </div>
-    <div id="METRICS_BTC_TX_AMOUNT_1W" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_1W_TABLE"></table>
-    </div>
-    <div id="METRICS_BTC_TX_AMOUNT_1M" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_1M_TABLE"></table>
-    </div>
-    <div id="METRICS_BTC_TX_AMOUNT_1Y" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_1Y_TABLE"></table>
-    </div>
-    <div id="METRICS_BTC_TX_AMOUNT_HALVING" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_HALVING_TABLE"></table>
-    </div>
-    <div id="METRICS_BTC_TX_AMOUNT_EVER" class="METRICS_BTC_TX_AMOUNT-subsubtab" style="display:none;">
-        <table class="table table-striped" id="METRICS_BTC_TX_AMOUNT_EVER_TABLE"></table>
-    </div>
-</div>
 
 
 <!-- ====================================================== -->
-<!-- INFO BOX                                               -->
+<!-- SubTab Navigation (Semantic + SPA functional)          -->
+<!-- ====================================================== -->
+
+<div class="METRICS_BTC_TX_AMOUNT-subnav subnav mb-3 text-center">
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW">
+        MEMPOOL
+    </button>
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_24H">
+        24 <span class="range-unit">HOURS</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_1W">
+        1 <span class="range-unit">WEEK</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_1M">
+        1 <span class="range-unit">MONTH</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_1Y">
+        1 <span class="range-unit">YEAR</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_HALVING">
+        SINCE <span class="range-unit">HALVING</span>
+    </button>
+
+    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
+            data-subsubtab="METRICS_BTC_TX_AMOUNT_EVER">
+        ALL <span class="range-unit">TIME</span>
+    </button>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- TABLE CONTAINER – SSR MINIMAL                          -->
+<!-- Only default dataset rendered server-side              -->
+<!-- ====================================================== -->
+
+<div id="METRICS_BTC_TX_AMOUNT_CONTAINER" class="subtab-container">
+
+    <!-- Default SSR Dataset (Mempool / Live Range) -->
+    <div id="METRICS_BTC_TX_AMOUNT_NOW"
+         class="METRICS_BTC_TX_AMOUNT-subsubtab">
+
+        <table class="table table-striped"
+               id="METRICS_BTC_TX_AMOUNT_NOW_TABLE">
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<!-- ====================================================== -->
+<!-- SEO INFO BOX – Optimized                               -->
 <!-- ====================================================== -->
 
 <div class="info-box info-box-metrics-tx-amount">
@@ -75,22 +107,22 @@ Analyze Bitcoin transaction count across multiple time frames and explore real-t
     <strong>About Bitcoin Transaction Amount</strong><br><br>
 
     Bitcoin transaction amount measures the total value transferred within
-    a single on-chain Bitcoin transaction. Large transaction volumes often
-    reflect institutional activity, exchange flows, or whale movements
-    across the network.<br><br>
+    a single on-chain Bitcoin transaction. Large transaction values often
+    reflect institutional activity, exchange settlement flows, or major
+    capital movements between high-balance wallets.<br><br>
 
-    Monitoring high-value Bitcoin transactions provides insight into capital
-    distribution, liquidity shifts, and potential market-moving events.
-    Significant transfers between wallets or exchanges can signal accumulation,
-    distribution, or internal treasury management strategies.<br><br>
+    Monitoring high-value Bitcoin transactions provides insight into
+    capital distribution, liquidity shifts, and potential market-moving
+    events. Significant transfers between exchanges, custodians, or cold
+    storage wallets may signal accumulation, distribution, or treasury
+    management strategies.<br><br>
 
-    By analyzing the largest Bitcoin transactions across different time ranges —
-    from mempool activity to historical on-chain records — users can identify
-    notable value transfers and better understand how capital flows through
-    the Bitcoin ecosystem.
+    By analyzing the largest Bitcoin transactions across multiple time
+    ranges — from real-time mempool activity to full historical records —
+    users gain deeper insight into whale behavior, capital flow dynamics,
+    and the structural movement of value across the Bitcoin network.
 
 </div>
-
 
 {% endblock %}
 
@@ -102,13 +134,19 @@ Analyze Bitcoin transaction count across multiple time frames and explore real-t
 
 {% block scripts %}
 
-<!-- 1️⃣ Loader zuerst -->
+<!-- Loader -->
 <script src="/static/js/METRICS_BTC_TX_AMOUNT.js"></script>
 
-<!-- 2️⃣ Dann Init -->
+
+<!-- SSR Entry Init -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
+    if (window.__METRICS_TX_AMOUNT_SSR_INIT__) return;
+    window.__METRICS_TX_AMOUNT_SSR_INIT__ = true;
+
+
+    // Default table visible
     const defaultTab = document.getElementById(
         "METRICS_BTC_TX_AMOUNT_NOW"
     );
@@ -117,6 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
         defaultTab.style.display = "block";
     }
 
+
+    // Default button active
     const defaultBtn = document.querySelector(
         '.METRICS_BTC_TX_AMOUNT-subTabButton[data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW"]'
     );
@@ -125,7 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
         defaultBtn.classList.add("active");
     }
 
-    // Jetzt existiert die Funktion sicher
+
+    // Load dataset
     if (window.loadMetricsTxAmountNow) {
         window.loadMetricsTxAmountNow();
     }
@@ -134,4 +175,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 {% endblock %}
-
