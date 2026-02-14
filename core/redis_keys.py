@@ -364,15 +364,55 @@ EXPLORER_ADDRESSES_MAX_ADDRESSES_DEFAULT = 25
 # ================================================================================================================================= #
 
 
-# ============================================
-# SEO – TXID Extractor & SEEDER
-# ============================================
+# ================================================================================================================================= #
+# [EXPLORER] 🔹 TX                                                                                                     --RAM ONLY--
+# ================================================================================================================================= #
+SEO_TXIDS_BACKFILL_STATE_PATH               = "/raid/lightning/seo/txids/progress/txids_backfill_state.json"
+SEO_TXIDS_BACKFILL_OUT_DIR                  = "/raid/lightning/seo/txids/confirmed"
 
-SEO_TXID_INDEXED_SET            = "seo:txid:indexed"
-SEO_TXID_SITEMAP_LAST_BUILD_KEY = "seo:txid:sitemap:last_build"
+SEO_TXIDS_BACKFILL_LOOP_SLEEP_SEC           = 0.02      # Sleep zwischen Block-RPC Calls
+SEO_TXIDS_BACKFILL_PROGRESS_EVERY_N_BLOCKS  = 25        # Wie viele Blöcke verarbeitet werden, bevor der Progress-State gespeichert wird
+SEO_TXIDS_BACKFILL_FSYNC_EVERY_N_BLOCKS     = 25        # Erzwingt fsync() Flush auf Segment-Datei → garantiert, dass JSONL physisch auf Disk liegt
 
-SEO_TXID_EXTRACT_INTERVAL       = 1             # seconds — idle sleep when chain tip is reached (no new JSONL data)
-SEO_TXID_BATCH_LIMIT            = 10000         # max new per cycle
+
+# ================================================================================================================================= #
+
+
+# ================================================================================================================================= #
+# [EXPLORER] 🔹 TXIDS SITEMAP EXTRACTOR                                                                                --RAM ONLY-- #
+# ================================================================================================================================= #
+
+# --- Runtime / Loop ---
+SEO_TXIDS_SITEMAP_EXTRACT_INTERVAL_SEC   = 2        # Sleep zwischen Extract Runs
+SEO_TXIDS_SITEMAP_BATCH_LIMIT            = 5000     # Max TXIDs pro Loop Iteration
+
+# --- Build Metadata ---
+SEO_TXIDS_SITEMAP_LAST_BUILD_KEY         = "seo:txids:sitemap:last_build_ts"
+SEO_TXIDS_SITEMAP_LAST_SHARD_ID_KEY      = "seo:txids:sitemap:last_shard_id"
+
+# --- Crash Resume State ---
+SEO_TXIDS_SITEMAP_STATE_PATH             = "/raid/lightning/seo/txids/progress/txids_sitemap_state.json"
+
+# --- Input / Output Dirs ---
+SEO_TXIDS_CONFIRMED_SEGMENTS_DIR         = "/raid/lightning/seo/txids/confirmed"
+SEO_TXIDS_SITEMAP_SHARDS_DIR             = "/raid/lightning/seo/txids/sitemaps/shards"
+
+# --- Root Index ---
+SEO_TXIDS_SITEMAP_ROOT_INDEX_PATH        = "/home/marijo/Dokumente/NODE_DASHBOARD/static/sitemaps/sitemap_txids.xml"
+
+# --- Sitemap Limits ---
+SEO_TXIDS_SITEMAP_MAX_URLS_PER_FILE      = 50000
+SEO_TXIDS_SITEMAP_SHARD_PAD              = 6
+
+# --- URL Prefix ---
+SEO_TXIDS_TX_URL_PREFIX                  = "https://bitcoin-dashboard.net/explorer/tx/"
+SEO_TXIDS_SITEMAP_BASE_URL               = "https://bitcoin-dashboard.net/static/sitemaps/txids/"
+
+# --- Crash Safety ---
+SEO_TXIDS_SITEMAP_TXID_RING_SIZE         = 50000
+
+# ================================================================================================================================= #
+
 
 
 # ================================================================================================================================= #

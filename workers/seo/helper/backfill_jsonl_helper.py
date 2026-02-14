@@ -21,7 +21,7 @@ DEFAULT_STATE = {
     "current_segment_end": 9999,
 
     "segments_completed": 0,
-    "txids_indexed_total": 0,
+    "events_written_total": 0,
 
     "updated_utc": None
 }
@@ -66,7 +66,7 @@ class BackfillState:
     current_segment_end: int = 9999
 
     segments_completed: int = 0
-    txids_indexed_total: int = 0
+    events_written_total: int = 0
 
     updated_utc: Optional[str] = None
 
@@ -82,7 +82,7 @@ class BackfillState:
             current_segment_start=int(merged["current_segment_start"]),
             current_segment_end=int(merged["current_segment_end"]),
             segments_completed=int(merged["segments_completed"]),
-            txids_indexed_total=int(merged["txids_indexed_total"]),
+            events_written_total=int(merged["events_written_total"]),
             updated_utc=merged.get("updated_utc"),
         )
 
@@ -94,7 +94,7 @@ class BackfillState:
             "current_segment_start": self.current_segment_start,
             "current_segment_end": self.current_segment_end,
             "segments_completed": self.segments_completed,
-            "txids_indexed_total": self.txids_indexed_total,
+            "events_written_total": self.events_written_total,
             "updated_utc": self.updated_utc,
         }
 

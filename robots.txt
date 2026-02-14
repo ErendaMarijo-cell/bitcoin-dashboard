@@ -4,9 +4,9 @@ Disallow:
 # Core Sitemaps
 
 Sitemap: https://bitcoin-dashboard.net/static/sitemaps/sitemap_pages.xml
-# Sitemap: https://bitcoin-dashboard.net/static/sitemaps/sitemap_txids.xml
 
-# Future Entity Sitemaps (aktivieren sobald vorhanden)
+
+# Sitemap: https://bitcoin-dashboard.net/static/sitemaps/sitemap_txids.xml
 
 # Sitemap: https://bitcoin-dashboard.net/static/sitemaps/sitemap_addresses.xml
 

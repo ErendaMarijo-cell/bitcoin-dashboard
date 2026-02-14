@@ -1,15 +1,18 @@
+#!/usr/bin/env python3
 # ==================================================
-# 🔥 TXID SEO EXTRACTOR WORKER (APPEND-ONLY, CONFIRMED-ONLY)
+# 🔥 TXIDS SEO SITEMAP WORKER (HIGH PERFORMANCE)
 #
-# ✅ Reads CONFIRMED TXIDs from JSONL segment files
-# ✅ Appends TXID URLs into sharded sitemaps (50,000 URLs/file)
-# ✅ Never deletes existing shard files
-# ✅ Rebuilds ONLY the root sitemap_index.xml when a NEW shard is created
-# ✅ Resume-safe via (segment file + byte offset) + small txid ring to avoid duplicates on crash replay
+# ✅ Reads CONFIRMED TXIDs from JSONL segment files (append-only)
+# ✅ Builds sharded TXID sitemaps (50,000 URLs/file)
+# ✅ Append-only (never deletes shards)
+# ✅ Resume-safe (file + byte offset)
+# ✅ Footer-safe appends
+# ✅ Batch writing (single write per batch)
+# ✅ Optional crash-replay dedupe via small txid ring
 #
-# IMPORTANT:
-# - Does NOT use BTC_TX_AMOUNT_HISTORY_KEY.
-# - Does NOT scan Redis sets.
+# NOTE:
+# - Redis is metadata-only (last build timestamp)
+# - No Redis set scans
 # ==================================================
 
 import os
@@ -18,7 +21,7 @@ import time
 import json
 import glob
 from datetime import datetime, timezone
-from typing import List, Tuple, Optional, Deque
+from typing import List, Optional, Tuple, Deque
 from collections import deque
 
 import redis
@@ -26,56 +29,83 @@ import redis
 # ============================================
 # 🔧 Project Root
 # ============================================
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
 # ============================================
-# 🔑 Redis Keys (optional metadata only)
+# 🔑 Global Config (NO HARDCODES)
 # ============================================
+
 from core.redis_keys import (
-    SEO_TXID_EXTRACT_INTERVAL,
-    SEO_TXID_BATCH_LIMIT,
-    SEO_TXID_SITEMAP_LAST_BUILD_KEY,
+    # Loop / Batch
+    SEO_TXIDS_SITEMAP_EXTRACT_INTERVAL_SEC,
+    SEO_TXIDS_SITEMAP_BATCH_LIMIT,
+
+    # Metadata
+    SEO_TXIDS_SITEMAP_LAST_BUILD_KEY,
+
+    # Paths
+    SEO_TXIDS_CONFIRMED_SEGMENTS_DIR,
+    SEO_TXIDS_SITEMAP_SHARDS_DIR,
+    SEO_TXIDS_SITEMAP_ROOT_INDEX_PATH,
+    SEO_TXIDS_SITEMAP_STATE_PATH,
+
+    # Sitemap Settings
+    SEO_TXIDS_SITEMAP_MAX_URLS_PER_FILE,
+    SEO_TXIDS_SITEMAP_SHARD_PAD,
+
+    # URLs
+    SEO_TXIDS_TX_URL_PREFIX,
+    SEO_TXIDS_SITEMAP_BASE_URL,
+
+    # Crash Safety
+    SEO_TXIDS_SITEMAP_TXID_RING_SIZE,
 )
 
+# Optional extra sitemap entry (no hardcoded URL here)
+try:
+    from core.redis_keys import SEO_SITEMAP_PAGES_LOC  # e.g. "https://.../sitemap_pages.xml"
+except Exception:
+    SEO_SITEMAP_PAGES_LOC = ""
+
 # ============================================
-# 🔧 Redis Client (optional metadata only)
+# Runtime Constants
 # ============================================
+
+IN_DIR = SEO_TXIDS_CONFIRMED_SEGMENTS_DIR
+SITEMAP_DIR = SEO_TXIDS_SITEMAP_SHARDS_DIR
+ROOT_INDEX_PATH = SEO_TXIDS_SITEMAP_ROOT_INDEX_PATH
+STATE_PATH = SEO_TXIDS_SITEMAP_STATE_PATH
+
+TXID_URL_PREFIX = SEO_TXIDS_TX_URL_PREFIX
+SITEMAP_BASE_URL = SEO_TXIDS_SITEMAP_BASE_URL
+
+SITEMAP_MAX_URLS = int(SEO_TXIDS_SITEMAP_MAX_URLS_PER_FILE)
+SITEMAP_PAD = int(SEO_TXIDS_SITEMAP_SHARD_PAD)
+
+BATCH_SIZE = max(1, int(SEO_TXIDS_SITEMAP_BATCH_LIMIT))
+POLL_INTERVAL = max(1.0, float(SEO_TXIDS_SITEMAP_EXTRACT_INTERVAL_SEC))
+
+TXID_RING_SIZE = max(0, int(SEO_TXIDS_SITEMAP_TXID_RING_SIZE))
+
+# ============================================
+# Redis (metadata only)
+# ============================================
+
 r = redis.Redis(host="localhost", port=6379, db=0, decode_responses=True)
-
-# ============================================
-# Paths
-# ============================================
-IN_DIR = "/raid/lightning/seo/txids/confirmed"
-SITEMAP_DIR = "/raid/lightning/seo/txids/sitemaps/shards"
-ROOT_SITEMAP_INDEX_PATH = os.path.join(BASE_DIR, "static", "sitemaps", "sitemap_txids.xml")
-STATE_PATH = "/raid/lightning/seo/txids/progress/txid_extractor_append_state.json"
-
-# ============================================
-# Sitemap settings
-# ============================================
-SITEMAP_MAX_URLS = 50000
-SITEMAP_SHARD_PAD = 6
-
-TXID_URL_PREFIX = "https://bitcoin-dashboard.net/explorer/tx/"
-SITEMAP_BASE_URL = "https://bitcoin-dashboard.net/static/sitemaps/txids/"  # URL prefix, not filesystem
-
-# ============================================
-# Crash-safety / dedupe window
-# ============================================
-TXID_RING_SIZE = 50000
-
 
 # ============================================
 # Helpers
 # ============================================
+
 def utc_now_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def ensure_dir(path: str) -> None:
-    os.makedirs(path, exist_ok=True)
+def ensure_dir(p: str) -> None:
+    os.makedirs(p, exist_ok=True)
 
 
 def atomic_write_json(path: str, payload: dict) -> None:
@@ -86,16 +116,55 @@ def atomic_write_json(path: str, payload: dict) -> None:
     os.replace(tmp, path)
 
 
+def shard_name(i: int) -> str:
+    return f"sitemap_txids_{i:0{SITEMAP_PAD}d}.xml"
+
+
+def list_segments() -> List[str]:
+    files = glob.glob(os.path.join(IN_DIR, "txids_*.jsonl"))
+    files.sort()
+    return files
+
+
+# ============================================
+# XML
+# ============================================
+
+_URLSET_HEADER = (
+    '<?xml version="1.0" encoding="UTF-8"?>\n'
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+).encode("utf-8")
+
+_URLSET_FOOTER = b"</urlset>\n"
+
+
+def url_entry_bytes(txid: str) -> bytes:
+    # Keep formatting stable & minimal
+    return (
+        "  <url>\n"
+        f"    <loc>{TXID_URL_PREFIX}{txid}</loc>\n"
+        "    <changefreq>weekly</changefreq>\n"
+        "    <priority>0.8</priority>\n"
+        "  </url>\n"
+    ).encode("utf-8")
+
+
+# ============================================
+# State
+# ============================================
+
 def load_state() -> dict:
     default = {
         "current_file": None,
         "offset": 0,
-        "shard_idx": None,
-        "urls_in_shard": None,
+        "shard_idx": 1,
+        "urls_in_shard": 0,
         "written_total": 0,
+        # crash-replay dedupe (optional)
         "last_txids": [],
         "updated_utc": None,
     }
+
     if not os.path.exists(STATE_PATH):
         atomic_write_json(STATE_PATH, default)
         return default
@@ -103,226 +172,191 @@ def load_state() -> dict:
     try:
         with open(STATE_PATH, "r", encoding="utf-8") as f:
             data = json.load(f) or {}
-        merged = dict(default)
-        merged.update(data)
-        if not isinstance(merged.get("last_txids"), list):
-            merged["last_txids"] = []
-        return merged
+
+        # backward-compatible defaults
+        for k, v in default.items():
+            data.setdefault(k, v)
+
+        if not isinstance(data.get("last_txids"), list):
+            data["last_txids"] = []
+
+        # sanitize numeric fields
+        data["offset"] = int(data.get("offset", 0) or 0)
+        data["shard_idx"] = int(data.get("shard_idx", 1) or 1)
+        data["urls_in_shard"] = int(data.get("urls_in_shard", 0) or 0)
+        data["written_total"] = int(data.get("written_total", 0) or 0)
+
+        return data
+
     except Exception:
         atomic_write_json(STATE_PATH, default)
         return default
 
 
-def save_state(state: dict) -> None:
-    state["updated_utc"] = utc_now_iso()
-    atomic_write_json(STATE_PATH, state)
+def save_state(s: dict) -> None:
+    s["updated_utc"] = utc_now_iso()
+    atomic_write_json(STATE_PATH, s)
 
 
-def list_segment_files() -> List[str]:
-    if not os.path.isdir(IN_DIR):
-        return []
-    files = [f for f in os.listdir(IN_DIR) if f.startswith("txids_") and f.endswith(".jsonl")]
-    files.sort()
-    return [os.path.join(IN_DIR, f) for f in files]
+# ============================================
+# Shards (footer-safe append)
+# ============================================
 
-
-def pick_start_file(files: List[str], current_file: Optional[str]) -> Tuple[Optional[str], int]:
-    if not files:
-        return None, 0
-    if not current_file:
-        return files[0], 0
-    if current_file in files:
-        return current_file, 0
-    for f in files:
-        if os.path.basename(f) > os.path.basename(current_file):
-            return f, 0
-    return None, 0
-
-
-def shard_name(i: int) -> str:
-    return f"sitemap_txids_{i:0{SITEMAP_SHARD_PAD}d}.xml"
-
-
-def _write_urlset_header_text() -> str:
-    return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-
-
-def _write_urlset_footer_text() -> str:
-    return "</urlset>\n"
-
-
-def count_urls_in_shard(path: str) -> int:
-    # Only used for LAST shard (<=50k) so OK.
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return sum(1 for line in f if "<loc>" in line)
-    except FileNotFoundError:
-        return 0
-
-
-def detect_last_shard() -> Tuple[int, int]:
+def ensure_shard_file(idx: int) -> str:
     ensure_dir(SITEMAP_DIR)
-    files = sorted(glob.glob(os.path.join(SITEMAP_DIR, "sitemap_txids_*.xml")))
-    if not files:
-        return 1, 0
+    path = os.path.join(SITEMAP_DIR, shard_name(idx))
 
-    last_path = files[-1]
-    base = os.path.basename(last_path)
-    try:
-        shard_idx = int(base.split("_")[-1].split(".")[0])
-    except Exception:
-        return 1, 0
-
-    urls = count_urls_in_shard(last_path)
-    return shard_idx, urls
-
-
-def ensure_shard_exists(shard_idx: int) -> str:
-    ensure_dir(SITEMAP_DIR)
-    path = os.path.join(SITEMAP_DIR, shard_name(shard_idx))
     if not os.path.exists(path):
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(_write_urlset_header_text())
-            f.write(_write_urlset_footer_text())
+        with open(path, "wb") as fp:
+            fp.write(_URLSET_HEADER)
+            fp.write(_URLSET_FOOTER)
+
     return path
 
 
-def open_shard_for_append(shard_idx: int) -> Tuple[object, int, str]:
+def _find_footer_pos(path: str) -> int:
     """
-    Opens shard file in binary append mode with the file positioned BEFORE </urlset>.
-    Returns (fp, urls_in_shard, shard_path)
+    Find position of '</urlset>' footer.
+    Efficient approach: scan from tail window; fallback to full read if needed.
     """
-    shard_path = ensure_shard_exists(shard_idx)
-
-    # Determine count fresh (only for last shard; safe)
-    urls_in_shard = count_urls_in_shard(shard_path)
-
     footer = b"</urlset>"
-    with open(shard_path, "rb") as rf:
-        data = rf.read()
+    try:
+        size = os.path.getsize(path)
+        window = min(size, 1024 * 256)  # 256KB tail window
+        with open(path, "rb") as f:
+            f.seek(max(0, size - window))
+            data = f.read()
+        pos = data.rfind(footer)
+        if pos != -1:
+            return max(0, size - window) + pos
+    except Exception:
+        pass
+
+    # fallback (rare)
+    with open(path, "rb") as f:
+        data = f.read()
     pos = data.rfind(footer)
     if pos == -1:
-        # Repair: append footer then retry
-        with open(shard_path, "ab") as af:
-            if not data.endswith(b"\n"):
-                af.write(b"\n")
-            af.write(b"</urlset>\n")
-        with open(shard_path, "rb") as rf:
-            data = rf.read()
-        pos = data.rfind(footer)
-        if pos == -1:
-            raise RuntimeError(f"Shard footer not found and could not be repaired: {shard_path}")
+        return -1
+    return pos
 
-    fp = open(shard_path, "r+b")
+
+def open_shard_for_append(idx: int) -> Tuple[object, str]:
+    """
+    Opens shard in r+b, positioned BEFORE footer (footer removed).
+    """
+    path = ensure_shard_file(idx)
+
+    pos = _find_footer_pos(path)
+
+    if pos == -1:
+        # Repair attempt: append footer then re-scan
+        with open(path, "ab") as af:
+            af.write(b"\n" + _URLSET_FOOTER)
+
+        pos = _find_footer_pos(path)
+        if pos == -1:
+            raise RuntimeError(f"Footer missing and could not be repaired: {path}")
+
+    fp = open(path, "r+b")
     fp.seek(pos)
-    fp.truncate()               # remove footer
-    fp.seek(0, os.SEEK_END)     # move to end for appends
-    return fp, urls_in_shard, shard_path
+    fp.truncate()            # remove footer
+    fp.seek(0, os.SEEK_END)  # move to end for appends
+    return fp, path
 
 
 def close_shard(fp) -> None:
-    fp.write(_write_urlset_footer_text().encode("utf-8"))
+    fp.write(_URLSET_FOOTER)
     fp.flush()
     os.fsync(fp.fileno())
     fp.close()
 
 
-def rebuild_root_sitemap_index() -> None:
-    ensure_dir(os.path.dirname(ROOT_SITEMAP_INDEX_PATH))
-    shard_files = sorted(
+# ============================================
+# Root Index
+# ============================================
+
+def rebuild_root_index() -> None:
+    ensure_dir(os.path.dirname(ROOT_INDEX_PATH))
+
+    shards = sorted(
         os.path.basename(p)
         for p in glob.glob(os.path.join(SITEMAP_DIR, "sitemap_txids_*.xml"))
     )
 
-    tmp = ROOT_SITEMAP_INDEX_PATH + ".tmp"
+    tmp = ROOT_INDEX_PATH + ".tmp"
+
     with open(tmp, "w", encoding="utf-8") as fp:
         fp.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         fp.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
 
-        fp.write("  <sitemap>\n")
-        fp.write("    <loc>https://bitcoin-dashboard.net/static/sitemaps/sitemap_pages.xml</loc>\n")
-        fp.write("  </sitemap>\n")
+        if SEO_SITEMAP_PAGES_LOC:
+            fp.write("  <sitemap>\n")
+            fp.write(f"    <loc>{SEO_SITEMAP_PAGES_LOC}</loc>\n")
+            fp.write("  </sitemap>\n")
 
-        for name in shard_files:
+        for name in shards:
             fp.write("  <sitemap>\n")
             fp.write(f"    <loc>{SITEMAP_BASE_URL}{name}</loc>\n")
             fp.write("  </sitemap>\n")
 
         fp.write("</sitemapindex>\n")
 
-    os.replace(tmp, ROOT_SITEMAP_INDEX_PATH)
-
-
-def write_url_entry(fp, txid: str) -> None:
-    entry = (
-        "  <url>\n"
-        f"    <loc>{TXID_URL_PREFIX}{txid}</loc>\n"
-        "    <changefreq>weekly</changefreq>\n"
-        "    <priority>0.8</priority>\n"
-        "  </url>\n"
-    )
-    fp.write(entry.encode("utf-8"))
+    os.replace(tmp, ROOT_INDEX_PATH)
 
 
 # ============================================
-# Core append loop
+# Worker Loop
 # ============================================
-def txid_extractor_append_loop():
-    print("[TXID SEO APPEND] started")
-    print(f"[TXID SEO APPEND] IN_DIR={IN_DIR}")
-    print(f"[TXID SEO APPEND] SITEMAP_DIR={SITEMAP_DIR}")
-    print(f"[TXID SEO APPEND] ROOT_INDEX={ROOT_SITEMAP_INDEX_PATH}")
-    print(f"[TXID SEO APPEND] STATE={STATE_PATH}")
 
-    ensure_dir(SITEMAP_DIR)
+def sitemap_loop() -> None:
+    print("[TXIDS SITEMAP] started")
+    print(f"[TXIDS SITEMAP] IN_DIR={IN_DIR}")
+    print(f"[TXIDS SITEMAP] SITEMAP_DIR={SITEMAP_DIR}")
+    print(f"[TXIDS SITEMAP] ROOT_INDEX={ROOT_INDEX_PATH}")
+    print(f"[TXIDS SITEMAP] STATE={STATE_PATH}")
+    print(f"[TXIDS SITEMAP] BATCH={BATCH_SIZE} POLL={POLL_INTERVAL}s MAX_URLS={SITEMAP_MAX_URLS}")
+
     state = load_state()
 
-    # init shard info from filesystem
-    if not isinstance(state.get("shard_idx"), int) or not isinstance(state.get("urls_in_shard"), int):
-        shard_idx, urls_in_shard = detect_last_shard()
-        state["shard_idx"] = shard_idx
-        state["urls_in_shard"] = urls_in_shard
-        save_state(state)
+    # ring for crash-replay dedupe (optional)
+    ring: Deque[str]
+    if TXID_RING_SIZE > 0:
+        ring = deque(state.get("last_txids", []), maxlen=TXID_RING_SIZE)
+    else:
+        ring = deque([], maxlen=0)
 
-    ring: Deque[str] = deque(state.get("last_txids", []), maxlen=TXID_RING_SIZE)
+    # open current shard
+    shard_fp, _ = open_shard_for_append(int(state["shard_idx"]))
 
-    # init file state
-    files = list_segment_files()
-    current_file, _ = pick_start_file(files, state.get("current_file"))
-    if not current_file:
-        print("[TXID SEO APPEND] No segment files found, waiting...")
-        while True:
-            time.sleep(5)
-            files = list_segment_files()
-            current_file, _ = pick_start_file(files, state.get("current_file"))
-            if current_file:
-                break
-
-    if state.get("current_file") != current_file:
-        state["current_file"] = current_file
-        state["offset"] = 0
-        save_state(state)
-
-    # open shard
-    fp, urls_in_shard, _ = open_shard_for_append(int(state["shard_idx"]))
-
-    batch_txids: List[str] = []
+    batch: List[str] = []
     last_log = time.time()
 
-    batch_limit = max(1, int(SEO_TXID_BATCH_LIMIT))
-    idle_sleep = max(1.0, float(SEO_TXID_EXTRACT_INTERVAL))
-
     while True:
-        files = list_segment_files()
+        files = list_segments()
+
         if not files:
-            print("[TXID SEO APPEND] No segment files found, sleeping...")
+            print("[TXIDS SITEMAP] no segment files found")
             time.sleep(5)
             continue
 
+        # init file if missing
+        if not state.get("current_file"):
+            state["current_file"] = files[0]
+            state["offset"] = 0
+            save_state(state)
+
+        # if current file vanished, jump to next
         if state["current_file"] not in files:
-            next_file, _ = pick_start_file(files, state["current_file"])
+            # pick first file lexicographically greater
+            cur_base = os.path.basename(state["current_file"])
+            next_file = None
+            for f in files:
+                if os.path.basename(f) > cur_base:
+                    next_file = f
+                    break
             if not next_file:
-                print("[TXID SEO APPEND] No next file available, sleeping...")
+                print("[TXIDS SITEMAP] current segment missing and no next available, sleeping...")
                 time.sleep(5)
                 continue
             state["current_file"] = next_file
@@ -340,109 +374,41 @@ def txid_extractor_append_loop():
                     if not line:
                         break  # EOF
 
+                    # NOTE: commit offset is when we flush batch, not per-line, to stay atomic
                     try:
                         rec = json.loads(line.decode("utf-8"))
                     except Exception:
-                        # skip bad line, but move forward safely after batch commit (so just ignore)
                         continue
 
                     txid = rec.get("txid")
                     if not txid:
                         continue
 
-                    if txid in ring:
+                    if TXID_RING_SIZE > 0 and txid in ring:
                         continue
 
-                    batch_txids.append(txid)
+                    batch.append(txid)
 
-                    if len(batch_txids) >= batch_limit:
-                        # commit this batch at the CURRENT file position
+                    if len(batch) >= BATCH_SIZE:
                         commit_offset = f.tell()
+                        _commit_batch(batch, state, ring, shard_fp, path, commit_offset)
+                        batch.clear()
 
-                        new_shard_created = False
-                        for t in batch_txids:
-                            if urls_in_shard >= SITEMAP_MAX_URLS:
-                                close_shard(fp)
-                                state["shard_idx"] = int(state["shard_idx"]) + 1
-                                fp, urls_in_shard, _ = open_shard_for_append(int(state["shard_idx"]))
-                                new_shard_created = True
-
-                            write_url_entry(fp, t)
-                            urls_in_shard += 1
-                            state["written_total"] = int(state.get("written_total", 0)) + 1
-                            ring.append(t)
-
-                        # finalize shard to keep it always valid on disk
-                        close_shard(fp)
-                        fp, _, _ = open_shard_for_append(int(state["shard_idx"]))
-
-                        # state commit AFTER successful fsync
-                        state["urls_in_shard"] = urls_in_shard
-                        state["offset"] = commit_offset
-                        state["last_txids"] = list(ring)
-                        save_state(state)
-
-                        if new_shard_created:
-                            rebuild_root_sitemap_index()
-
-                        try:
-                            r.set(SEO_TXID_SITEMAP_LAST_BUILD_KEY, str(time.time()))
-                        except Exception:
-                            pass
-
-                        print(
-                            f"[TXID SEO APPEND] +{len(batch_txids)} urls | "
-                            f"shard={int(state['shard_idx'])} urls_in_shard={urls_in_shard} | "
-                            f"file={os.path.basename(path)} off={state['offset']}"
-                        )
-                        batch_txids.clear()
-
+                    # heartbeat
                     if time.time() - last_log > 15:
                         print(
-                            f"[TXID SEO APPEND] heartbeat | "
-                            f"shard={int(state['shard_idx'])} urls_in_shard={urls_in_shard} | "
+                            f"[TXIDS SITEMAP] heartbeat | "
                             f"file={os.path.basename(path)} off={int(state.get('offset', 0))} | "
-                            f"queued={len(batch_txids)}"
+                            f"shard={state['shard_idx']} urls_in_shard={state['urls_in_shard']} | "
+                            f"queued={len(batch)}"
                         )
                         last_log = time.time()
 
-            # EOF flush
-            if batch_txids:
-                new_shard_created = False
-                for t in batch_txids:
-                    if urls_in_shard >= SITEMAP_MAX_URLS:
-                        close_shard(fp)
-                        state["shard_idx"] = int(state["shard_idx"]) + 1
-                        fp, urls_in_shard, _ = open_shard_for_append(int(state["shard_idx"]))
-                        new_shard_created = True
-
-                    write_url_entry(fp, t)
-                    urls_in_shard += 1
-                    state["written_total"] = int(state.get("written_total", 0)) + 1
-                    ring.append(t)
-
-                close_shard(fp)
-                fp, _, _ = open_shard_for_append(int(state["shard_idx"]))
-
-                state["urls_in_shard"] = urls_in_shard
-                state["offset"] = os.path.getsize(path)
-                state["last_txids"] = list(ring)
-                save_state(state)
-
-                if new_shard_created:
-                    rebuild_root_sitemap_index()
-
-                try:
-                    r.set(SEO_TXID_SITEMAP_LAST_BUILD_KEY, str(time.time()))
-                except Exception:
-                    pass
-
-                print(
-                    f"[TXID SEO APPEND] +{len(batch_txids)} urls (flush) | "
-                    f"shard={int(state['shard_idx'])} urls_in_shard={urls_in_shard} | "
-                    f"file={os.path.basename(path)}"
-                )
-                batch_txids.clear()
+            # EOF flush (remaining)
+            if batch:
+                commit_offset = os.path.getsize(path)
+                _commit_batch(batch, state, ring, shard_fp, path, commit_offset, eof_flush=True)
+                batch.clear()
 
             # next file?
             idx = files.index(path)
@@ -450,48 +416,98 @@ def txid_extractor_append_loop():
                 state["current_file"] = files[idx + 1]
                 state["offset"] = 0
                 save_state(state)
-                print(f"[TXID SEO APPEND] next file → {os.path.basename(state['current_file'])}")
+                print(f"[TXIDS SITEMAP] next file → {os.path.basename(state['current_file'])}")
                 continue
 
             # tip reached
-            time.sleep(idle_sleep)
+            time.sleep(POLL_INTERVAL)
 
         except KeyboardInterrupt:
-            print("[TXID SEO APPEND] stopped by Ctrl+C")
+            print("[TXIDS SITEMAP] stopped by Ctrl+C")
             try:
-                close_shard(fp)
+                close_shard(shard_fp)
             except Exception:
                 pass
             return
 
         except Exception as e:
-            print(f"[TXID SEO APPEND ERROR] {e}")
-            # ensure shard valid
+            print(f"[TXIDS SITEMAP ERROR] {e}")
+            # keep shard valid
             try:
-                close_shard(fp)
+                close_shard(shard_fp)
             except Exception:
                 pass
-            # reopen shard
+            # reopen
             try:
-                fp, urls_in_shard, _ = open_shard_for_append(int(state["shard_idx"]))
+                shard_fp, _ = open_shard_for_append(int(state["shard_idx"]))
             except Exception:
                 time.sleep(5)
                 continue
             time.sleep(2)
 
 
-# ============================================
-# ▶️ COMPAT ENTRYPOINT (systemd expects this)
-# ============================================
-def txid_extractor_worker_loop():
+def _commit_batch(
+    batch: List[str],
+    state: dict,
+    ring: Deque[str],
+    shard_fp,
+    current_path: str,
+    commit_offset: int,
+    eof_flush: bool = False,
+) -> None:
     """
-    Compatibility wrapper for systemd process script.
+    Writes batch to shard(s), rotates shard if needed, fsync, then commits state.
     """
-    txid_extractor_append_loop()
+    new_shard_created = False
+    written_now = 0
+
+    for txid in batch:
+        if int(state["urls_in_shard"]) >= SITEMAP_MAX_URLS:
+            close_shard(shard_fp)
+            state["shard_idx"] = int(state["shard_idx"]) + 1
+            state["urls_in_shard"] = 0
+            shard_fp, _ = open_shard_for_append(int(state["shard_idx"]))
+            new_shard_created = True
+
+        shard_fp.write(url_entry_bytes(txid))
+        state["urls_in_shard"] = int(state["urls_in_shard"]) + 1
+        state["written_total"] = int(state.get("written_total", 0)) + 1
+        written_now += 1
+
+        if ring.maxlen and ring.maxlen > 0:
+            ring.append(txid)
+
+    # finalize shard on disk (valid XML always)
+    close_shard(shard_fp)
+    shard_fp, _ = open_shard_for_append(int(state["shard_idx"]))
+
+    # state commit AFTER fsync/close+reopen
+    state["offset"] = int(commit_offset)
+    if ring.maxlen and ring.maxlen > 0:
+        state["last_txids"] = list(ring)
+    save_state(state)
+
+    if new_shard_created:
+        rebuild_root_index()
+
+    # metadata ping
+    try:
+        r.set(SEO_TXIDS_SITEMAP_LAST_BUILD_KEY, str(time.time()))
+    except Exception:
+        pass
+
+    tag = "flush" if eof_flush else "batch"
+    print(
+        f"[TXIDS SITEMAP] +{written_now} urls ({tag}) | "
+        f"total={state.get('written_total', 0)} | "
+        f"shard={state['shard_idx']} ({state['urls_in_shard']}) | "
+        f"file={os.path.basename(current_path)} off={state['offset']}"
+    )
 
 
 # ============================================
-# ▶️ Optional direct run
+# Entrypoint
 # ============================================
+
 if __name__ == "__main__":
-    txid_extractor_worker_loop()
+    sitemap_loop()

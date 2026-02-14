@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # ==================================================
-# 🔥 TXIDS SITEMAP WORKER (PROCESS WRAPPER)
-# Builds & Appends TXID URLs into SEO Sitemap Shards
+# 🔥 TXIDS UPDATE WORKER (PROCESS WRAPPER)
+# Systemd Entrypoint for Live TXID Update Worker
+# Syncs new blocks after backfill
 # ==================================================
 
 import os
@@ -22,8 +23,8 @@ if BASE_DIR not in sys.path:
 # 🔗 Worker Import
 # ============================================
 
-from workers.seo.txids.txids_sitemap_worker import (
-    sitemap_loop
+from workers.seo.txids.txids_update_worker import (
+    update_loop
 )
 
 # ============================================
@@ -31,10 +32,13 @@ from workers.seo.txids.txids_sitemap_worker import (
 # ============================================
 
 if __name__ == "__main__":
-    print("[TXIDS SITEMAP WORKER PROCESS] started")
+
+    print("[TXIDS UPDATE WORKER PROCESS] started")
 
     try:
-        sitemap_loop()
+        update_loop()
 
     except KeyboardInterrupt:
-        print("[TXIDS SITEMAP WORKER PROCESS] stopped by Ctrl+C")
+        print(
+            "[TXIDS UPDATE WORKER PROCESS] stopped by Ctrl+C"
+        )

@@ -70,6 +70,11 @@ LOG_EVERY_N_BLOCKS = 100
 RPC_RETRIES = 5
 RPC_RETRY_SLEEP = 0.5
 
+
+TEST_MAX_HEIGHT = 200
+
+
+
 # ============================================
 # 🔗 RPC Binding
 # ============================================
@@ -230,7 +235,7 @@ def backfill_loop():
     blocks_since_fsync = 0
 
     try:
-        for height in range(start_height, tip + 1):
+        for height in range(start_height, min(tip, TEST_MAX_HEIGHT) + 1):
 
             seg_path = get_segment_file_path(
                 entity=state.entity,
