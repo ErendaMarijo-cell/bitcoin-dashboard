@@ -26,7 +26,7 @@ if BASE_DIR not in sys.path:
 # 🔗 Progress Loader
 # ============================================
 
-from workers.seo.txid.txid_backfill_progress import (
+from workers.seo.txids.txids_backfill_progress import (
     load_state,
     save_state_atomic,
     segment_range_for_height,
