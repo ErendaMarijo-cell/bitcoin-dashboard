@@ -25,3 +25,18 @@ tmp/
 static/sitemaps/txids/sitemap_txids_*.xml
 static/sitemaps/txids/sitemap_txids_index.xml
 
+# Python cache
+__pycache__/
+*.pyc
+
+# Backfill state
+workers/**/progress/*.json
+
+# Data outputs
+workers/**/confirmed/*.jsonl
+workers/**/logs/
+
+# OS
+.DS_Store
+
+

@@ -27,16 +27,18 @@ BASE_DIR = os.path.abspath(
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
+
 # ============================================
-# 🔗 Progress Loader
+# 🔗 Progress Loader (Shared)
 # ============================================
 
-from workers.seo.addresses.addresses_backfill_progress import (
+from workers.seo.helper.backfill_jsonl_helper import (
     load_state,
     save_state_atomic,
     segment_range_for_height,
     segment_filename,
 )
+
 
 # ============================================
 # 🔗 Node RPC Layer
