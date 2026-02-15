@@ -6,9 +6,9 @@
 {% extends "base/base.html" %}
 
 
-<!-- ====================================================== -->
-<!-- SEO META                                               -->
-<!-- ====================================================== -->
+<!-- =============== -->
+<!-- SEO META        -->
+<!-- =============== -->
 
 {% block title %}
 Largest Bitcoin Transactions – High-Value On-Chain Transfers
@@ -33,44 +33,73 @@ Explore the largest Bitcoin transactions across multiple time frames and analyze
 
 
 <!-- ====================================================== -->
-<!-- SubTab Navigation (Semantic + SPA functional)          -->
+<!-- Sub-SubTab Navigation (Range Selector)                 -->
+<!-- SSR Active State + SPA Compatible                      -->
 <!-- ====================================================== -->
 
 <div class="METRICS_BTC_TX_AMOUNT-subnav subnav mb-3 text-center">
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == 'now' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW">
+
         MEMPOOL
+
     </button>
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_24H">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == '24h' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_24H">
+
         24 <span class="range-unit">HOURS</span>
+
     </button>
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_1W">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == '1w' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_1W">
+
         1 <span class="range-unit">WEEK</span>
+
     </button>
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_1M">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == '1m' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_1M">
+
         1 <span class="range-unit">MONTH</span>
+
     </button>
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_1Y">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == '1y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_1Y">
+
         1 <span class="range-unit">YEAR</span>
+
     </button>
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_HALVING">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == 'halving' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_HALVING">
+
         SINCE <span class="range-unit">HALVING</span>
+
     </button>
 
-    <button class="METRICS_BTC_TX_AMOUNT-subTabButton"
-            data-subsubtab="METRICS_BTC_TX_AMOUNT_EVER">
+    <button
+        class="METRICS_BTC_TX_AMOUNT-subTabButton
+        {% if active_range == 'ever' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_TX_AMOUNT_EVER">
+
         ALL <span class="range-unit">TIME</span>
+
     </button>
 
 </div>
@@ -78,18 +107,99 @@ Explore the largest Bitcoin transactions across multiple time frames and analyze
 
 
 <!-- ====================================================== -->
-<!-- TABLE CONTAINER – SSR MINIMAL                          -->
-<!-- Only default dataset rendered server-side              -->
+<!-- TABLE CONTAINER – SSR + SPA HYBRID                     -->
 <!-- ====================================================== -->
 
-<div id="METRICS_BTC_TX_AMOUNT_CONTAINER" class="subtab-container">
+<div id="METRICS_BTC_TX_AMOUNT_CONTAINER"
+     class="subtab-container">
 
-    <!-- Default SSR Dataset (Mempool / Live Range) -->
     <div id="METRICS_BTC_TX_AMOUNT_NOW"
-         class="METRICS_BTC_TX_AMOUNT-subsubtab">
+         class="METRICS_BTC_TX_AMOUNT-subsubtab"
+         style="display:block;">
 
         <table class="table table-striped"
                id="METRICS_BTC_TX_AMOUNT_NOW_TABLE">
+
+            <!-- ============================== -->
+            <!-- TABLE HEADER                  -->
+            <!-- ============================== -->
+
+            <thead>
+                <tr>
+                    <th>Position</th>
+                    <th>Transaction</th>
+                    <th>BTC Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+
+            <!-- ============================== -->
+            <!-- TABLE BODY – SSR DATA          -->
+            <!-- ============================== -->
+
+            <tbody>
+
+            {% if ssr_rows is defined and ssr_rows|length > 0 %}
+
+                {% for row in ssr_rows %}
+                <tr>
+
+                    <!-- Rank -->
+                    <td>
+                        {{ loop.index }}
+                    </td>
+
+
+                    <!-- TXID + Explorer Link -->
+                    <td style="font-family:monospace;">
+
+                        <a href="/explorer/tx/{{ row.txid }}"
+                           class="tx-link">
+
+                            {{ row.txid }}
+
+                        </a>
+
+                    </td>
+
+
+                    <!-- BTC Amount -->
+                    <td>
+
+                        {{ "%.8f"|format(row.btc_value) }}
+                        BTC
+
+                    </td>
+
+
+                    <!-- Timestamp -->
+                    <td>
+
+                        {{ row.timestamp_ms
+                           | int
+                           | datetimeformat }}
+
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+                    <td colspan="4"
+                        style="text-align:center;">
+
+                        No transaction data available
+
+                    </td>
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
         </table>
 
     </div>
@@ -99,7 +209,7 @@ Explore the largest Bitcoin transactions across multiple time frames and analyze
 
 
 <!-- ====================================================== -->
-<!-- SEO INFO BOX – Optimized                               -->
+<!-- SEO INFO BOX                                          -->
 <!-- ====================================================== -->
 
 <div class="info-box info-box-metrics-tx-amount">
@@ -134,41 +244,21 @@ Explore the largest Bitcoin transactions across multiple time frames and analyze
 
 {% block scripts %}
 
-<!-- Loader -->
 <script src="/static/js/METRICS_BTC_TX_AMOUNT.js"></script>
 
-
-<!-- SSR Entry Init -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
     if (window.__METRICS_TX_AMOUNT_SSR_INIT__) return;
     window.__METRICS_TX_AMOUNT_SSR_INIT__ = true;
 
-
-    // Default table visible
+    // Default visible
     const defaultTab = document.getElementById(
         "METRICS_BTC_TX_AMOUNT_NOW"
     );
 
     if (defaultTab) {
         defaultTab.style.display = "block";
-    }
-
-
-    // Default button active
-    const defaultBtn = document.querySelector(
-        '.METRICS_BTC_TX_AMOUNT-subTabButton[data-subsubtab="METRICS_BTC_TX_AMOUNT_NOW"]'
-    );
-
-    if (defaultBtn) {
-        defaultBtn.classList.add("active");
-    }
-
-
-    // Load dataset
-    if (window.loadMetricsTxAmountNow) {
-        window.loadMetricsTxAmountNow();
     }
 
 });

@@ -805,18 +805,20 @@ function showSubTab(btn) {
                 if (subTabId === 'MARKET_CAP_CURRENCIES' && typeof loadMarketCapCurrencies === 'function') loadMarketCapCurrencies();
                 if (subTabId === 'MARKET_CAP_COMMODITIES' && typeof loadMarketCapCommodities === 'function') loadMarketCapCommodities();
 
-                if (defaultTabs[subTabId]) {
+                if (defaultTabs[subTabId] && !window.__ROUTER_ACTIVE__) {
                     showDefault(subTabId);
                 }
+
             })
             .fail(err => {
                 console.error('[LazyLoad] Failed:', file, err);
             });
 
     } else {
-        if (defaultTabs[subTabId]) {
+        if (defaultTabs[subTabId] && !window.__ROUTER_ACTIVE__) {
             showDefault(subTabId);
         }
+
     }
 }
 

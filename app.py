@@ -270,6 +270,22 @@ CORS(app, resources={
 })
 
 
+# =================================================
+# 🕒 Jinja Datetime Filter (SSR SEO Rendering)
+# =================================================
+from datetime import datetime
+
+@app.template_filter("datetimeformat")
+def datetimeformat(value):
+    try:
+        dt = datetime.utcfromtimestamp(
+            int(value) / 1000
+        )
+        return dt.strftime("%Y-%m-%d %H:%M")
+    except:
+        return "—"
+
+
 
 ## ================================================================================================================================================================ ##
 ## ================================================================================================================================================================ ##
@@ -1521,14 +1537,69 @@ def api_btc_tx_volume_stats():
 
 
 # =================================================
-# METRICS_BTC_TX_AMOUNT – Bitcoin Transaction Count
-# SSR Page + SPA Deep Link
+# METRICS_BTC_TX_AMOUNT – SSR Ranges
 # =================================================
-@app.route("/metrics/tx-amount")
-def metrics_tx_amount():
+
+def render_tx_amount_range(range_key):
+
+    import requests
+
+    ssr_rows = []
+
+    try:
+        res = requests.get(
+            "http://localhost:5000/api/txamount/history",
+            timeout=2
+        )
+
+        if res.ok:
+            data = res.json()
+            ssr_rows = data.get(range_key, [])[:50]
+
+    except Exception as e:
+        print("[SSR TX AMOUNT ERROR]", e)
+
     return render_template(
-        "pages/metrics/tx_amount.html"
+        "pages/metrics/tx_amount.html",
+        ssr_rows=ssr_rows,
+        active_range=range_key
     )
+
+
+
+@app.route("/metrics/tx-amount/mempool")
+def metrics_tx_amount_mempool():
+    return render_tx_amount_range("now")
+
+
+@app.route("/metrics/tx-amount/24h")
+def metrics_tx_amount_24h():
+    return render_tx_amount_range("24h")
+
+
+@app.route("/metrics/tx-amount/1w")
+def metrics_tx_amount_1w():
+    return render_tx_amount_range("1w")
+
+
+@app.route("/metrics/tx-amount/1m")
+def metrics_tx_amount_1m():
+    return render_tx_amount_range("1m")
+
+
+@app.route("/metrics/tx-amount/1y")
+def metrics_tx_amount_1y():
+    return render_tx_amount_range("1y")
+
+
+@app.route("/metrics/tx-amount/halving")
+def metrics_tx_amount_halving():
+    return render_tx_amount_range("halving")
+
+
+@app.route("/metrics/tx-amount/ever")
+def metrics_tx_amount_ever():
+    return render_tx_amount_range("ever")
 
 
 
