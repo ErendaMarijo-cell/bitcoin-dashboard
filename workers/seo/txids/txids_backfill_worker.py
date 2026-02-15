@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # ==================================================
-# 🔥 TXID BACKFILL WORKER
-# Full Chain TXID Backfill (Genesis → Tip)
-# Append-only JSONL segment writer
+# 🔥 TXID BACKFILL WORKER (RAM BUFFERED)
+# NVMe optimized high-throughput writer
 # ==================================================
 
 import os
@@ -12,7 +11,7 @@ import json
 from datetime import datetime, timezone
 
 # ============================================
-# 🔧 Projekt-Root setzen
+# 🔧 Projekt Root
 # ============================================
 
 BASE_DIR = os.path.abspath(
@@ -23,7 +22,7 @@ if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
 
 # ============================================
-# 🔗 Progress Loader (Global Helper)
+# 🔗 Progress Loader
 # ============================================
 
 from workers.seo.helper.backfill_jsonl_helper import (
@@ -41,20 +40,24 @@ from nodes.config import NODE_CONFIG
 from nodes.rpc import BitcoinRPC
 
 # ============================================
-# 🔗 Global Config (Redis Keys File)
+# 🔗 Global Config
 # ============================================
 
 from core.redis_keys import (
     SEO_TXIDS_BACKFILL_STATE_PATH,
     SEO_TXIDS_BACKFILL_OUT_DIR,
     SEO_TXIDS_BACKFILL_LOOP_SLEEP_SEC,
-    SEO_TXIDS_BACKFILL_PROGRESS_EVERY_N_BLOCKS,
-    SEO_TXIDS_BACKFILL_FSYNC_EVERY_N_BLOCKS,
 )
 
+# ============================================
+# 🚀 RAM BUFFER CONFIG
+# ============================================
+
+TXID_BUFFER_MAX_EVENTS = 2_000_000
+TXID_BUFFER_FLUSH_BLOCKS = 1000
 
 # ============================================
-# 🔗 RPC Binding
+# RPC Binding
 # ============================================
 
 RPC = BitcoinRPC(NODE_CONFIG["main"])
@@ -83,22 +86,45 @@ def get_segment_file_path(entity, height, segment_size):
     fname = segment_filename(entity, start, end, pad=9, ext="jsonl")
     return os.path.join(SEO_TXIDS_BACKFILL_OUT_DIR, fname)
 
+# ============================================
+# RAM BUFFER
+# ============================================
 
-def append_block_txids(fp, height, block_hash, block_time, txids):
-    """
-    Append one JSONL record per TXID.
-    Append-only → no dedupe needed.
-    """
+class TxidBuffer:
 
-    for txid in txids:
-        rec = {
-            "height": height,
-            "block_hash": block_hash,
-            "block_time": block_time,
-            "txid": txid,
-        }
+    def __init__(self):
+        self.events = []
+        self.blocks_buffered = 0
 
-        fp.write(json.dumps(rec, separators=(",", ":")) + "\n")
+    def add_block(self, height, block_hash, block_time, txids):
+
+        for txid in txids:
+            self.events.append({
+                "height": height,
+                "block_hash": block_hash,
+                "block_time": block_time,
+                "txid": txid,
+            })
+
+        self.blocks_buffered += 1
+
+    def should_flush(self):
+        return (
+            len(self.events) >= TXID_BUFFER_MAX_EVENTS
+            or self.blocks_buffered >= TXID_BUFFER_FLUSH_BLOCKS
+        )
+
+    def flush(self, fp):
+
+        for rec in self.events:
+            fp.write(json.dumps(rec, separators=(",", ":")) + "\n")
+
+        flushed = len(self.events)
+
+        self.events.clear()
+        self.blocks_buffered = 0
+
+        return flushed
 
 # ============================================
 # 🔄 Backfill Loop
@@ -110,11 +136,10 @@ def backfill_loop():
 
     ensure_out_dir()
 
-    # --- Load progress state
     state = load_state(SEO_TXIDS_BACKFILL_STATE_PATH)
 
     start_height = state.next_height()
-    tip          = get_chain_tip()
+    tip = get_chain_tip()
 
     print(f"[TXID BACKFILL] Resume → {start_height}")
     print(f"[TXID BACKFILL] Tip    → {tip}")
@@ -126,15 +151,10 @@ def backfill_loop():
     current_path = None
     fp = None
 
-    blocks_since_progress = 0
-    blocks_since_fsync    = 0
+    buffer = TxidBuffer()
 
     try:
         for height in range(start_height, tip + 1):
-
-            # ----------------------------------------
-            # Segment Path
-            # ----------------------------------------
 
             seg_path = get_segment_file_path(
                 state.entity,
@@ -142,19 +162,17 @@ def backfill_loop():
                 state.segment_size
             )
 
-            # ----------------------------------------
-            # Rotate Segment File
-            # ----------------------------------------
-
+            # Rotate segment
             if seg_path != current_path:
 
                 if fp:
+                    buffer.flush(fp)
                     fp.flush()
                     os.fsync(fp.fileno())
                     fp.close()
 
                 current_path = seg_path
-                fp = open(current_path, "a", encoding="utf-8")
+                fp = open(current_path, "a", encoding="utf-8", buffering=1024*1024)
 
                 seg_start, seg_end = segment_range_for_height(
                     height,
@@ -166,65 +184,38 @@ def backfill_loop():
 
                 print(f"[TXID BACKFILL] Segment → {os.path.basename(seg_path)}")
 
-            # ----------------------------------------
-            # RPC Fetch
-            # ----------------------------------------
-
+            # RPC
             block_hash = RPC.call("getblockhash", [height])
             block      = RPC.call("getblock", [block_hash, 1])
 
             txids      = block.get("tx") or []
             block_time = int(block.get("time") or 0)
 
-            # ----------------------------------------
-            # Append JSONL
-            # ----------------------------------------
-
-            append_block_txids(
-                fp,
-                height,
-                block_hash,
-                block_time,
-                txids
-            )
-
-            # ----------------------------------------
-            # Counters
-            # ----------------------------------------
+            # Buffer add
+            buffer.add_block(height, block_hash, block_time, txids)
 
             state.last_height = height
             state.events_written_total += len(txids)
 
-            blocks_since_progress += 1
-            blocks_since_fsync    += 1
+            # Flush if needed
+            if buffer.should_flush():
 
-            # ----------------------------------------
-            # Durability Flush
-            # ----------------------------------------
+                flushed = buffer.flush(fp)
 
-            if blocks_since_fsync >= SEO_TXIDS_BACKFILL_FSYNC_EVERY_N_BLOCKS:
                 fp.flush()
                 os.fsync(fp.fileno())
-                blocks_since_fsync = 0
 
-            # ----------------------------------------
-            # Progress Save
-            # ----------------------------------------
-
-            if blocks_since_progress >= SEO_TXIDS_BACKFILL_PROGRESS_EVERY_N_BLOCKS:
-
-                state.segments_completed = (
-                    state.current_segment_start // state.segment_size
+                save_state_atomic(
+                    SEO_TXIDS_BACKFILL_STATE_PATH,
+                    state
                 )
 
-                save_state_atomic(SEO_TXIDS_BACKFILL_STATE_PATH, state)
+                print(
+                    f"[TXID BACKFILL] Flush → {flushed} events "
+                    f"@ {utc_now_iso()}"
+                )
 
-                blocks_since_progress = 0
-
-            # ----------------------------------------
-            # Logging
-            # ----------------------------------------
-
+            # Log
             if height % 1000 == 0:
                 print(
                     f"[TXID BACKFILL] Height {height} "
@@ -232,29 +223,24 @@ def backfill_loop():
                     f"@ {utc_now_iso()}"
                 )
 
-            # ----------------------------------------
-            # Throttle
-            # ----------------------------------------
-
             if SEO_TXIDS_BACKFILL_LOOP_SLEEP_SEC > 0:
                 time.sleep(SEO_TXIDS_BACKFILL_LOOP_SLEEP_SEC)
 
-    except KeyboardInterrupt:
-        print("[TXID BACKFILL] stopped")
-
     finally:
 
-        # Final durability
         try:
             if fp:
+                buffer.flush(fp)
                 fp.flush()
                 os.fsync(fp.fileno())
                 fp.close()
         except Exception:
             pass
 
-        # Final state save
-        save_state_atomic(SEO_TXIDS_BACKFILL_STATE_PATH, state)
+        save_state_atomic(
+            SEO_TXIDS_BACKFILL_STATE_PATH,
+            state
+        )
 
 # ============================================
 # ▶️ Entrypoint
