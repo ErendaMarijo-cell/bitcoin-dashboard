@@ -28,20 +28,17 @@ const ROUTES = {
   // Metrics
   "metrics/price": { tab: "metrics", subtab: "METRICS_BTC_USD_EUR" },
 
-  "metrics/difficulty": { tab: "metrics", subtab: "METRICS_BTC_DIFFICULTY" },
   "metrics/difficulty/1y": { tab: "metrics", subtab: "METRICS_BTC_DIFFICULTY", subsubtab: "METRICS_BTC_DIFFICULTY_1Y" },
   "metrics/difficulty/5y": { tab: "metrics", subtab: "METRICS_BTC_DIFFICULTY", subsubtab: "METRICS_BTC_DIFFICULTY_5Y" },
   "metrics/difficulty/10y": { tab: "metrics", subtab: "METRICS_BTC_DIFFICULTY", subsubtab: "METRICS_BTC_DIFFICULTY_10Y" },
   "metrics/difficulty/ever": { tab: "metrics", subtab: "METRICS_BTC_DIFFICULTY", subsubtab: "METRICS_BTC_DIFFICULTY_EVER" },
 
-  "metrics/tx-volume": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME" },
   "metrics/tx-volume/1h": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME", subsubtab: "METRICS_BTC_TX_VOLUME_1H" },
   "metrics/tx-volume/24h": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME", subsubtab: "METRICS_BTC_TX_VOLUME_24H" },
   "metrics/tx-volume/1w": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME", subsubtab: "METRICS_BTC_TX_VOLUME_1W" },
   "metrics/tx-volume/1m": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME", subsubtab: "METRICS_BTC_TX_VOLUME_1M" },
   "metrics/tx-volume/1y": { tab: "metrics", subtab: "METRICS_BTC_TX_VOLUME", subsubtab: "METRICS_BTC_TX_VOLUME_1J" },
 
-  "metrics/tx-amount": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT" },
   "metrics/tx-amount/mempool": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT", subsubtab: "METRICS_BTC_TX_AMOUNT_NOW" },
   "metrics/tx-amount/24h": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT", subsubtab: "METRICS_BTC_TX_AMOUNT_24H" },
   "metrics/tx-amount/1w": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT", subsubtab: "METRICS_BTC_TX_AMOUNT_1W" },
@@ -50,18 +47,15 @@ const ROUTES = {
   "metrics/tx-amount/halving": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT", subsubtab: "METRICS_BTC_TX_AMOUNT_HALVING" },
   "metrics/tx-amount/ever": { tab: "metrics", subtab: "METRICS_BTC_TX_AMOUNT", subsubtab: "METRICS_BTC_TX_AMOUNT_EVER" },
 
-  "metrics/tx-fees": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES" },
   "metrics/tx-fees/24h": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES", subsubtab: "METRICS_BTC_TX_FEES_24H" },
   "metrics/tx-fees/1w": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES", subsubtab: "METRICS_BTC_TX_FEES_1W" },
   "metrics/tx-fees/1m": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES", subsubtab: "METRICS_BTC_TX_FEES_1M" },
   "metrics/tx-fees/1y": { tab: "metrics", subtab: "METRICS_BTC_TX_FEES", subsubtab: "METRICS_BTC_TX_FEES_1J" },
 
-  "metrics/hashrate": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE" },
   "metrics/hashrate/1y": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE", subsubtab: "METRICS_BTC_HASHRATE_1Y" },
   "metrics/hashrate/5y": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE", subsubtab: "METRICS_BTC_HASHRATE_5Y" },
   "metrics/hashrate/10y": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE", subsubtab: "METRICS_BTC_HASHRATE_10Y" },
   "metrics/hashrate/ever": { tab: "metrics", subtab: "METRICS_BTC_HASHRATE", subsubtab: "METRICS_BTC_HASHRATE_EVER" },
-
 
   // Review
   "review/btc-fiat":   { tab: "review", subtab: "REVIEW_BTC_VS_FIAT" },
