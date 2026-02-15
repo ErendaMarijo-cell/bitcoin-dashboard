@@ -8,6 +8,11 @@
 # {"address":"...","txid":"...","height":N,"delta_sat":S}
 #
 # Uses getblock verbosity=3 to include prevout info.
+#
+# PERF GOALS:
+# - Max throughput (sequential appends, big batches)
+# - NVMe friendly (rare fsync; fsync only on segment close)
+# - Crash-safe progress (checkpoint only after flush)
 # ==================================================
 
 import os
@@ -15,18 +20,15 @@ import sys
 import time
 import json
 from datetime import datetime, timezone
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Optional
 
 # ============================================
 # 🔧 Projekt-Root setzen
 # ============================================
 
-BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "../../../")
-)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
-
 
 # ============================================
 # 🔗 Progress Loader (Shared)
@@ -38,7 +40,6 @@ from workers.seo.helper.backfill_jsonl_helper import (
     segment_range_for_height,
     segment_filename,
 )
-
 
 # ============================================
 # 🔗 Node RPC Layer
@@ -54,24 +55,35 @@ from nodes.rpc import BitcoinRPC
 STATE_PATH = "/raid/data/seo/addresses/progress/addresses_backfill_state.json"
 OUT_DIR    = "/raid/data/seo/addresses/confirmed"
 
-# Throttle (addresses is heavy; start conservative, tune later)
-LOOP_SLEEP_SEC = 0.00
+# Segment settings come from state.segment_size (e.g. 10k blocks/file)
 
-# Save progress every N blocks
-PROGRESS_EVERY_N_BLOCKS = 10
+# ---- Performance tuning ----
+# Buffer events in RAM and write in large batches.
+# 200k–500k is a good sweet spot for throughput without risking OOM.
+BUFFER_MAX_EVENTS = 1_500_000
 
-# Durability: fsync every N blocks (addresses are huge; keep reasonable)
-FSYNC_EVERY_N_BLOCKS = 10
+# Also flush at least every N blocks (even if buffer not full),
+# to keep memory bounded and checkpoint progress.
+FLUSH_EVERY_N_BLOCKS = 1000
+
+# Save progress every N blocks (we will flush BEFORE saving to keep state consistent)
+PROGRESS_EVERY_N_BLOCKS = 1000
+
+# fsync only when closing a segment file (NVMe-friendly)
+FSYNC_ON_SEGMENT_CLOSE = True
 
 # Log every N blocks
 LOG_EVERY_N_BLOCKS = 100
+
+# Optional throttle (usually keep 0 for max throughput)
+LOOP_SLEEP_SEC = 0.0
 
 # RPC retry
 RPC_RETRIES = 5
 RPC_RETRY_SLEEP = 0.5
 
-
-
+# File buffering (1–8MB is good)
+FILE_BUFFER_BYTES = 4 * 1024 * 1024
 
 
 # ============================================
@@ -117,13 +129,6 @@ def get_segment_file_path(entity: str, height: int, segment_size: int) -> str:
 
 
 def extract_address_from_scriptpubkey(spk: Dict[str, Any]) -> Optional[str]:
-    """
-    Bitcoin Core scriptPubKey formats vary by version/flags.
-    Common cases:
-      - spk["address"] is present (modern)
-      - spk["addresses"] list exists (older)
-      - nonstandard/no address => return None
-    """
     if not spk:
         return None
     addr = spk.get("address")
@@ -138,42 +143,32 @@ def extract_address_from_scriptpubkey(spk: Dict[str, Any]) -> Optional[str]:
 
 
 def satoshis_from_btc_value(v: Any) -> int:
-    """
-    Core returns BTC amounts as JSON numbers (float-ish).
-    Convert safely: round to nearest satoshi.
-    """
     try:
         return int(round(float(v) * 100_000_000))
     except Exception:
         return 0
 
 
-def write_event(fp, address: str, txid: str, height: int, delta_sat: int):
+def make_event_line(address: str, txid: str, height: int, delta_sat: int) -> str:
+    # Build minimal JSON (no spaces) as a single line.
     rec = {
         "address": address,
         "txid": txid,
-        "height": height,
+        "height": int(height),
         "delta_sat": int(delta_sat),
     }
-    fp.write(json.dumps(rec, separators=(",", ":")) + "\n")
+    return json.dumps(rec, separators=(",", ":"))
 
 
 # ============================================
-# Core extraction
+# Core extraction (generator)
 # ============================================
 
 def process_block(height: int):
-    """
-    Returns (tx_count, event_count_written)
-    """
     block_hash = rpc_call("getblockhash", [height])
-
-    # verbosity=3: includes decoded tx + vin.prevout info (best option for deltas)
-    block = rpc_call("getblock", [block_hash, 3])
+    block = rpc_call("getblock", [block_hash, 3])  # verbosity=3 includes prevout
 
     txs = block.get("tx") or []
-    event_count = 0
-
     for tx in txs:
         txid = tx.get("txid")
         if not txid:
@@ -185,14 +180,12 @@ def process_block(height: int):
             addr = extract_address_from_scriptpubkey(spk)
             if not addr:
                 continue
-            value_btc = vout.get("value")
-            delta = satoshis_from_btc_value(value_btc)
-            if delta != 0:
-                yield ("out", addr, txid, height, delta)
+            delta = satoshis_from_btc_value(vout.get("value"))
+            if delta:
+                yield (addr, txid, height, delta)
 
-        # Inputs => negative delta (from prevout)
+        # Inputs => negative delta (prevout)
         for vin in (tx.get("vin") or []):
-            # coinbase has no prevout
             if "coinbase" in vin:
                 continue
             prevout = vin.get("prevout") or {}
@@ -200,10 +193,37 @@ def process_block(height: int):
             addr = extract_address_from_scriptpubkey(spk)
             if not addr:
                 continue
-            value_btc = prevout.get("value")
-            delta = satoshis_from_btc_value(value_btc)
-            if delta != 0:
-                yield ("in", addr, txid, height, -delta)
+            delta = satoshis_from_btc_value(prevout.get("value"))
+            if delta:
+                yield (addr, txid, height, -delta)
+
+
+# ============================================
+# IO helpers (buffered)
+# ============================================
+
+def flush_buffer(fp, buffer_lines) -> int:
+    """
+    Writes buffered lines as one big sequential append.
+    Returns number of events flushed.
+    """
+    if not buffer_lines:
+        return 0
+    # One big write => NVMe happy, low syscall count
+    fp.write("\n".join(buffer_lines))
+    fp.write("\n")
+    buffer_lines.clear()
+    fp.flush()  # flush userspace buffer to OS (NO fsync)
+    return 0  # not used, kept for clarity
+
+
+def close_segment(fp):
+    if not fp:
+        return
+    fp.flush()
+    if FSYNC_ON_SEGMENT_CLOSE:
+        os.fsync(fp.fileno())
+    fp.close()
 
 
 # ============================================
@@ -215,7 +235,7 @@ def backfill_loop():
     ensure_out_dir()
 
     state = load_state(STATE_PATH)
-    state.entity = "addresses"  # ensure correct
+    state.entity = "addresses"
 
     start_height = state.next_height()
     tip = get_chain_tip()
@@ -230,8 +250,12 @@ def backfill_loop():
     current_path = None
     fp = None
 
+    # Big in-memory buffer
+    buffer_lines = []
+    buffered_events = 0
+
+    blocks_since_flush = 0
     blocks_since_progress = 0
-    blocks_since_fsync = 0
 
     try:
         for height in range(start_height, tip + 1):
@@ -242,14 +266,16 @@ def backfill_loop():
                 segment_size=state.segment_size
             )
 
+            # Segment switch
             if seg_path != current_path:
+                # Flush anything pending into old segment, then fsync+close old segment.
                 if fp:
-                    fp.flush()
-                    os.fsync(fp.fileno())
-                    fp.close()
+                    flush_buffer(fp, buffer_lines)
+                    buffered_events = 0
+                    close_segment(fp)
 
                 current_path = seg_path
-                fp = open(current_path, "a", encoding="utf-8")
+                fp = open(current_path, "a", encoding="utf-8", buffering=FILE_BUFFER_BYTES)
 
                 seg_start, seg_end = segment_range_for_height(height, state.segment_size)
                 state.current_segment_start = seg_start
@@ -257,28 +283,37 @@ def backfill_loop():
 
                 print(f"[ADDRESS BACKFILL] Segment → {os.path.basename(current_path)}")
 
-            # --- Extract + write events
-            events_written_this_block = 0
-            tx_count = 0
+            # --- Extract + buffer events
+            events_this_block = 0
+            for addr, txid, h, delta in process_block(height):
+                buffer_lines.append(make_event_line(addr, txid, h, delta))
+                buffered_events += 1
+                events_this_block += 1
 
-            # We stream yields to avoid big in-memory structures
-            for _role, addr, txid, h, delta in process_block(height):
-                write_event(fp, addr, txid, h, delta)
-                events_written_this_block += 1
+                # Flush by size to avoid unbounded RAM
+                if buffered_events >= BUFFER_MAX_EVENTS:
+                    flush_buffer(fp, buffer_lines)
+                    buffered_events = 0
+                    blocks_since_flush = 0  # we just flushed
 
-            # Update state
+            # Update state (in-memory)
             state.last_height = height
-            state.events_written_total += events_written_this_block
+            state.events_written_total += events_this_block
 
+            blocks_since_flush += 1
             blocks_since_progress += 1
-            blocks_since_fsync += 1
 
-            if blocks_since_fsync >= FSYNC_EVERY_N_BLOCKS:
-                fp.flush()
-                os.fsync(fp.fileno())
-                blocks_since_fsync = 0
+            # Periodic flush (NVMe friendly: flush often; fsync rarely)
+            if blocks_since_flush >= FLUSH_EVERY_N_BLOCKS:
+                flush_buffer(fp, buffer_lines)
+                buffered_events = 0
+                blocks_since_flush = 0
 
+            # Progress checkpoint (IMPORTANT: flush BEFORE saving progress)
             if blocks_since_progress >= PROGRESS_EVERY_N_BLOCKS:
+                flush_buffer(fp, buffer_lines)
+                buffered_events = 0
+
                 state.segments_completed = state.current_segment_start // state.segment_size
                 save_state_atomic(STATE_PATH, state)
                 blocks_since_progress = 0
@@ -286,7 +321,7 @@ def backfill_loop():
             if height % LOG_EVERY_N_BLOCKS == 0:
                 print(
                     f"[ADDRESS BACKFILL] Height {height} "
-                    f"→ events +{events_written_this_block} "
+                    f"→ events +{events_this_block} "
                     f"(total_events={state.events_written_total}) "
                     f"@ {utc_now_iso()}"
                 )
@@ -303,9 +338,9 @@ def backfill_loop():
     finally:
         try:
             if fp:
-                fp.flush()
-                os.fsync(fp.fileno())
-                fp.close()
+                # Final flush of remaining buffer, then fsync+close
+                flush_buffer(fp, buffer_lines)
+                close_segment(fp)
         except Exception:
             pass
 
