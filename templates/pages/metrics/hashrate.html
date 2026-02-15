@@ -3,11 +3,20 @@
 <!-- Network Security • Mining Power • Computational Throughput            -->
 <!-- ====================================================================== -->
 
+<!-- ====================================================================== -->
+
+<!-- METRICS_BTC_HASHRATE – Bitcoin Hashrate (SSR + SPA Hybrid SEO)        -->
+
+<!-- Fully Range-Aware SSR Rendering                                       -->
+
+<!-- ====================================================================== -->
+
 {% extends "base/base.html" %}
 
-
 <!-- ====================================================== -->
+
 <!-- SEO META                                               -->
+
 <!-- ====================================================== -->
 
 {% block title %}
@@ -18,10 +27,10 @@ Bitcoin Hashrate – Mining Power & Network Security
 Analyze Bitcoin hashrate trends across multiple time frames and explore mining power, network security, and computational growth.
 {% endblock %}
 
-
-
 <!-- ====================================================== -->
+
 <!-- PAGE CONTENT                                           -->
+
 <!-- ====================================================== -->
 
 {% block content %}
@@ -30,132 +39,180 @@ Analyze Bitcoin hashrate trends across multiple time frames and explore mining p
     Bitcoin Hashrate Across Multiple Time Frames
 </h1>
 
-
-
 <!-- ====================================================== -->
-<!-- SubTab Navigation (Semantic + SPA functional)          -->
+
+<!-- SUBSUB NAVIGATION                                      -->
+
 <!-- ====================================================== -->
 
 <div class="METRICS_BTC_HASHRATE-subnav subnav mb-3 text-center">
 
-    <button class="METRICS_BTC_HASHRATE-subTabButton"
-            data-subsubtab="METRICS_BTC_HASHRATE_1Y">
-        1 <span class="range-unit">YEAR</span>
-    </button>
+```
+<button class="METRICS_BTC_HASHRATE-subTabButton {% if active_range == '1y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_HASHRATE_1Y">
+    1 <span class="range-unit">YEAR</span>
+</button>
 
-    <button class="METRICS_BTC_HASHRATE-subTabButton"
-            data-subsubtab="METRICS_BTC_HASHRATE_5Y">
-        5 <span class="range-unit">YEARS</span>
-    </button>
+<button class="METRICS_BTC_HASHRATE-subTabButton {% if active_range == '5y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_HASHRATE_5Y">
+    5 <span class="range-unit">YEARS</span>
+</button>
 
-    <button class="METRICS_BTC_HASHRATE-subTabButton"
-            data-subsubtab="METRICS_BTC_HASHRATE_10Y">
-        10 <span class="range-unit">YEARS</span>
-    </button>
+<button class="METRICS_BTC_HASHRATE-subTabButton {% if active_range == '10y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_HASHRATE_10Y">
+    10 <span class="range-unit">YEARS</span>
+</button>
 
-    <button class="METRICS_BTC_HASHRATE-subTabButton"
-            data-subsubtab="METRICS_BTC_HASHRATE_EVER">
-        ALL <span class="range-unit">TIME</span>
-    </button>
+<button class="METRICS_BTC_HASHRATE-subTabButton {% if active_range == 'ever' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_HASHRATE_EVER">
+    ALL <span class="range-unit">TIME</span>
+</button>
+```
 
 </div>
 
-
-
 <!-- ====================================================== -->
-<!-- CHART CONTAINER – SSR MINIMAL                          -->
-<!-- Only default range rendered server-side                -->
+
+<!-- CHART CONTAINER (SSR RANGE RENDER)                     -->
+
 <!-- ====================================================== -->
 
 <div id="METRICS_BTC_HASHRATE_CONTAINER" class="subtab-container">
 
-    <!-- Default SSR Chart -->
-    <div id="METRICS_BTC_HASHRATE_1Y"
-         class="METRICS_BTC_HASHRATE-subsubtab chart-wrapper">
+```
+<div id="METRICS_BTC_HASHRATE_1Y"
+     class="METRICS_BTC_HASHRATE-subsubtab chart-wrapper"
+     {% if active_range != '1y' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_HASHRATE_1Y_CANVAS"></canvas>
+</div>
 
-        <canvas id="METRICS_BTC_HASHRATE_1Y_CANVAS"></canvas>
+<div id="METRICS_BTC_HASHRATE_5Y"
+     class="METRICS_BTC_HASHRATE-subsubtab chart-wrapper"
+     {% if active_range != '5y' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_HASHRATE_5Y_CANVAS"></canvas>
+</div>
 
-    </div>
+<div id="METRICS_BTC_HASHRATE_10Y"
+     class="METRICS_BTC_HASHRATE-subsubtab chart-wrapper"
+     {% if active_range != '10y' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_HASHRATE_10Y_CANVAS"></canvas>
+</div>
+
+<div id="METRICS_BTC_HASHRATE_EVER"
+     class="METRICS_BTC_HASHRATE-subsubtab chart-wrapper"
+     {% if active_range != 'ever' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_HASHRATE_EVER_CANVAS"></canvas>
+</div>
+```
 
 </div>
 
-
-
 <!-- ====================================================== -->
-<!-- SEO INFO BOX – Optimized                               -->
+
+<!-- RANGE-SPECIFIC INFOBOX                                 -->
+
 <!-- ====================================================== -->
 
 <div class="info-box info-box-metrics-hashrate">
 
-    <strong>About Bitcoin Hashrate</strong><br><br>
+{% if active_range == "1y" %}
 
-    Bitcoin hashrate represents the total computational power actively
-    securing the network. It reflects how much mining hardware is engaged
-    in validating transactions and producing new blocks through proof-of-work
-    consensus.<br><br>
+<strong>About Bitcoin Hashrate (1 Year)</strong><br><br>
 
-    Rising hashrate indicates increasing miner participation, expanding
-    capital investment in mining infrastructure, and strengthening overall
-    network security. A growing hash rate raises the cost of attacks and
-    improves the resilience of the Bitcoin blockchain.<br><br>
+The 1-year Bitcoin hashrate chart reflects short-term fluctuations in
+mining participation, hardware deployment, and operational profitability.<br><br>
 
-    Declining hashrate typically signals miner shutdowns, energy cost
-    pressure, hardware migration, or short-term operational stress within
-    the mining industry.<br><br>
+Hashrate movements in this window are often driven by energy price shifts,
+miner migrations, and hardware efficiency upgrades.<br><br>
 
-    Analyzing Bitcoin hashrate across multiple time frames — from short-term
-    fluctuations to long-term computational growth — provides insight into
-    mining competition, hardware deployment, and the evolving security
-    foundation of the Bitcoin network.
+Security trends should be analyzed alongside <a href="/metrics/difficulty/1y">Mining Difficulty</a>, <a href="/metrics/tx-fees/24h">Transaction Fees</a>,
+and <a href="/metrics/price">Bitcoin Price</a>
+to evaluate miner revenue conditions and incentive alignment.<br><br>
+
+Network usage pressure can further be compared via <a href="/metrics/tx-volume/24h">Transaction Volume</a>.
+
+{% elif active_range == "5y" %}
+
+<strong>About Bitcoin Hashrate (5 Years)</strong><br><br>
+
+The 5-year hashrate trend captures Bitcoin mining’s industrial expansion,
+including the rise of institutional mining farms and large-scale ASIC
+deployments.<br><br>
+
+Computational growth during this era reflects capital inflows into mining
+infrastructure and long-term security investment.<br><br>
+
+Compare computational scaling with <a href="/metrics/difficulty/5y">Difficulty Adjustments</a>
+and explore infrastructure distribution through <a href="/network/miners">Global Mining Operations</a>.<br><br>
+
+Blockchain usage growth can also be contextualized via <a href="/metrics/tx-volume/1y">Transaction Volume</a>.
+
+{% elif active_range == "10y" %}
+
+<strong>About Bitcoin Hashrate (10 Years)</strong><br><br>
+
+The 10-year hashrate view illustrates Bitcoin’s transformation into the
+largest proof-of-work computational network ever created.<br><br>
+
+Over this decade, mining scaled from experimental operations into
+nation-scale industrial infrastructure securing the global monetary layer.<br><br>
+
+Security growth can be compared with <a href="/metrics/difficulty/10y">Difficulty Expansion</a>
+and high-value settlement activity via <a href="/metrics/tx-amount/ever">Largest Transactions</a>.<br><br>
+
+Network decentralization dynamics are visible through <a href="/network/nodes">Node Distribution</a>.
+
+{% elif active_range == "ever" %}
+
+<strong>About Bitcoin Hashrate (Full History)</strong><br><br>
+
+The full historical hashrate chart represents the total evolution of
+computational power securing the Bitcoin network since genesis.<br><br>
+
+It visualizes exponential security growth driven by hardware innovation,
+energy arbitrage, and institutional mining investment.<br><br>
+
+Long-term security expansion should be evaluated alongside <a href="/metrics/difficulty/ever">Difficulty History</a>, <a href="/metrics/tx-fees/1y">Fee Markets</a>,
+and <a href="/metrics/price">Bitcoin Price Cycles</a>.<br><br>
+
+Settlement scale and capital throughput can be explored via <a href="/metrics/tx-amount/ever">Largest On-Chain Transfers</a>.
+
+{% endif %}
 
 </div>
 
 {% endblock %}
 
-
-
 <!-- ====================================================== -->
+
 <!-- PAGE SCRIPTS                                           -->
+
 <!-- ====================================================== -->
 
 {% block scripts %}
 
-<!-- Loader -->
 <script src="/static/js/METRICS_BTC_HASHRATE.js"></script>
 
-
-<!-- SSR Entry Init -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    if (window.__METRICS_HASHRATE_SSR_INIT__) return;
-    window.__METRICS_HASHRATE_SSR_INIT__ = true;
-
-
-    // Default tab visible
-    const defaultTab = document.getElementById(
-        "METRICS_BTC_HASHRATE_1Y"
-    );
-
-    if (defaultTab) {
-        defaultTab.style.display = "block";
+    if (typeof initMetricsHashrateSubTabs === "function") {
+        initMetricsHashrateSubTabs();
     }
 
+    const range = "{{ active_range }}";
 
-    // Default button active
-    const defaultBtn = document.querySelector(
-        '.METRICS_BTC_HASHRATE-subTabButton[data-subsubtab="METRICS_BTC_HASHRATE_1Y"]'
-    );
+    if (range === "1y" && window.loadMetricsHashrate1Y)
+        loadMetricsHashrate1Y();
 
-    if (defaultBtn) {
-        defaultBtn.classList.add("active");
-    }
+    if (range === "5y" && window.loadMetricsHashrate5Y)
+        loadMetricsHashrate5Y();
 
+    if (range === "10y" && window.loadMetricsHashrate10Y)
+        loadMetricsHashrate10Y();
 
-    // Load default dataset
-    if (window.loadMetricsHashrate1Y) {
-        window.loadMetricsHashrate1Y();
-    }
+    if (range === "ever" && window.loadMetricsHashrateEver)
+        loadMetricsHashrateEver();
 
 });
 </script>

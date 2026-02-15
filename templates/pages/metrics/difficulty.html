@@ -1,13 +1,21 @@
 <!-- ====================================================================== -->
-<!-- METRICS_BTC_DIFFICULTY – Mining Difficulty Chart (SSR + SPA Hybrid)   -->
-<!-- Adjustment Cycles • Network Security • Hashrate Competition            -->
+<!-- METRICS_BTC_DIFFICULTY – SSR + SPA HYBRID (Range Aware)               -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+
+<!-- METRICS_BTC_DIFFICULTY – Mining Difficulty (SSR + SPA Hybrid SEO)     -->
+
+<!-- Fully Range-Aware SSR Rendering                                       -->
+
 <!-- ====================================================================== -->
 
 {% extends "base/base.html" %}
 
-
 <!-- ====================================================== -->
-<!-- SEO META                                               -->
+
+<!-- SEO META (Range aware optional erweiterbar)             -->
+
 <!-- ====================================================== -->
 
 {% block title %}
@@ -18,127 +26,196 @@ Bitcoin Mining Difficulty – Adjustment Cycles & Network Security
 Analyze Bitcoin mining difficulty across multiple time frames including 1 year, 5 years, 10 years and full history.
 {% endblock %}
 
-
-
 <!-- ====================================================== -->
+
 <!-- PAGE CONTENT                                           -->
+
 <!-- ====================================================== -->
 
 {% block content %}
 
-<!-- Headline -->
 <h1 class="headline-metrics-difficulty">
     Bitcoin Difficulty Across Multiple Time Frames
 </h1>
 
-
 <!-- ====================================================== -->
-<!-- SUB-SUB NAVIGATION                                     -->
+
+<!-- SUBSUB NAVIGATION                                      -->
+
 <!-- ====================================================== -->
 
 <div class="METRICS_BTC_DIFFICULTY-subnav subnav mb-3 text-center">
 
-    <button class="METRICS_BTC_DIFFICULTY-subTabButton"
-            data-subsubtab="METRICS_BTC_DIFFICULTY_1Y">
-        <span class="range-num">1</span>
-        <span class="range-unit">YEAR</span>
-    </button>
+```
+<button class="METRICS_BTC_DIFFICULTY-subTabButton {% if active_range == '1y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_DIFFICULTY_1Y">
+    <span class="range-num">1</span><span class="range-unit">YEAR</span>
+</button>
 
-    <button class="METRICS_BTC_DIFFICULTY-subTabButton"
-            data-subsubtab="METRICS_BTC_DIFFICULTY_5Y">
-        <span class="range-num">5</span>
-        <span class="range-unit">YEARS</span>
-    </button>
+<button class="METRICS_BTC_DIFFICULTY-subTabButton {% if active_range == '5y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_DIFFICULTY_5Y">
+    <span class="range-num">5</span><span class="range-unit">YEARS</span>
+</button>
 
-    <button class="METRICS_BTC_DIFFICULTY-subTabButton"
-            data-subsubtab="METRICS_BTC_DIFFICULTY_10Y">
-        <span class="range-num">10</span>
-        <span class="range-unit">YEARS</span>
-    </button>
+<button class="METRICS_BTC_DIFFICULTY-subTabButton {% if active_range == '10y' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_DIFFICULTY_10Y">
+    <span class="range-num">10</span><span class="range-unit">YEARS</span>
+</button>
 
-    <button class="METRICS_BTC_DIFFICULTY-subTabButton"
-            data-subsubtab="METRICS_BTC_DIFFICULTY_EVER">
-        <span class="range-unit">ALL</span>
-        <span class="range-unit">TIME</span>
-    </button>
+<button class="METRICS_BTC_DIFFICULTY-subTabButton {% if active_range == 'ever' %}active{% endif %}"
+        data-subsubtab="METRICS_BTC_DIFFICULTY_EVER">
+    <span class="range-unit">ALL</span><span class="range-unit">TIME</span>
+</button>
+```
 
 </div>
 
-
-
 <!-- ====================================================== -->
-<!-- CHART CONTAINER                                        -->
+
+<!-- CHART CONTAINER (SSR RANGE RENDER)                     -->
+
 <!-- ====================================================== -->
 
 <div id="METRICS_BTC_DIFFICULTY_CONTAINER" class="subtab-container">
 
-    <!-- 1Y -->
-    <div id="METRICS_BTC_DIFFICULTY_1Y"
-         class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper">
-        <canvas id="METRICS_BTC_DIFFICULTY_1Y_CANVAS"></canvas>
-    </div>
+```
+<div id="METRICS_BTC_DIFFICULTY_1Y"
+     class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper"
+     {% if active_range != '1y' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_DIFFICULTY_1Y_CANVAS"></canvas>
+</div>
+
+<div id="METRICS_BTC_DIFFICULTY_5Y"
+     class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper"
+     {% if active_range != '5y' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_DIFFICULTY_5Y_CANVAS"></canvas>
+</div>
+
+<div id="METRICS_BTC_DIFFICULTY_10Y"
+     class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper"
+     {% if active_range != '10y' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_DIFFICULTY_10Y_CANVAS"></canvas>
+</div>
+
+<div id="METRICS_BTC_DIFFICULTY_EVER"
+     class="METRICS_BTC_DIFFICULTY-subsubtab chart-wrapper"
+     {% if active_range != 'ever' %}style="display:none"{% endif %}>
+    <canvas id="METRICS_BTC_DIFFICULTY_EVER_CANVAS"></canvas>
+</div>
+```
 
 </div>
 
 <!-- ====================================================== -->
-<!-- INFO BOX                                               -->
+
+<!-- RANGE-SPECIFIC INFOBOX (SEO + INTERNAL LINKS)          -->
+
 <!-- ====================================================== -->
 
 <div class="info-box info-box-metrics-difficulty">
 
-    <strong>About Bitcoin Difficulty</strong><br><br>
+{% if active_range == "1y" %}
 
-    Bitcoin mining difficulty measures how hard it is to find a valid block
-    compared to the easiest possible difficulty defined by the protocol.
-    It is a core indicator of mining competition and the computational
-    security protecting the Bitcoin network.<br><br>
+<strong>About Bitcoin Difficulty (1 Year)</strong><br><br>
 
-    Difficulty is automatically recalculated every 2,016 blocks
-    (approximately every 14 days) to maintain an average block interval
-    of 10 minutes, regardless of fluctuations in global hash power.<br><br>
+The 1-year Bitcoin difficulty chart highlights recent mining competition
+and short-term hash rate expansion. Difficulty adjustments in this window
+reflect rapid changes in miner profitability, energy costs, and hardware deployment.<br><br>
 
-    Rising difficulty reflects increasing network hash rate,
-    expanding mining infrastructure, and intensifying competition
-    among miners, strengthening overall network security.
-    Declining difficulty may indicate miner capitulation,
-    reduced participation, or shifts in mining economics.<br><br>
+Compare short-term security trends with <a href="/metrics/hashrate/1y">Hashrate Growth</a>, <a href="/metrics/tx-fees/24h">Transaction Fees</a>,
+and <a href="/metrics/tx-volume/24h">Transaction Volume</a>
+to understand miner revenue pressure and block space demand.<br><br>
 
-    Analyzing Bitcoin difficulty across multiple time frames —
-    from short-term adjustment cycles to full historical trends —
-    provides insight into mining growth, capital investment in hardware,
-    and the long-term resilience of Bitcoin’s proof-of-work consensus.
+Market incentives can further be contextualized via <a href="/metrics/price">Bitcoin Price</a> movements.
+
+{% elif active_range == "5y" %}
+
+<strong>About Bitcoin Difficulty (5 Years)</strong><br><br>
+
+The 5-year view captures Bitcoin mining’s transition into industrial-scale
+infrastructure. This period saw the rise of ASIC mega-farms,
+energy arbitrage mining, and institutional capital entering the sector.<br><br>
+
+Difficulty expansion across this timeframe mirrors large-scale
+hardware deployment and global mining competition.<br><br>
+
+For infrastructure context explore <a href="/network/miners">Mining Operations</a>
+and compare computational growth via <a href="/metrics/hashrate/5y">Hashrate Trends</a>.<br><br>
+
+Network usage demand can be analyzed alongside <a href="/metrics/tx-volume/1y">Transaction Volume</a>
+and Bitcoin’s macro positioning through <a href="/market-cap/crypto">Crypto Market Capitalization</a>.
+
+{% elif active_range == "10y" %}
+
+<strong>About Bitcoin Difficulty (10 Years)</strong><br><br>
+
+The 10-year difficulty perspective reveals Bitcoin’s transformation
+into a globally distributed computational security network securing
+trillions in value.<br><br>
+
+Over this decade, mining evolved from small-scale GPU setups
+into nation-scale industrial infrastructure.<br><br>
+
+Security expansion should be analyzed alongside <a href="/metrics/hashrate/10y">Hashrate Growth</a>
+and high-value capital transfers shown in <a href="/metrics/tx-amount/ever">Largest Transactions</a>.<br><br>
+
+To understand Bitcoin’s geopolitical and monetary positioning,
+review <a href="/review/btc-fiat">Bitcoin vs Fiat Systems</a>
+and node decentralization via <a href="/network/nodes">Global Node Distribution</a>.
+
+{% elif active_range == "ever" %}
+
+<strong>About Bitcoin Difficulty (Full History)</strong><br><br>
+
+The full historical difficulty chart represents the complete evolution
+of mining competition since Bitcoin’s genesis block.<br><br>
+
+It visualizes exponential growth in computational power securing
+the network across multiple technological eras — from CPUs
+to ASIC mega-farms.<br><br>
+
+Explore the broader security model through <a href="/metrics/hashrate/ever">Total Hashrate</a>,
+network usage via <a href="/metrics/tx-volume/1y">Transaction Volume</a>,
+and miner fee incentives in <a href="/metrics/tx-fees/1y">Fee Markets</a>.<br><br>
+
+Price-driven mining economics can be further contextualized using <a href="/metrics/price">Bitcoin Market Price</a>.
+
+{% endif %}
 
 </div>
 
-
-
 {% endblock %}
 
-
-
 <!-- ====================================================== -->
+
 <!-- PAGE SCRIPTS                                           -->
+
 <!-- ====================================================== -->
 
 {% block scripts %}
 
-<!-- Difficulty Loader Core -->
 <script src="/static/js/METRICS_BTC_DIFFICULTY.js"></script>
 
-
-<!-- SSR Auto-Init -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // SubSubTab UI initialisieren
     if (typeof initMetricsDifficultySubTabs === "function") {
         initMetricsDifficultySubTabs();
     }
 
-    // Default Chart laden (1Y wie in router config)
-    if (window.loadMetricsDifficulty1Y) {
-        window.loadMetricsDifficulty1Y();
-    }
+    const range = "{{ active_range }}";
+
+    if (range === "1y" && window.loadMetricsDifficulty1Y)
+        loadMetricsDifficulty1Y();
+
+    if (range === "5y" && window.loadMetricsDifficulty5Y)
+        loadMetricsDifficulty5Y();
+
+    if (range === "10y" && window.loadMetricsDifficulty10Y)
+        loadMetricsDifficulty10Y();
+
+    if (range === "ever" && window.loadMetricsDifficultyEver)
+        loadMetricsDifficultyEver();
 
 });
 </script>

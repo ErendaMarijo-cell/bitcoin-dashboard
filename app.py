@@ -1395,10 +1395,17 @@ def metrics_btc_usd_eur():
 # METRICS_DIFFICULTY – Mining Difficulty Chart
 # SSR Page + SPA Deep Link
 # =================================================
-@app.route("/metrics/difficulty")
-def metrics_difficulty():
+@app.route("/metrics/difficulty/<range>")
+def metrics_difficulty_range(range):
+
+    valid_ranges = ["1y", "5y", "10y", "ever"]
+
+    if range not in valid_ranges:
+        abort(404)
+
     return render_template(
-        "pages/metrics/difficulty.html"
+        "pages/metrics/difficulty.html",
+        active_range=range
     )
 
 
@@ -1446,13 +1453,20 @@ def api_difficulty_ever():
 
 
 # =================================================
-# METRICS_TX_VOLUME – Transaction Volume Page
+# METRICS_TX_VOLUME – Transaction Volume Chart
 # SSR Page + SPA Deep Link
 # =================================================
-@app.route("/metrics/tx-volume")
-def metrics_tx_volume():
+@app.route("/metrics/tx-volume/<range>")
+def metrics_tx_volume_range(range):
+
+    valid_ranges = ["1h", "24h", "1w", "1m", "1y"]
+
+    if range not in valid_ranges:
+        abort(404)
+
     return render_template(
-        "pages/metrics/tx_volume.html"
+        "pages/metrics/tx_volume.html",
+        active_range=range
     )
 
 
@@ -1643,14 +1657,21 @@ def api_txamount_history():
 
 
 
-# ==============================================
-# METRICS_BTC_TX_FEES – Bitcoin Transaction Fees
-# SSR Page + SPA Deep Link
-# ==============================================
-@app.route("/metrics/tx-fees")
-def metrics_tx_fees():
+# =================================================
+# METRICS_TX_FEES – Range SSR Page
+# Deep-Link + SEO Render
+# =================================================
+@app.route("/metrics/tx-fees/<range>")
+def metrics_tx_fees_range(range):
+
+    valid_ranges = ["24h", "1w", "1m", "1y"]
+
+    if range not in valid_ranges:
+        abort(404)
+
     return render_template(
-        "pages/metrics/tx_fees.html"
+        "pages/metrics/tx_fees.html",
+        active_range=range
     )
 
 
@@ -1714,14 +1735,21 @@ def api_btc_tx_fees_1y():
 
 
 
-# ================================================
-# METRICS_BTC_HASHRATE – Bitcoin Hashrate
+# =================================================
+# METRICS_HASHRATE – Mining Hashrate Chart
 # SSR Page + SPA Deep Link
-# ================================================
-@app.route("/metrics/hashrate")
-def metrics_hashrate():
+# =================================================
+@app.route("/metrics/hashrate/<range>")
+def metrics_hashrate_range(range):
+
+    valid_ranges = ["1y", "5y", "10y", "ever"]
+
+    if range not in valid_ranges:
+        abort(404)
+
     return render_template(
-        "pages/metrics/hashrate.html"
+        "pages/metrics/hashrate.html",
+        active_range=range
     )
 
 

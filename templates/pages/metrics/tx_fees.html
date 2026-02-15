@@ -1,7 +1,6 @@
 <!-- ====================================================================== -->
 <!-- METRICS_BTC_TX_FEES – Bitcoin Transaction Fees (SSR + SPA Hybrid)     -->
-<!-- Fee Market • Blockspace Pricing • On-Chain Settlement Costs            -->
-<!-- File: templates/pages/metrics/tx_fees.html                             -->
+<!-- Range-SSR • Deep-Link Rendering • Fee Market SEO Layer                 -->
 <!-- ====================================================================== -->
 
 {% extends "base/base.html" %}
@@ -22,6 +21,14 @@ Analyze Bitcoin transaction fees across multiple time frames and explore fee mar
 
 
 <!-- ====================================================== -->
+<!-- RANGE RESOLVER                                         -->
+<!-- ====================================================== -->
+
+{% set r = active_range or "24h" %}
+
+
+
+<!-- ====================================================== -->
 <!-- PAGE CONTENT                                           -->
 <!-- ====================================================== -->
 
@@ -34,27 +41,27 @@ Analyze Bitcoin transaction fees across multiple time frames and explore fee mar
 
 
 <!-- ====================================================== -->
-<!-- SubSubTab Navigation (SPA functional)                  -->
+<!-- SUBSUB NAVIGATION (SSR active aware)                   -->
 <!-- ====================================================== -->
 
 <div class="METRICS_BTC_TX_FEES-subnav subnav mb-3 text-center">
 
-    <button class="METRICS_BTC_TX_FEES-subTabButton"
+    <button class="METRICS_BTC_TX_FEES-subTabButton {% if r=='24h' %}active{% endif %}"
             data-subsubtab="METRICS_BTC_TX_FEES_24H">
         24 <span class="range-unit">HOURS</span>
     </button>
 
-    <button class="METRICS_BTC_TX_FEES-subTabButton"
+    <button class="METRICS_BTC_TX_FEES-subTabButton {% if r=='1w' %}active{% endif %}"
             data-subsubtab="METRICS_BTC_TX_FEES_1W">
         1 <span class="range-unit">WEEK</span>
     </button>
 
-    <button class="METRICS_BTC_TX_FEES-subTabButton"
+    <button class="METRICS_BTC_TX_FEES-subTabButton {% if r=='1m' %}active{% endif %}"
             data-subsubtab="METRICS_BTC_TX_FEES_1M">
         1 <span class="range-unit">MONTH</span>
     </button>
 
-    <button class="METRICS_BTC_TX_FEES-subTabButton"
+    <button class="METRICS_BTC_TX_FEES-subTabButton {% if r=='1y' %}active{% endif %}"
             data-subsubtab="METRICS_BTC_TX_FEES_1J">
         1 <span class="range-unit">YEAR</span>
     </button>
@@ -64,93 +71,132 @@ Analyze Bitcoin transaction fees across multiple time frames and explore fee mar
 
 
 <!-- ====================================================== -->
-<!-- SubSubTab Container – SSR Minimal                      -->
-<!-- Only default canvas rendered server-side               -->
+<!-- CHART CONTAINER – SSR RANGE RENDER                     -->
 <!-- ====================================================== -->
 
 <div id="METRICS_BTC_TX_FEES_CONTAINER" class="subtab-container">
 
-    <!-- Default SSR Chart -->
-    <div id="METRICS_BTC_TX_FEES_24H"
-         class="METRICS_BTC_TX_FEES-subsubtab chart-wrapper">
+    {% if r == "24h" %}
+        <div id="METRICS_BTC_TX_FEES_24H" class="chart-wrapper">
+            <canvas id="METRICS_BTC_TX_FEES_24H_CANVAS"></canvas>
+        </div>
 
-        <canvas id="METRICS_BTC_TX_FEES_24H_CANVAS"></canvas>
+    {% elif r == "1w" %}
+        <div id="METRICS_BTC_TX_FEES_1W" class="chart-wrapper">
+            <canvas id="METRICS_BTC_TX_FEES_1W_CANVAS"></canvas>
+        </div>
 
-    </div>
+    {% elif r == "1m" %}
+        <div id="METRICS_BTC_TX_FEES_1M" class="chart-wrapper">
+            <canvas id="METRICS_BTC_TX_FEES_1M_CANVAS"></canvas>
+        </div>
+
+    {% elif r == "1y" %}
+        <div id="METRICS_BTC_TX_FEES_1J" class="chart-wrapper">
+            <canvas id="METRICS_BTC_TX_FEES_1J_CANVAS"></canvas>
+        </div>
+    {% endif %}
 
 </div>
 
 
 
 <!-- ====================================================== -->
-<!-- SEO INFO BOX                                           -->
+<!-- SEO INFO BOX – RANGE VARIANTS + CROSSLINKS             -->
 <!-- ====================================================== -->
 
 <div class="info-box info-box-metrics-fees">
 
-    <strong>About Bitcoin Transaction Fees</strong><br><br>
+{% if r == "24h" %}
 
-    Bitcoin transaction fees represent the price users pay
-    to secure blockspace on the Bitcoin network.
-    Fees are measured in satoshis per virtual byte (sat/vB),
-    the standard unit miners use to prioritize transactions
-    within each block’s limited capacity
-    (≈ 1 million vBytes per block).<br><br>
+<strong>Bitcoin Transaction Fees (24 Hours)</strong><br><br>
 
-    Higher fee rates typically result in faster confirmation times,
-    while lower-fee transactions may remain in the mempool
-    for extended periods during times of network congestion.<br><br>
+Short-term fee dynamics reflect real-time competition for blockspace.
+Spikes in daily fee rates often emerge during mempool congestion,
+exchange settlement waves, or rapid market volatility requiring urgent
+transaction inclusion.<br><br>
 
-    Fee market dynamics provide insight into real-time demand
-    for on-chain settlement.
-    Rising fees often signal increased transaction competition,
-    elevated economic activity, or liquidity movements,
-    whereas declining fees may indicate reduced network pressure.<br><br>
+Analyzing daily fees alongside
+<a href="/metrics/tx-volume/24h">transaction volume</a>,
+<a href="/metrics/tx-amount/24h">high-value transfers</a>,
+and
+<a href="/metrics/hashrate/1y">network security growth</a>
+reveals how demand pressure translates into settlement costs.
 
-    Because the mempool is structurally dominated
-    by lower-fee transactions,
-    aggregated averages — such as those shown on overview dashboards —
-    may appear significantly lower than priority settlement rates.
+{% elif r == "1w" %}
+
+<strong>Bitcoin Transaction Fees (1 Week)</strong><br><br>
+
+Weekly fee aggregation smooths short-term congestion spikes and provides
+a clearer view of sustained settlement demand. Elevated weekly fee levels
+often coincide with strong capital inflows, exchange reserve shifts,
+or macro-driven liquidity migration.<br><br>
+
+When compared with
+<a href="/metrics/tx-volume/1w">weekly transaction throughput</a>
+and
+<a href="/metrics/price">Bitcoin price movements</a>,
+fee pressure reveals structural network demand cycles.
+
+{% elif r == "1m" %}
+
+<strong>Bitcoin Transaction Fees (1 Month)</strong><br><br>
+
+Monthly fee trends illustrate medium-term blockspace pricing dynamics.
+Periods of prolonged high fees typically align with bull market expansion,
+institutional onboarding, or sustained network utilization growth.<br><br>
+
+Cross-analysis with
+<a href="/metrics/difficulty/5y">mining difficulty</a>
+and
+<a href="/metrics/hashrate/5y">hashrate expansion</a>
+shows how security investment evolves alongside settlement demand.
+
+{% elif r == "1y" %}
+
+<strong>Bitcoin Transaction Fees (1 Year)</strong><br><br>
+
+Yearly transaction fees reflect macro blockspace valuation and long-term
+network usage economics. Persistent fee growth indicates structural demand
+for censorship-resistant settlement and expanding economic throughput.<br><br>
+
+Long-term fee dynamics are most meaningful when analyzed together with
+<a href="/metrics/tx-volume/1y">annual transaction volume</a>,
+<a href="/metrics/hashrate/ever">full historical hashrate</a>,
+and
+<a href="/metrics/difficulty/ever">difficulty evolution</a>,
+revealing how security, demand, and settlement pricing co-evolve.
+
+{% endif %}
 
 </div>
+
+
 
 {% endblock %}
 
 
 
 <!-- ====================================================== -->
-<!-- PAGE SCRIPTS                                           -->
+<!-- PAGE SCRIPTS – RANGE SSR LOADER                        -->
 <!-- ====================================================== -->
 
 {% block scripts %}
 
-<!-- Core Fees Loader -->
 <script src="/static/js/METRICS_BTC_TX_FEES.js"></script>
-
-
-
-<!-- ====================================================== -->
-<!-- SSR ENTRY INITIALIZER (Volume Logic übernommen)        -->
-<!-- ====================================================== -->
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-    // Prevent double initialization
     if (window.__METRICS_TX_FEES_SSR_INIT__) return;
     window.__METRICS_TX_FEES_SSR_INIT__ = true;
 
+    const range = "{{ r }}";
 
-    // Init SPA SubTabs
-    if (typeof window.initMetricsTxFeesSubTabs === "function") {
-        window.initMetricsTxFeesSubTabs();
-    }
-
-
-    // Fallback loader (Direct URL safety)
-    if (typeof window.loadMetricsTxFees24H === "function") {
-        window.loadMetricsTxFees24H();
-    }
+    if (range === "24h" && window.loadMetricsTxFees24H) loadMetricsTxFees24H();
+    if (range === "1w"  && window.loadMetricsTxFees1W)  loadMetricsTxFees1W();
+    if (range === "1m"  && window.loadMetricsTxFees1M)  loadMetricsTxFees1M();
+    if (range === "1y"  && window.loadMetricsTxFees1J)  loadMetricsTxFees1J();
 
 });
 </script>
