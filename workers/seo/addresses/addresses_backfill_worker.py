@@ -51,7 +51,7 @@ from nodes.rpc import BitcoinRPC
 # ⚙️ Config
 # ============================================
 
-STATE_PATH = "/raid/data/seo/addresses/progress/address_backfill_state.json"
+STATE_PATH = "/raid/data/seo/addresses/progress/addresses_backfill_state.json"
 OUT_DIR    = "/raid/data/seo/addresses/confirmed"
 
 # Throttle (addresses is heavy; start conservative, tune later)
@@ -71,7 +71,6 @@ RPC_RETRIES = 5
 RPC_RETRY_SLEEP = 0.5
 
 
-TEST_MAX_HEIGHT = 200
 
 
 
@@ -235,7 +234,7 @@ def backfill_loop():
     blocks_since_fsync = 0
 
     try:
-        for height in range(start_height, min(tip, TEST_MAX_HEIGHT) + 1):
+        for height in range(start_height, tip + 1):
 
             seg_path = get_segment_file_path(
                 entity=state.entity,
