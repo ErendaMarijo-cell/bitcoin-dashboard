@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+  <!-- ========================= -->
+  <!-- HOME -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/</loc>
     <lastmod>2026-01-23</lastmod>
@@ -7,19 +12,25 @@
     <priority>1.0</priority>
   </url>
 
-  
+
+
+  <!-- ========================= -->
+  <!-- REVOLUTION -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/revolution/history</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/revolution/pioneers</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/revolution/whitepaper</loc>
     <lastmod>2026-01-23</lastmod>
@@ -28,24 +39,31 @@
   </url>
 
 
+
+  <!-- ========================= -->
+  <!-- NETWORK -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/network/structure</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/network/technology</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/network/nodes</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/network/miners</loc>
     <lastmod>2026-01-23</lastmod>
@@ -54,56 +72,229 @@
   </url>
 
 
+
+  <!-- ========================= -->
+  <!-- METRICS – PRICE -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/metrics/price</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
+
+
+
+  <!-- ========================= -->
+  <!-- METRICS – DIFFICULTY -->
+  <!-- ========================= -->
   <url>
-    <loc>https://bitcoin-dashboard.net/metrics/difficulty</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/metrics/tx-volume</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/metrics/tx-amount</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/metrics/tx-fees</loc>
-    <lastmod>2026-01-23</lastmod>
-    <changefreq>hourly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://bitcoin-dashboard.net/metrics/hashrate</loc>
+    <loc>https://bitcoin-dashboard.net/metrics/difficulty/1y</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/difficulty/5y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/difficulty/10y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/difficulty/ever</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+
+
+  <!-- ========================= -->
+  <!-- METRICS – HASHRATE -->
+  <!-- ========================= -->
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/hashrate/1y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/hashrate/5y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/hashrate/10y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/hashrate/ever</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+
+
+  <!-- ========================= -->
+  <!-- METRICS – TX VOLUME -->
+  <!-- ========================= -->
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-volume/1h</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-volume/24h</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-volume/1w</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-volume/1m</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-volume/1y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+
+
+  <!-- ========================= -->
+  <!-- METRICS – TX AMOUNT -->
+  <!-- ========================= -->
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/mempool</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/24h</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/1w</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/1m</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/1y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/halving</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-amount/ever</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+
+
+  <!-- ========================= -->
+  <!-- METRICS – TX FEES -->
+  <!-- ========================= -->
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-fees/24h</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-fees/1w</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-fees/1m</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bitcoin-dashboard.net/metrics/tx-fees/1y</loc>
+    <lastmod>2026-01-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+
+
+  <!-- ========================= -->
+  <!-- REVIEW -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/review/btc-fiat</loc>
     <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/review/btc-gold</loc>
     <lastmod>2026-02-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/review/btc-silver</loc>
     <lastmod>2026-02-08</lastmod>
@@ -112,18 +303,24 @@
   </url>
 
 
+
+  <!-- ========================= -->
+  <!-- EXPLORER -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/explorer/transaction</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/explorer/address</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/explorer/wallet</loc>
     <lastmod>2026-01-23</lastmod>
@@ -132,18 +329,24 @@
   </url>
 
 
+
+  <!-- ========================= -->
+  <!-- TREASURIES -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/treasuries/companies</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/treasuries/institutions</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/treasuries/countries</loc>
     <lastmod>2026-01-23</lastmod>
@@ -152,24 +355,31 @@
   </url>
 
 
+
+  <!-- ========================= -->
+  <!-- MARKET CAP -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/market-cap/crypto</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/market-cap/companies</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/market-cap/currencies</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/market-cap/commodities</loc>
     <lastmod>2026-01-23</lastmod>
@@ -178,22 +388,30 @@
   </url>
 
 
+
+  <!-- ========================= -->
+  <!-- INFO -->
+  <!-- ========================= -->
   <url>
     <loc>https://bitcoin-dashboard.net/info/status</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/info/traffic</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.6</priority>
   </url>
+
   <url>
     <loc>https://bitcoin-dashboard.net/info/imprint</loc>
     <lastmod>2026-01-23</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.2</priority>
   </url>
+
+
 </urlset>
